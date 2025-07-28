@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "../ui/button/Button";
 
 interface ComponentCardProps {
   title: string;
@@ -18,7 +19,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
       className={`rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] ${className}`}
     >
       {/* Card Header */}
-      <div className="px-6 py-5">
+      <div className="px-6 py-5 flex justify-between items-center">
         <h3 className="text-base font-medium text-gray-800 dark:text-white/90">
           {title}
         </h3>
@@ -27,6 +28,10 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
             {desc}
           </p>
         )}
+
+        <Button size="md" variant="primary">
+                      Add Vendor
+                    </Button>
       </div>
 
       {/* Card Body */}

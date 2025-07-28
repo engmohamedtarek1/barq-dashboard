@@ -36,9 +36,14 @@ const navItems: NavItem[] = [
   //   path: "/calendar",
   // },
   {
+    icon: <BoxCubeIcon />,
+    name: "Products",
+    path: "/products",
+  },
+  {
     icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
+    name: "Vendors",
+    path: "/vendors",
   },
   // {
   //   name: "Forms",
@@ -62,6 +67,11 @@ const navItems: NavItem[] = [
       { name: "Sign in Page", path: "/signin", pro: false },
       { name: "404 Error", path: "/error-404", pro: false },
     ],
+  },
+  {
+    icon: <UserCircleIcon />,
+    name: "User Profile",
+    path: "/profile",
   },
 ];
 
@@ -292,7 +302,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-brand-blue text-white dark:bg-gray-900 dark:border-gray-800 h-screen transition-all duration-300 ease-in-out z-50  
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -341,7 +351,7 @@ const AppSidebar: React.FC = () => {
           <div className="flex flex-col gap-4">
             <div>
               <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                className={`mb-4 text-xs uppercase flex leading-[20px] ${
                   !isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"

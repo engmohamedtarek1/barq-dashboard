@@ -15,8 +15,9 @@ export default function BasicTables() {
   return (
     <div>
       <PageBreadcrumb pageTitle="Basic Table" />
+      
       <div className="space-y-6">
-        <ComponentCard title="Basic Table 1">
+        <ComponentCard title="Vendors">
           <BasicTableOne />
         </ComponentCard>
       </div>
