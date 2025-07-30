@@ -9,8 +9,8 @@ import DemographicCard from "@/components/ecommerce/DemographicCard";
 
 export const metadata: Metadata = {
   title:
-    "Dashboard",
-  description: "This is Dashboard",
+    "Dashboard | Barq",
+  description: "Barq dashboard with metrics, charts, and recent orders",
   authors: [
     {
       name: "Mohamed Tarek"

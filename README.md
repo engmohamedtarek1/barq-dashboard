@@ -1,4 +1,4 @@
-# Next.js Admin Dashboard
+# Barq Admin Dashboard
 
 ## Features
 
@@ -11,8 +11,8 @@
 
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/engmohamedtarek1/nextjs-admin-dashboard.git
-    cd nextjs-admin-dashboard
+    git clone https://github.com/engmohamedtarek1/barq-admin.git
+    cd barq-admin
     ```
 
 2. **Install dependencies:**
