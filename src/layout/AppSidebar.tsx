@@ -12,7 +12,6 @@ import {
   PageIcon,
   PieChartIcon,
   PlugInIcon,
-  TableIcon,
   UserCircleIcon,
 } from "../icons/index";
 
@@ -55,11 +54,11 @@ const navItems: NavItem[] = [
   //   icon: <TableIcon />,
   //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   // },
-  {
-    name: "Basic Tables",
-    icon: <TableIcon />,
-    path: "/basic-tables",
-  },
+  // {
+  //   name: "Basic Tables",
+  //   icon: <TableIcon />,
+  //   path: "/basic-tables",
+  // },
   {
     name: "Pages",
     icon: <PageIcon />,
