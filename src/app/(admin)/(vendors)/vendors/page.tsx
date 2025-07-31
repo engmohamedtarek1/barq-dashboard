@@ -1,5 +1,8 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import Button from "@/components/ui/button/Button";
+import {
+  AddVendorModal,
+  AddVendorButton,
+} from "@/components/vendors/VendorsModals";
 import VendorsTable from "@/components/vendors/VendorsTable";
 import { Metadata } from "next";
 import React from "react";
@@ -49,9 +52,7 @@ export default function Vendors() {
               </form>
 
               {/* Add Vendor Button */}
-              <Button size="md" variant="primary">
-                + Add Vendor
-              </Button>
+              <AddVendorButton />
             </div>
           </div>
 
@@ -61,6 +62,8 @@ export default function Vendors() {
           </div>
         </div>
       </div>
+
+      <AddVendorModal />
     </div>
   );
 }

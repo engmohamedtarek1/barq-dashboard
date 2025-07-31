@@ -115,7 +115,7 @@ export default function VendorsTable() {
                             <Image
                               width={40}
                               height={40}
-                              src={vendor.profileImage}
+                              src={vendor.profileImage || "/images/logo/barq-logo.png"}
                               alt={vendor.name}
                               className="object-cover"
                             />
