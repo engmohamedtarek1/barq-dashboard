@@ -21,16 +21,11 @@ import { CreateVendorPayload, Vendor } from "@/types/vendor";
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
 
-interface AddVendorModalProps {
-  isOpen?: boolean;
-  closeModal?: () => void;
-  onVendorCreated?: (newVendor: CreateVendorPayload) => void;
-}
-
 export function AddVendorModal({
   isOpen = false,
   closeModal = () => {},
-}: AddVendorModalProps) {
+  onSuccess = () => {},
+}) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [formData, setFormData] = useState<{
@@ -52,6 +47,8 @@ export function AddVendorModal({
   });
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const fetchData = async () => {
       try {
         const { data: subcats, categories } = await fetchSubcategories();
@@ -61,8 +58,9 @@ export function AddVendorModal({
         console.error("Failed to fetch data:", err);
       }
     };
+
     fetchData();
-  }, []);
+  }, [isOpen]);
 
   const handleChange = (
     field: string,
@@ -90,6 +88,7 @@ export function AddVendorModal({
       };
 
       await createVendor(payload);
+      onSuccess?.();
       closeModal();
     } catch (err) {
       console.error("Failed to add vendor:", err);
@@ -211,15 +210,24 @@ export function AddVendorModal({
   );
 }
 
-export function AddVendorButton() {
+export function AddVendorButton({ onSuccess }: { onSuccess?: () => void }) {
   const { isOpen, openModal, closeModal } = useModal();
+
+  const handleAfterCreate = async () => {
+    onSuccess?.(); // call parent's refetch
+    closeModal();
+  };
 
   return (
     <>
       <Button size="md" variant="primary" onClick={openModal}>
         + Add Vendor
       </Button>
-      <AddVendorModal isOpen={isOpen} closeModal={closeModal} />
+      <AddVendorModal
+        isOpen={isOpen}
+        closeModal={closeModal}
+        onSuccess={handleAfterCreate}
+      />
     </>
   );
 }
@@ -228,6 +236,7 @@ export function EditVendorModal({
   isOpen = false,
   closeModal = () => {},
   vendor = {} as Vendor,
+  onSuccess = () => {},
 }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
@@ -250,6 +259,8 @@ export function EditVendorModal({
   });
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const fetchData = async () => {
       try {
         const { data: subcats, categories } = await fetchSubcategories();
@@ -259,8 +270,9 @@ export function EditVendorModal({
         console.error("Failed to fetch data:", err);
       }
     };
+
     fetchData();
-  }, []);
+  }, [isOpen]);
 
   // Fill formData with vendor data when modal opens or vendor changes
   useEffect(() => {
@@ -308,6 +320,7 @@ export function EditVendorModal({
       };
 
       await updateVendor(vendor._id, payload);
+      onSuccess?.();
       closeModal();
     } catch (err) {
       console.error("Failed to update vendor:", err);
@@ -337,7 +350,7 @@ export function EditVendorModal({
                         width={160}
                         height={160}
                         alt="Current Profile"
-                        className="justify-self-center mb-4"
+                        className="mb-4 justify-self-center"
                       />
                     )}
                   <FileInput
@@ -444,8 +457,19 @@ export function EditVendorModal({
   );
 }
 
-export function EditVendorButton({ vendor }: { vendor: Vendor }) {
+export function EditVendorButton({
+  vendor,
+  onSuccess,
+}: {
+  vendor: Vendor;
+  onSuccess?: () => void;
+}) {
   const { isOpen, openModal, closeModal } = useModal();
+
+  const handleAfterEdit = async () => {
+    onSuccess?.(); // call parent's refetch
+    closeModal();
+  };
 
   return (
     <>
@@ -459,6 +483,7 @@ export function EditVendorButton({ vendor }: { vendor: Vendor }) {
         isOpen={isOpen}
         closeModal={closeModal}
         vendor={vendor}
+        onSuccess={handleAfterEdit}
       />
     </>
   );
@@ -468,11 +493,12 @@ export function DeleteVendorModal({
   isOpen = false,
   closeModal = () => {},
   vendorId = "",
+  onSuccess = () => {},
 }) {
   const handleDelete = async () => {
     try {
       await deleteVendor(vendorId);
-
+      onSuccess?.();
       closeModal();
     } catch (err) {
       console.error("Failed to delete vendor:", err);
@@ -511,8 +537,19 @@ export function DeleteVendorModal({
   );
 }
 
-export function DeleteVendorButton({ vendorId }: { vendorId: string }) {
+export function DeleteVendorButton({
+  vendorId,
+  onSuccess,
+}: {
+  vendorId: string;
+  onSuccess?: () => void;
+}) {
   const { isOpen, openModal, closeModal } = useModal();
+
+  const handleAfterDelete = async () => {
+    onSuccess?.(); // call parent's refetch
+    closeModal();
+  };
 
   return (
     <>
@@ -526,6 +563,7 @@ export function DeleteVendorButton({ vendorId }: { vendorId: string }) {
         isOpen={isOpen}
         closeModal={closeModal}
         vendorId={vendorId}
+        onSuccess={handleAfterDelete}
       />
     </>
   );

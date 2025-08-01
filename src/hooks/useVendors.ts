@@ -1,5 +1,4 @@
-// hooks/useVendors.ts
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Vendor } from "@/types/vendor";
 import { fetchVendors } from "@/lib/api/vendors";
 
@@ -8,22 +7,22 @@ export function useVendors(page: number, limit: number) {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    const loadVendors = async () => {
-      try {
-        setLoading(true);
-        const { data, pages } = await fetchVendors(page, limit);
-        setVendors(data);
-        setTotalPages(pages);
-      } catch (error) {
-        console.error("Error fetching vendors:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadVendors();
+  const loadVendors = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, pages } = await fetchVendors(page, limit);
+      setVendors(data);
+      setTotalPages(pages);
+    } catch (error) {
+      console.error("Error fetching vendors:", error);
+    } finally {
+      setLoading(false);
+    }
   }, [page, limit]);
 
-  return { vendors, loading, totalPages };
+  useEffect(() => {
+    loadVendors();
+  }, [loadVendors]);
+
+  return { vendors, loading, totalPages, refetch: loadVendors };
 }

@@ -1,3 +1,4 @@
+// /src/components/vendors/VendorsTable.tsx
 "use client";
 
 import { useState } from "react";
@@ -25,7 +26,7 @@ export default function VendorsTable() {
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { vendors, loading, totalPages } = useVendors(page, limit);
+  const { vendors, loading, totalPages, refetch } = useVendors(page, limit);
 
   const filteredVendors = vendors.filter(
     (vendor) =>
@@ -68,7 +69,7 @@ export default function VendorsTable() {
         </div>
 
         {/* Add Vendor Button */}
-        <AddVendorButton />
+        <AddVendorButton onSuccess={refetch} />
       </div>
 
       {/* Limit Selector */}
@@ -197,10 +198,12 @@ export default function VendorsTable() {
                       <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
                         ⭐ {vendor.rating}
                       </TableCell>
-                      <TableCell className="px-4 py-3 space-x-4 text-gray-500 dark:text-gray-400">
-                        <EditVendorButton vendor={vendor} />
-
-                        <DeleteVendorButton vendorId={vendor._id} />
+                      <TableCell className="space-x-4 px-4 py-3 text-gray-500 dark:text-gray-400">
+                        <EditVendorButton vendor={vendor} onSuccess={refetch} />
+                        <DeleteVendorButton
+                          vendorId={vendor._id}
+                          onSuccess={refetch}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
