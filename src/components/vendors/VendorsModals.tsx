@@ -15,16 +15,19 @@ import { Category } from "@/types/category";
 import { Subcategory } from "@/types/subcategory";
 import { useModal } from "@/hooks/useModal";
 import { fetchSubcategories } from "@/lib/api/subcategory";
-import { createVendor } from "@/lib/api/vendors";
+import { createVendor, deleteVendor, updateVendor } from "@/lib/api/vendors";
 import { uploadImage } from "@/lib/api/uploadImage";
-import { CreateVendorPayload } from "@/types/vendor";
+import { CreateVendorPayload, Vendor } from "@/types/vendor";
+import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
+import Image from "next/image";
 
 interface AddVendorModalProps {
   isOpen?: boolean;
   closeModal?: () => void;
+  onVendorCreated?: (newVendor: CreateVendorPayload) => void;
 }
 
-function AddVendorModal({
+export function AddVendorModal({
   isOpen = false,
   closeModal = () => {},
 }: AddVendorModalProps) {
@@ -35,7 +38,7 @@ function AddVendorModal({
     mobile: string;
     location: string;
     workingHours: string;
-    profileImage: string | File;
+    profileImage: File;
     category: string;
     subcategories: string[];
   }>({
@@ -43,7 +46,7 @@ function AddVendorModal({
     mobile: "",
     location: "",
     workingHours: "",
-    profileImage: "",
+    profileImage: new File([], ""), // Initialize with an empty file
     category: "",
     subcategories: [],
   });
@@ -72,12 +75,8 @@ function AddVendorModal({
     try {
       let profileImageUrl = "";
 
-      if (formData.profileImage instanceof File) {
-        const uploaded = await uploadImage(formData.profileImage);
-        profileImageUrl = uploaded.url;
-      } else if (typeof formData.profileImage === "string") {
-        profileImageUrl = formData.profileImage;
-      }
+      const uploaded = await uploadImage(formData.profileImage);
+      profileImageUrl = uploaded.data;
 
       const payload: CreateVendorPayload = {
         name: formData.name,
@@ -104,7 +103,7 @@ function AddVendorModal({
       className="z-50 m-4 max-w-[700px] bg-black"
     >
       <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11 dark:bg-gray-900">
-        <form className="flex flex-col">
+        <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
@@ -212,7 +211,7 @@ function AddVendorModal({
   );
 }
 
-function AddVendorButton() {
+export function AddVendorButton() {
   const { isOpen, openModal, closeModal } = useModal();
 
   return (
@@ -225,4 +224,309 @@ function AddVendorButton() {
   );
 }
 
-export { AddVendorModal, AddVendorButton };
+export function EditVendorModal({
+  isOpen = false,
+  closeModal = () => {},
+  vendor = {} as Vendor,
+}) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [formData, setFormData] = useState<{
+    name: string;
+    mobile: string;
+    location: string;
+    workingHours: string;
+    profileImage: File | string;
+    category: string;
+    subcategories: string[];
+  }>({
+    name: "",
+    mobile: "",
+    location: "",
+    workingHours: "",
+    profileImage: "", // can be url or File
+    category: "",
+    subcategories: [],
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: subcats, categories } = await fetchSubcategories();
+        setSubcategories(subcats);
+        setCategories(categories);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Fill formData with vendor data when modal opens or vendor changes
+  useEffect(() => {
+    if (vendor && isOpen) {
+      setFormData({
+        name: vendor.name || "",
+        mobile: vendor.mobile || "",
+        location: vendor.location || "",
+        workingHours: vendor.workingHours || "",
+        profileImage: vendor.profileImage || "",
+        category: vendor.category._id || "",
+        subcategories: vendor.subcategories.map((sc) => sc._id) || [],
+      });
+    }
+  }, [vendor, isOpen]);
+
+  const handleChange = (
+    field: string,
+    value: string | string[] | File | undefined,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = async () => {
+    try {
+      let profileImageUrl = "";
+
+      if (formData.profileImage instanceof File) {
+        const uploaded = await uploadImage(formData.profileImage);
+        profileImageUrl = uploaded.data || uploaded.url;
+      } else if (typeof formData.profileImage === "string") {
+        profileImageUrl = formData.profileImage;
+      }
+
+      const payload: Partial<CreateVendorPayload> = {
+        name: formData.name,
+        mobile: formData.mobile,
+        location: formData.location,
+        workingHours: formData.workingHours,
+        profileImage: profileImageUrl,
+        category: formData.category,
+        subcategories: formData.subcategories,
+        role: "shop",
+        isActive: true,
+      };
+
+      await updateVendor(vendor._id, payload);
+      closeModal();
+    } catch (err) {
+      console.error("Failed to update vendor:", err);
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={closeModal}
+      className="z-50 m-4 max-w-[700px] bg-black"
+    >
+      <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11 dark:bg-gray-900">
+        <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
+          <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+            <div>
+              <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
+                Vendor Information
+              </h5>
+              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                <div className="lg:col-span-2">
+                  <Label>Profile Image</Label>
+                  {typeof formData.profileImage === "string" &&
+                    formData.profileImage && (
+                      <Image
+                        src={formData.profileImage}
+                        width={160}
+                        height={160}
+                        alt="Current Profile"
+                        className="justify-self-center mb-4"
+                      />
+                    )}
+                  <FileInput
+                    accept="image/*"
+                    onChange={(e) =>
+                      handleChange("profileImage", e.target.files?.[0])
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Name</Label>
+                  <Input
+                    type="text"
+                    placeholder="Vendor Name"
+                    defaultValue={formData.name}
+                    onChange={(e) => handleChange("name", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label>Phone</Label>
+                  <Input
+                    type="text"
+                    placeholder="01234567890"
+                    defaultValue={formData.mobile}
+                    onChange={(e) => handleChange("mobile", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label>Location</Label>
+                  <Input
+                    type="text"
+                    placeholder="Vendor Address"
+                    defaultValue={formData.location}
+                    onChange={(e) => handleChange("location", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label>Working Hours</Label>
+                  <Input
+                    type="text"
+                    placeholder="10 AM - 7 PM"
+                    defaultValue={formData.workingHours}
+                    onChange={(e) =>
+                      handleChange("workingHours", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Active</Label>
+                  <Switch label="" defaultChecked={true} />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-7">
+              <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
+                Vendor Shop Details
+              </h5>
+              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                <div>
+                  <Label>Category</Label>
+                  <div className="relative">
+                    <Select
+                      options={categories.map((cat) => ({
+                        value: cat._id,
+                        label: cat.nameEn,
+                      }))}
+                      placeholder="Select Category"
+                      defaultValue={formData.category}
+                      onChange={(val) => handleChange("category", val)}
+                      className="dark:bg-dark-900"
+                    />
+                    <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                      <ChevronDownIcon />
+                    </span>
+                  </div>
+                </div>
+                <div className="relative">
+                  <MultiSelect
+                    label="Subcategories"
+                    options={subcategories.map((sc) => ({
+                      value: sc._id,
+                      text: sc.nameEn,
+                      selected: formData.subcategories.includes(sc._id),
+                    }))}
+                    onChange={(values) => handleChange("subcategories", values)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
+            <Button size="sm" variant="outline" onClick={closeModal}>
+              Close
+            </Button>
+            <Button size="sm" onClick={handleSave}>
+              Save Changes
+            </Button>
+          </div>
+        </form>
+      </div>
+    </Modal>
+  );
+}
+
+export function EditVendorButton({ vendor }: { vendor: Vendor }) {
+  const { isOpen, openModal, closeModal } = useModal();
+
+  return (
+    <>
+      <button
+        onClick={openModal}
+        className="text-sm text-blue-500 hover:underline"
+      >
+        <FaPencilAlt />
+      </button>
+      <EditVendorModal
+        isOpen={isOpen}
+        closeModal={closeModal}
+        vendor={vendor}
+      />
+    </>
+  );
+}
+
+export function DeleteVendorModal({
+  isOpen = false,
+  closeModal = () => {},
+  vendorId = "",
+}) {
+  const handleDelete = async () => {
+    try {
+      await deleteVendor(vendorId);
+
+      closeModal();
+    } catch (err) {
+      console.error("Failed to delete vendor:", err);
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={closeModal}
+      className="z-50 m-4 max-w-[700px] bg-black"
+    >
+      <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11 dark:bg-gray-900">
+        <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
+          <h4 className="mb-5 px-2 pb-3 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
+            Vendor Deletion
+          </h4>
+
+          <p>Are you sure you want to delete this vendor?</p>
+
+          <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
+            <Button size="sm" variant="outline" onClick={closeModal}>
+              Close
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleDelete}
+              className="bg-error-500 hover:bg-error-700"
+            >
+              Delete
+            </Button>
+          </div>
+        </form>
+      </div>
+    </Modal>
+  );
+}
+
+export function DeleteVendorButton({ vendorId }: { vendorId: string }) {
+  const { isOpen, openModal, closeModal } = useModal();
+
+  return (
+    <>
+      <button
+        onClick={openModal}
+        className="text-sm text-red-500 hover:underline"
+      >
+        <FaTrashAlt />
+      </button>
+      <DeleteVendorModal
+        isOpen={isOpen}
+        closeModal={closeModal}
+        vendorId={vendorId}
+      />
+    </>
+  );
+}

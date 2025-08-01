@@ -8,6 +8,7 @@ export interface CreateVendorPayload {
   category: string;
   subcategories: string[];
   role: string;
+  isActive?: boolean;
 }
 
 export interface Vendor {
@@ -19,11 +20,14 @@ export interface Vendor {
   isActive: boolean;
   location: string;
   rating: number;
+  workingHours: string;
   category: {
+    _id: string;
     nameAr: string;
     nameEn: string;
   };
   subcategories: {
+    _id: string;
     nameAr: string;
     nameEn: string;
   }[];
