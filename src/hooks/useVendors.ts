@@ -1,7 +1,7 @@
-import { BASE_URL } from "@/lib/config";
-import { Vendor } from "@/types/vendor";
-import axios from "axios";
+// hooks/useVendors.ts
 import { useEffect, useState } from "react";
+import { Vendor } from "@/types/vendor";
+import { fetchVendors } from "@/lib/api/vendors";
 
 export function useVendors(page: number, limit: number) {
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -9,18 +9,20 @@ export function useVendors(page: number, limit: number) {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get(`${BASE_URL}/admin/vendors?page=${page}&limit=${limit}`)
-      .then((res) => {
-        setVendors(res.data.data);
-        setTotalPages(res.data.metadata.pages);
+    const loadVendors = async () => {
+      try {
+        setLoading(true);
+        const { data, pages } = await fetchVendors(page, limit);
+        setVendors(data);
+        setTotalPages(pages);
+      } catch (error) {
+        console.error("Error fetching vendors:", error);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching vendors:", err);
-        setLoading(false);
-      });
+      }
+    };
+
+    loadVendors();
   }, [page, limit]);
 
   return { vendors, loading, totalPages };

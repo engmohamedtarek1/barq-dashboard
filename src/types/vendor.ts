@@ -1,3 +1,15 @@
+// types/vendor.ts
+export interface CreateVendorPayload {
+  name: string;
+  mobile: string;
+  location: string;
+  workingHours: string;
+  profileImage: string;
+  category: string;
+  subcategories: string[];
+  role: string;
+}
+
 export interface Vendor {
   _id: string;
   name: string;

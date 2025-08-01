@@ -1,7 +1,9 @@
+// src/app/(admin)/vendors/page.tsx
+
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import {
-  AddVendorModal,
   AddVendorButton,
+  AddVendorModal,
 } from "@/components/vendors/VendorsModals";
 import VendorsTable from "@/components/vendors/VendorsTable";
 import { Metadata } from "next";
@@ -10,7 +12,6 @@ import React from "react";
 export const metadata: Metadata = {
   title: "Vendors | Barq",
   description: "This is the Vendors page where you can manage vendor data.",
-  // other metadata
 };
 
 export default function Vendors() {

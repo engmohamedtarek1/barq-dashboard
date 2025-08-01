@@ -1,7 +1,7 @@
-import { BASE_URL } from "@/lib/config";
-import { Product } from "@/types/product";
-import axios from "axios";
+// hooks/useProducts.ts
 import { useEffect, useState } from "react";
+import { Product } from "@/types/product";
+import { fetchProducts } from "@/lib/api/products";
 
 export function useProducts(page: number, limit: number) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -9,18 +9,20 @@ export function useProducts(page: number, limit: number) {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get(`${BASE_URL}/product?page=${page}&limit=${limit}`)
-      .then((res) => {
-        setProducts(res.data.data);
-        setTotalPages(res.data.metadata.pages);
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const { data, pages } = await fetchProducts(page, limit);
+        setProducts(data);
+        setTotalPages(pages);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching products:", err);
-        setLoading(false);
-      });
+      }
+    };
+
+    loadProducts();
   }, [page, limit]);
 
   return { products, loading, totalPages };

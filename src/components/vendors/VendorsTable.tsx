@@ -115,7 +115,7 @@ export default function VendorsTable() {
                             <Image
                               width={40}
                               height={40}
-                              src={vendor.profileImage || "/images/logo/barq-logo.png"}
+                              src={vendor.profileImage}
                               alt={vendor.name}
                               className="object-cover"
                             />
@@ -140,6 +140,7 @@ export default function VendorsTable() {
                         <Badge
                           size="sm"
                           color={vendor.isActive ? "success" : "error"}
+                          variant="solid"
                         >
                           {vendor.isActive ? "Active" : "Inactive"}
                         </Badge>
