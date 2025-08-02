@@ -1,10 +1,24 @@
+export interface CreateProductPayload {
+  nameAr: string;
+  nameEn: string;
+  price: number;
+  amount: number;
+  // shopId: string;
+  description: string;
+  categoryId: string;
+  rating: number;
+  image: string;
+  soldTimes: number;
+  reviewCount: number;
+}
+
 export interface Product {
   _id: string;
   nameAr: string;
   nameEn: string;
   price: number;
   amount: number;
-  shopId: {
+  shop: {
     _id: string;
     name: string;
     mobile: string;

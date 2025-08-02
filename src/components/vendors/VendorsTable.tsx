@@ -1,4 +1,4 @@
-// /src/components/vendors/VendorsTable.tsx
+// src/components/vendors/VendorsTable.tsx
 "use client";
 
 import { useState } from "react";

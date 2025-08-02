@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
@@ -9,29 +9,99 @@ import Label from "../form/Label";
 import FileInput from "../form/input/FileInput";
 import { ChevronDownIcon } from "@/icons";
 import Select from "../form/Select";
+import { fetchSubcategories } from "@/lib/api/subcategory";
+import { Category } from "@/types/category";
+import { uploadImage } from "@/lib/api/uploadImage";
+import { CreateProductPayload, Product } from "@/types/product";
+import {
+  createProduct,
+  deleteProduct,
+  updateProduct,
+} from "@/lib/api/products";
+import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
+import Image from "next/image";
 
-interface AddProductModalProps {
-  isOpen?: boolean;
-  closeModal?: () => void;
-}
-
-function AddProductModal({
+export function AddProductModal({
   isOpen = false,
   closeModal = () => {},
-}: AddProductModalProps) {
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
+  onSuccess = () => {},
+}) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [formData, setFormData] = useState<{
+    nameAr: string;
+    nameEn: string;
+    price: number;
+    amount: number;
+    // shopId: string;
+    description: string;
+    categoryId: string;
+    rating: number;
+    image: File;
+    soldTimes: number;
+    reviewCount: number;
+  }>({
+    nameAr: "",
+    nameEn: "",
+    price: 0,
+    amount: 0,
+    // shopId: "",
+    description: "",
+    categoryId: "",
+    image: new File([], ""),
+    rating: 0,
+    reviewCount: 0,
+    soldTimes: 0,
+  });
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const fetchData = async () => {
+      try {
+        const { categories } = await fetchSubcategories();
+        setCategories(categories);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      }
+    };
+
+    fetchData();
+  }, [isOpen]);
+
+  const handleChange = (
+    field: string,
+    value: string | string[] | File | undefined,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const options = [
-    { value: "marketing", label: "Marketing" },
-    { value: "development", label: "Development" },
-  ];
+  const handleSave = async () => {
+    try {
+      let imageUrl = "";
 
-  const handleSelectChange = (value: string) => {
-    console.log("Selected value:", value);
+      const uploaded = await uploadImage(formData.image);
+      imageUrl = uploaded.data;
+
+      const payload: CreateProductPayload = {
+        nameAr: formData.nameAr,
+        nameEn: formData.nameEn,
+        price: formData.price,
+        amount: formData.amount,
+        // shopId: formData.shopId,
+        description: formData.description,
+        categoryId: formData.categoryId,
+        rating: formData.rating,
+        image: imageUrl,
+        soldTimes: formData.soldTimes,
+        reviewCount: formData.reviewCount,
+      };
+
+      await createProduct(payload);
+      onSuccess?.();
+      closeModal();
+    } catch (err) {
+      console.error("Failed to add product:", err);
+    }
   };
 
   return (
@@ -41,15 +111,7 @@ function AddProductModal({
       className="z-50 m-4 max-w-[700px] bg-black"
     >
       <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11 dark:bg-gray-900">
-        <div className="px-2 pr-14">
-          <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-            Edit Product Details
-          </h4>
-          <p className="mb-6 text-sm text-gray-500 lg:mb-7 dark:text-gray-400">
-            Update the product details to keep the information up-to-date.
-          </p>
-        </div>
-        <form className="flex flex-col">
+        <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
@@ -60,31 +122,50 @@ function AddProductModal({
                 {/* Product Image */}
                 <div className="lg:col-span-2">
                   <Label>Product Image</Label>
-                  <FileInput accept="image/*" />
+                  <FileInput
+                    accept="image/*"
+                    onChange={(e) => handleChange("image", e.target.files?.[0])}
+                  />
                 </div>
 
                 {/* Name (in Arabic) */}
                 <div>
                   <Label>Name (in Arabic)</Label>
-                  <Input type="text" placeholder="محمد طارق" />
+                  <Input
+                    type="text"
+                    placeholder="محمد طارق"
+                    onChange={(e) => handleChange("nameAr", e.target.value)}
+                  />
                 </div>
 
                 {/* Name (in English) */}
                 <div>
                   <Label>Name (in English)</Label>
-                  <Input type="text" placeholder="Mohamed Tarek" />
+                  <Input
+                    type="text"
+                    placeholder="Mohamed Tarek"
+                    onChange={(e) => handleChange("nameEn", e.target.value)}
+                  />
                 </div>
 
                 {/* Price */}
                 <div>
                   <Label>Price</Label>
-                  <Input type="number" placeholder="100" />
+                  <Input
+                    type="number"
+                    placeholder="100"
+                    onChange={(e) => handleChange("price", e.target.value)}
+                  />
                 </div>
 
                 {/* Amount */}
                 <div>
                   <Label>Amount</Label>
-                  <Input type="number" placeholder="10" />
+                  <Input
+                    type="number"
+                    placeholder="10"
+                    onChange={(e) => handleChange("amount", e.target.value)}
+                  />
                 </div>
 
                 {/* Description */}
@@ -93,6 +174,9 @@ function AddProductModal({
                   <Input
                     type="text"
                     placeholder="Premium Arabic coffee beans freshly roasted"
+                    onChange={(e) =>
+                      handleChange("description", e.target.value)
+                    }
                   />
                 </div>
 
@@ -101,9 +185,12 @@ function AddProductModal({
                   <Label>Category</Label>
                   <div className="relative">
                     <Select
-                      options={options}
+                      options={categories.map((cat) => ({
+                        value: cat._id,
+                        label: cat.nameEn,
+                      }))}
                       placeholder="Select Option"
-                      onChange={handleSelectChange}
+                      onChange={(val) => handleChange("category", val)}
                       className="dark:bg-dark-900"
                     />
                     <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
@@ -113,7 +200,7 @@ function AddProductModal({
                 </div>
 
                 {/* Shop */}
-                <div>
+                {/* <div>
                   <Label>Shop</Label>
                   <div className="relative">
                     <Select
@@ -126,24 +213,38 @@ function AddProductModal({
                       <ChevronDownIcon />
                     </span>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Rating */}
                 <div>
                   <Label>Rating</Label>
-                  <Input type="number" placeholder="5" />
+                  <Input
+                    type="number"
+                    placeholder="5"
+                    onChange={(e) => handleChange("rating", e.target.value)}
+                  />
                 </div>
 
                 {/* Sold Times */}
                 <div>
                   <Label>Sold Times</Label>
-                  <Input type="number" placeholder="150" />
+                  <Input
+                    type="number"
+                    placeholder="150"
+                    onChange={(e) => handleChange("soldTimes", e.target.value)}
+                  />
                 </div>
 
                 {/* Review Count */}
                 <div>
                   <Label>Review Count</Label>
-                  <Input type="number" placeholder="50" />
+                  <Input
+                    type="number"
+                    placeholder="50"
+                    onChange={(e) =>
+                      handleChange("reviewCount", e.target.value)
+                    }
+                  />
                 </div>
               </div>
             </div>
@@ -163,17 +264,418 @@ function AddProductModal({
   );
 }
 
-function AddProductButton() {
+export function AddProductButton({ onSuccess }: { onSuccess?: () => void }) {
   const { isOpen, openModal, closeModal } = useModal();
+
+  const handleAfterCreate = async () => {
+    onSuccess?.(); // call parent's refetch
+    closeModal();
+  };
 
   return (
     <>
       <Button size="md" variant="primary" onClick={openModal}>
         + Add Product
       </Button>
-      <AddProductModal isOpen={isOpen} closeModal={closeModal} />
+      <AddProductModal
+        isOpen={isOpen}
+        closeModal={closeModal}
+        onSuccess={handleAfterCreate}
+      />
     </>
   );
 }
 
-export { AddProductModal, AddProductButton };
+export function EditProductModal({
+  isOpen = false,
+  closeModal = () => {},
+  product = {} as Product,
+  onSuccess = () => {},
+}) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [formData, setFormData] = useState<{
+    nameAr: string;
+    nameEn: string;
+    price: number;
+    amount: number;
+    // shopId: string;
+    description: string;
+    categoryId: string;
+    rating: number;
+    image: string | File;
+    soldTimes: number;
+    reviewCount: number;
+  }>({
+    nameAr: "",
+    nameEn: "",
+    price: 0,
+    amount: 0,
+    // shopId: "",
+    description: "",
+    categoryId: "",
+    image: new File([], ""),
+    rating: 0,
+    reviewCount: 0,
+    soldTimes: 0,
+  });
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const fetchData = async () => {
+      try {
+        const { categories } = await fetchSubcategories();
+        setCategories(categories);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      }
+    };
+
+    fetchData();
+  }, [isOpen]);
+
+  // Fill formData with product data when modal opens or product changes
+  useEffect(() => {
+    if (product && isOpen) {
+      setFormData({
+        nameAr: product.nameAr || "",
+        nameEn: product.nameEn || "",
+        price: product.price || 0,
+        amount: product.amount || 0,
+        // shopId: product.shop._id || "",
+        description: product.description || "",
+        categoryId: product.category._id || "",
+        image: product.image || "",
+        rating: product.rating || 0,
+        reviewCount: product.reviewCount || 0,
+        soldTimes: product.soldTimes || 0,
+      });
+    }
+  }, [product, isOpen]);
+
+  const handleChange = (
+    field: string,
+    value: string | string[] | File | undefined,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = async () => {
+    try {
+      let imageUrl = "";
+
+      if (formData.image instanceof File) {
+        const uploaded = await uploadImage(formData.image);
+        imageUrl = uploaded.data || uploaded.url;
+      } else if (typeof formData.image === "string") {
+        imageUrl = formData.image;
+      }
+
+      const payload: Partial<CreateProductPayload> = {
+        nameAr: formData.nameAr,
+        nameEn: formData.nameEn,
+        price: formData.price,
+        amount: formData.amount,
+        // shopId: formData.shopId,
+        description: formData.description,
+        categoryId: formData.categoryId,
+        image: imageUrl,
+      };
+
+      await updateProduct(product._id, payload);
+      onSuccess?.();
+      closeModal();
+    } catch (err) {
+      console.error("Failed to update product:", err);
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={closeModal}
+      className="z-50 m-4 max-w-[700px] bg-black"
+    >
+      <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11 dark:bg-gray-900">
+        <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
+          <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+            <div>
+              <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
+                Product Details
+              </h5>
+
+              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                {/* Product Image */}
+                <div className="lg:col-span-2">
+                  <Label>Product Image</Label>
+                  {typeof formData.image === "string" && formData.image && (
+                    <Image
+                      src={formData.image}
+                      width={160}
+                      height={160}
+                      alt="Current Profile"
+                      className="mb-4 justify-self-center"
+                    />
+                  )}
+                  <FileInput
+                    accept="image/*"
+                    onChange={(e) => handleChange("image", e.target.files?.[0])}
+                  />
+                </div>
+
+                {/* Name (in Arabic) */}
+                <div>
+                  <Label>Name (in Arabic)</Label>
+                  <Input
+                    type="text"
+                    placeholder="محمد طارق"
+                    defaultValue={formData.nameAr}
+                    onChange={(e) => handleChange("nameAr", e.target.value)}
+                  />
+                </div>
+
+                {/* Name (in English) */}
+                <div>
+                  <Label>Name (in English)</Label>
+                  <Input
+                    type="text"
+                    placeholder="Mohamed Tarek"
+                    defaultValue={formData.nameEn}
+                    onChange={(e) => handleChange("nameEn", e.target.value)}
+                  />
+                </div>
+
+                {/* Price */}
+                <div>
+                  <Label>Price</Label>
+                  <Input
+                    type="number"
+                    placeholder="100"
+                    defaultValue={formData.price}
+                    onChange={(e) => handleChange("price", e.target.value)}
+                  />
+                </div>
+
+                {/* Amount */}
+                <div>
+                  <Label>Amount</Label>
+                  <Input
+                    type="number"
+                    placeholder="10"
+                    defaultValue={formData.amount}
+                    onChange={(e) => handleChange("amount", e.target.value)}
+                  />
+                </div>
+
+                {/* Description */}
+                <div>
+                  <Label>Description</Label>
+                  <Input
+                    type="text"
+                    placeholder="Premium Arabic coffee beans freshly roasted"
+                    defaultValue={formData.description}
+                    onChange={(e) =>
+                      handleChange("description", e.target.value)
+                    }
+                  />
+                </div>
+
+                {/* Category */}
+                <div>
+                  <Label>Category</Label>
+                  <div className="relative">
+                    <Select
+                      options={categories.map((cat) => ({
+                        value: cat._id,
+                        label: cat.nameEn,
+                      }))}
+                      placeholder="Select Option"
+                      defaultValue={formData.categoryId}
+                      onChange={(val) => handleChange("category", val)}
+                      className="dark:bg-dark-900"
+                    />
+                    <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                      <ChevronDownIcon />
+                    </span>
+                  </div>
+                </div>
+
+                {/* Shop */}
+                {/* <div>
+                  <Label>Shop</Label>
+                  <div className="relative">
+                    <Select
+                      options={options}
+                      placeholder="Select Option"
+                      onChange={handleSelectChange}
+                      className="dark:bg-dark-900"
+                    />
+                    <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                      <ChevronDownIcon />
+                    </span>
+                  </div>
+                </div> */}
+
+                {/* Rating */}
+                <div>
+                  <Label>Rating</Label>
+                  <Input
+                    type="number"
+                    placeholder="5"
+                    defaultValue={formData.rating}
+                    onChange={(e) => handleChange("rating", e.target.value)}
+                  />
+                </div>
+
+                {/* Sold Times */}
+                <div>
+                  <Label>Sold Times</Label>
+                  <Input
+                    type="number"
+                    placeholder="150"
+                    defaultValue={formData.soldTimes}
+                    onChange={(e) => handleChange("soldTimes", e.target.value)}
+                  />
+                </div>
+
+                {/* Review Count */}
+                <div>
+                  <Label>Review Count</Label>
+                  <Input
+                    type="number"
+                    placeholder="50"
+                    defaultValue={formData.reviewCount}
+                    onChange={(e) =>
+                      handleChange("reviewCount", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
+            <Button size="sm" variant="outline" onClick={closeModal}>
+              Close
+            </Button>
+            <Button size="sm" onClick={handleSave}>
+              Save Changes
+            </Button>
+          </div>
+        </form>
+      </div>
+    </Modal>
+  );
+}
+
+export function EditProductButton({
+  product,
+  onSuccess,
+}: {
+  product: Product;
+  onSuccess?: () => void;
+}) {
+  const { isOpen, openModal, closeModal } = useModal();
+
+  const handleAfterEdit = async () => {
+    onSuccess?.(); // call parent's refetch
+    closeModal();
+  };
+
+  return (
+    <>
+      <button
+        onClick={openModal}
+        className="text-sm text-blue-500 hover:underline"
+      >
+        <FaPencilAlt />
+      </button>
+      <EditProductModal
+        isOpen={isOpen}
+        closeModal={closeModal}
+        product={product}
+        onSuccess={handleAfterEdit}
+      />
+    </>
+  );
+}
+
+export function DeleteProductModal({
+  isOpen = false,
+  closeModal = () => {},
+  productId = "",
+  onSuccess = () => {},
+}) {
+  const handleDelete = async () => {
+    try {
+      await deleteProduct(productId);
+      onSuccess?.();
+      closeModal();
+    } catch (err) {
+      console.error("Failed to delete product:", err);
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={closeModal}
+      className="z-50 m-4 max-w-[700px] bg-black"
+    >
+      <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11 dark:bg-gray-900">
+        <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
+          <h4 className="mb-5 px-2 pb-3 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
+            Product Deletion
+          </h4>
+
+          <p>Are you sure you want to delete this product?</p>
+
+          <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
+            <Button size="sm" variant="outline" onClick={closeModal}>
+              Close
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleDelete}
+              className="bg-error-500 hover:bg-error-700"
+            >
+              Delete
+            </Button>
+          </div>
+        </form>
+      </div>
+    </Modal>
+  );
+}
+
+export function DeleteProductButton({
+  productId,
+  onSuccess,
+}: {
+  productId: string;
+  onSuccess?: () => void;
+}) {
+  const { isOpen, openModal, closeModal } = useModal();
+
+  const handleAfterDelete = async () => {
+    onSuccess?.(); // call parent's refetch
+    closeModal();
+  };
+
+  return (
+    <>
+      <button
+        onClick={openModal}
+        className="text-sm text-red-500 hover:underline"
+      >
+        <FaTrashAlt />
+      </button>
+      <DeleteProductModal
+        isOpen={isOpen}
+        closeModal={closeModal}
+        productId={productId}
+        onSuccess={handleAfterDelete}
+      />
+    </>
+  );
+}
