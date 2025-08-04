@@ -18,7 +18,7 @@ export default function LineChartOne() {
     },
     colors: ["#465FFF", "#9CB9FF"], // Define line colors
     chart: {
-      fontFamily: "Outfit, sans-serif",
+      fontFamily: "Cairo, sans-serif",
       height: 310,
       type: "line", // Set the chart type to 'line'
       toolbar: {
@@ -119,7 +119,7 @@ export default function LineChartOne() {
     },
   ];
   return (
-    <div className="max-w-full overflow-x-auto custom-scrollbar">
+    <div className="custom-scrollbar max-w-full overflow-x-auto">
       <div id="chartEight" className="min-w-[1000px]">
         <ReactApexChart
           options={options}

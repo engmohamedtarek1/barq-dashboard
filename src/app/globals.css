@@ -5,6 +5,8 @@
 @theme {
   --font-*: initial;
   --font-outfit: Outfit, sans-serif;
+  --font-cairo: Cairo, sans-serif;
+  --font-rubik: Rubik, sans-serif;
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
@@ -192,7 +194,7 @@
     cursor: pointer;
   }
   body {
-    @apply font-outfit relative z-1 bg-gray-50 font-normal;
+    @apply font-cairo relative z-1 bg-gray-50 font-normal;
   }
 }
 

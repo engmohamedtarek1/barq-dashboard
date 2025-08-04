@@ -13,7 +13,7 @@ export default function BarChartOne() {
   const options: ApexOptions = {
     colors: ["#465fff"],
     chart: {
-      fontFamily: "Outfit, sans-serif",
+      fontFamily: "Cairo, sans-serif",
       type: "bar",
       height: 180,
       toolbar: {
@@ -62,7 +62,7 @@ export default function BarChartOne() {
       show: true,
       position: "top",
       horizontalAlign: "left",
-      fontFamily: "Outfit",
+      fontFamily: "Cairo",
     },
     yaxis: {
       title: {
@@ -96,7 +96,7 @@ export default function BarChartOne() {
     },
   ];
   return (
-    <div className="max-w-full overflow-x-auto custom-scrollbar">
+    <div className="custom-scrollbar max-w-full overflow-x-auto">
       <div id="chartOne" className="min-w-[1000px]">
         <ReactApexChart
           options={options}

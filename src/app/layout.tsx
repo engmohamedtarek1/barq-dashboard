@@ -1,10 +1,18 @@
-import { Outfit } from 'next/font/google';
-import './globals.css';
+import { Rubik } from "next/font/google";
+import "./globals.css";
 
-import { SidebarProvider } from '@/context/SidebarContext';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { SidebarProvider } from "@/context/SidebarContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
-const outfit = Outfit({
+// const outfit = Outfit({
+//   subsets: ["latin"],
+// });
+
+// const cairo = Cairo({
+//   subsets: ["latin"],
+// });
+
+const rubik = Rubik({
   subsets: ["latin"],
 });
 
@@ -14,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir='rtl'>
-      <body className={`${outfit.className} dark:bg-gray-900`}>
+    <html lang="ar" dir="rtl">
+      <body className={`${rubik.className} dark:bg-gray-900`}>
         <ThemeProvider>
           <SidebarProvider>{children}</SidebarProvider>
         </ThemeProvider>
