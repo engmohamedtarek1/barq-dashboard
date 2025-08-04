@@ -5,8 +5,8 @@ import Link from "next/link";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Error 404 | Dashboard ",
-  description: "This is Next.js Error 404 page",
+  title: "صفحة غير موجودة | برق",
+  description: "صفحة غير موجودة في لوحة تحكم برق",
 };
 
 export default function Error404() {
