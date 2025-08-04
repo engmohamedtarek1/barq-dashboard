@@ -21,9 +21,9 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
               className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
               href="/"
             >
-              Home
+              الصفحة الرئيسية
               <svg
-                className="stroke-current"
+                className="stroke-current scale-x-[-1]"
                 width="17"
                 height="16"
                 viewBox="0 0 17 16"

@@ -17,18 +17,20 @@ export default function SignInForm() {
           href="/"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
-          <ChevronLeftIcon />
-          Back to dashboard
+          <span className="scale-x-[-1]">
+            <ChevronLeftIcon />
+          </span>
+          الرجوع إلى لوحة التحكم
         </Link>
       </div>
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="text-title-sm sm:text-title-md mb-2 font-semibold text-gray-800 dark:text-white/90">
-              Sign In
+              تسجيل الدخول
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign in!
+              اكتب البريد الاكتروني وكلمة المرور لتسجيل الدخول
             </p>
           </div>
           <div>
@@ -58,7 +60,7 @@ export default function SignInForm() {
                     fill="#EB4335"
                   />
                 </svg>
-                Sign in with Google
+                سجل دخولك باستخدام جوجل
               </button>
               <button className="inline-flex items-center justify-center gap-3 rounded-lg bg-gray-100 px-7 py-3 text-sm font-normal text-gray-700 transition-colors hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
                 <svg
@@ -71,7 +73,7 @@ export default function SignInForm() {
                 >
                   <path d="M15.6705 1.875H18.4272L12.4047 8.75833L19.4897 18.125H13.9422L9.59717 12.4442L4.62554 18.125H1.86721L8.30887 10.7625L1.51221 1.875H7.20054L11.128 7.0675L15.6705 1.875ZM14.703 16.475H16.2305L6.37054 3.43833H4.73137L14.703 16.475Z" />
                 </svg>
-                Sign in with X
+                سجل دخولك باستخدام اكس
               </button>
             </div>
             <div className="relative py-3 sm:py-5">
@@ -80,7 +82,7 @@ export default function SignInForm() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="bg-white p-2 text-gray-400 sm:px-5 sm:py-2 dark:bg-gray-900">
-                  Or
+                  أو
                 </span>
               </div>
             </div>
@@ -88,18 +90,19 @@ export default function SignInForm() {
               <div className="space-y-6">
                 <div>
                   <Label>
-                    Email <span className="text-error-500">*</span>{" "}
+                    البريد الاكتروني{" "}
+                    <span className="text-error-500">*</span>{" "}
                   </Label>
                   <Input placeholder="info@gmail.com" type="email" />
                 </div>
                 <div>
                   <Label>
-                    Password <span className="text-error-500">*</span>{" "}
+                    كلمة المرور <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      placeholder="اكتب كلمة المرور"
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -117,19 +120,19 @@ export default function SignInForm() {
                   <div className="flex items-center gap-3">
                     <Checkbox checked={isChecked} onChange={setIsChecked} />
                     <span className="text-theme-sm block font-normal text-gray-700 dark:text-gray-400">
-                      Keep me logged in
+                      تذكرني
                     </span>
                   </div>
                   <Link
                     href="/reset-password"
                     className="text-brand-500 hover:text-brand-600 dark:text-brand-400 text-sm"
                   >
-                    Forgot password?
+                    نسيت كلمة المرور؟
                   </Link>
                 </div>
                 <div>
                   <Button className="w-full" size="sm">
-                    Sign in
+                    تسجيل الدخول
                   </Button>
                 </div>
               </div>
@@ -137,12 +140,12 @@ export default function SignInForm() {
 
             <div className="mt-5">
               <p className="text-center text-sm font-normal text-gray-700 sm:text-start dark:text-gray-400">
-                Don&apos;t have an account? {""}
+                ليس لديك حساب؟{" "}
                 <Link
                   href="/signup"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400 inline-block"
                 >
-                  Sign Up
+                  تسجيل جديد
                 </Link>
               </p>
             </div>

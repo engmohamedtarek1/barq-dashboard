@@ -34,8 +34,6 @@ export default function ProductsTable() {
       product.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  console.log("Filtered Products:", filteredProducts);
-
   return (
     <div className="space-y-4">
       {/* Card Header */}
@@ -63,8 +61,8 @@ export default function ProductsTable() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search for products..."
-            className="h-11 w-full rounded-lg border border-gray-500 bg-transparent py-2.5 pr-14 pl-12 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-1 focus:outline-hidden dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30"
+            placeholder="البحث عن المنتجات..."
+            className="h-11 w-full rounded-lg border border-gray-500 bg-transparent py-2.5 ps-12 pe-14 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-1 focus:outline-hidden dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30"
           />
         </div>
 
@@ -78,7 +76,7 @@ export default function ProductsTable() {
           htmlFor="limit"
           className="text-sm text-gray-600 dark:text-white/70"
         >
-          Rows per page:
+          عناصر لكل صفحة:
         </label>
         <select
           id="limit"
@@ -109,55 +107,55 @@ export default function ProductsTable() {
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Product
+                    المنتج
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Category
+                    الفئة
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Vendor
+                    البائع
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Amount
+                    المبلغ
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Sold Times
+                    مرات البيع
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Review Count
+                    عدد المراجعات
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Rating
+                    التقييم
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Description
+                    الوصف
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Actions
+                    الإجراءات
                   </TableCell>
                 </TableRow>
               </TableHeader>
@@ -167,7 +165,7 @@ export default function ProductsTable() {
                 <TableBody>
                   <TableRow>
                     <TableCell className="py-6 text-center text-gray-500">
-                      Loading products...
+                      جاري التحميل...
                     </TableCell>
                   </TableRow>
                 </TableBody>

@@ -8,7 +8,6 @@ import {
   BoxCubeIcon,
   ChevronDownIcon,
   GridIcon,
-  HorizontaLDots,
   PageIcon,
   PieChartIcon,
   PlugInIcon,
@@ -25,7 +24,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
-    name: "Dashboard",
+    name: "لوحة التحكم",
     path: "/",
     // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
@@ -35,14 +34,14 @@ const navItems: NavItem[] = [
   //   path: "/calendar",
   // },
   {
-    icon: <BoxCubeIcon />,
-    name: "Products",
-    path: "/products",
+    icon: <UserCircleIcon />,
+    name: "البائعون",
+    path: "/vendors",
   },
   {
-    icon: <UserCircleIcon />,
-    name: "Vendors",
-    path: "/vendors",
+    icon: <BoxCubeIcon />,
+    name: "المنتجات",
+    path: "/products",
   },
   // {
   //   name: "Forms",
@@ -60,16 +59,16 @@ const navItems: NavItem[] = [
   //   path: "/basic-tables",
   // },
   {
-    name: "Pages",
+    name: "الصفحات",
     icon: <PageIcon />,
     subItems: [
-      { name: "Sign in Page", path: "/signin", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "تسجيل الدخول", path: "/signin", pro: false },
+      { name: "خطأ 404", path: "/error-404", pro: false },
     ],
   },
   {
     icon: <UserCircleIcon />,
-    name: "User Profile",
+    name: "الملف الشخصي",
     path: "/profile",
   },
 ];
@@ -188,7 +187,7 @@ const AppSidebar: React.FC = () => {
                     : "0px",
               }}
             >
-              <ul className="mt-2 ms-9 space-y-1">
+              <ul className="ms-9 mt-2 space-y-1">
                 {nav.subItems.map((subItem) => (
                   <li key={subItem.name}>
                     <Link
@@ -301,13 +300,13 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`bg-brand-blue fixed top-0 start-0 z-50 mt-16 flex h-screen flex-col border-e border-gray-600 px-5 text-white transition-all duration-300 ease-in-out lg:mt-0 dark:border-gray-800 dark:bg-gray-900 ${
+      className={`bg-brand-blue fixed start-0 top-0 z-50 mt-16 flex h-screen flex-col border-e border-gray-600 px-5 text-white transition-all duration-300 ease-in-out lg:mt-0 dark:border-gray-800 dark:bg-gray-900 ${
         isExpanded || isMobileOpen
           ? "w-[290px]"
           : isHovered
             ? "w-[290px]"
             : "w-[90px]"
-      } ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+      } ${isMobileOpen ? "translate-x-0" : "translate-x-full"} lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -343,24 +342,9 @@ const AppSidebar: React.FC = () => {
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
-            <div>
-              <h2
-                className={`mb-4 flex text-xs leading-[20px] uppercase ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </h2>
-              {renderMenuItems(navItems, "main")}
-            </div>
+            <div>{renderMenuItems(navItems, "main")}</div>
 
-            {/* <div className="">
+            {/* <div>
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered

@@ -5,6 +5,36 @@ import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 
+const notifications = [
+  {
+    id: 1,
+    userName: "محمد طارق",
+    avatar: "/images/user/owner.png",
+    message: "يريد تعديل مشروع",
+    project: "تطبيق التوصيل - برق",
+    status: "online",
+    time: "منذ 5 دقائق",
+  },
+  {
+    id: 2,
+    userName: "أحمد عبد الله",
+    avatar: "/images/user/owner.png",
+    message: "يريد صلاحيات جديدة في",
+    project: "لوحة التحكم",
+    status: "offline",
+    time: "منذ 10 دقائق",
+  },
+  {
+    id: 3,
+    userName: "منة خالد",
+    avatar: "/images/user/owner.png",
+    message: "أرسلت تقرير جديد بخصوص",
+    project: "مشروع السوق",
+    status: "online",
+    time: "منذ 30 دقيقة",
+  },
+];
+
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifying, setNotifying] = useState(true);
@@ -21,6 +51,7 @@ export default function NotificationDropdown() {
     toggleDropdown();
     setNotifying(false);
   };
+
   return (
     <div className="relative">
       <button
@@ -49,14 +80,15 @@ export default function NotificationDropdown() {
           />
         </svg>
       </button>
+
       <Dropdown
         isOpen={isOpen}
         onClose={closeDropdown}
-        className="shadow-theme-lg dark:bg-gray-dark absolute -end-[240px] mt-[17px] flex h-[480px] w-[350px] flex-col rounded-2xl border border-gray-200 bg-white p-3 sm:w-[361px] lg:end-0 dark:border-gray-800"
+        className="shadow-theme-lg dark:bg-gray-dark absolute !-end-40 mt-[17px] flex h-[480px] w-[330px] flex-col rounded-2xl border border-gray-200 bg-white p-3 sm:w-[361px] lg:!end-0 dark:border-gray-800"
       >
         <div className="mb-3 flex items-center justify-between border-b border-gray-100 pb-3 dark:border-gray-700">
           <h5 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-            Notification
+            الإشعارات
           </h5>
           <button
             onClick={toggleDropdown}
@@ -78,305 +110,58 @@ export default function NotificationDropdown() {
             </svg>
           </button>
         </div>
+
         <ul className="custom-scrollbar flex h-auto flex-col overflow-y-auto">
-          {/* Example notification items */}
-          <li>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
-            >
-              <span className="relative z-1 block h-10 w-full max-w-10 rounded-full">
-                <Image
-                  width={40}
-                  height={40}
-                  src="/images/user/owner.png"
-                  alt="User"
-                  className="w-full overflow-hidden rounded-full"
-                />
-                <span className="bg-success-500 absolute end-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900"></span>
-              </span>
-
-              <span className="block">
-                <span className="text-theme-sm mb-1.5 block space-x-1 text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Terry Franci
-                  </span>
-                  <span>requests permission to change</span>
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Project - Nganter App
-                  </span>
+          {notifications.map((item) => (
+            <li key={item.id}>
+              <DropdownItem
+                onItemClick={closeDropdown}
+                className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
+              >
+                <span className="relative z-1 block h-10 w-full max-w-10 rounded-full">
+                  <Image
+                    width={40}
+                    height={40}
+                    src={item.avatar}
+                    alt={item.userName}
+                    className="w-full overflow-hidden rounded-full"
+                  />
+                  <span
+                    className={`${
+                      item.status === "online"
+                        ? "bg-success-500"
+                        : "bg-error-500"
+                    } absolute end-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900`}
+                  ></span>
                 </span>
 
-                <span className="text-theme-xs flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                  <span>Project</span>
-                  <span className="h-1 w-1 rounded-full bg-gray-400"></span>
-                  <span>5 min ago</span>
-                </span>
-              </span>
-            </DropdownItem>
-          </li>
-
-          <li>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
-            >
-              <span className="relative z-1 block h-10 w-full max-w-10 rounded-full">
-                <Image
-                  width={40}
-                  height={40}
-                  src="/images/user/owner.png"
-                  alt="User"
-                  className="w-full overflow-hidden rounded-full"
-                />
-                <span className="bg-success-500 absolute end-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900"></span>
-              </span>
-
-              <span className="block">
-                <span className="text-theme-sm mb-1.5 block space-x-1 text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Alena Franci
+                <span className="block">
+                  <span className="text-theme-sm mb-1.5 block space-x-1 text-start text-gray-500 dark:text-gray-400">
+                    <span className="inline-block font-medium text-gray-800 dark:text-white/90">
+                      {item.userName}
+                    </span>
+                    <span className="inline-block">{item.message}</span>
+                    <span className="inline-block font-medium text-gray-800 dark:text-white/90">
+                      {item.project}
+                    </span>
                   </span>
-                  <span> requests permission to change</span>
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Project - Nganter App
+
+                  <span className="text-theme-xs flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                    <span>مشروع</span>
+                    <span className="h-1 w-1 rounded-full bg-gray-400"></span>
+                    <span>{item.time}</span>
                   </span>
                 </span>
-
-                <span className="text-theme-xs flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                  <span>Project</span>
-                  <span className="h-1 w-1 rounded-full bg-gray-400"></span>
-                  <span>8 min ago</span>
-                </span>
-              </span>
-            </DropdownItem>
-          </li>
-
-          <li>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
-              href="#"
-            >
-              <span className="relative z-1 block h-10 w-full max-w-10 rounded-full">
-                <Image
-                  width={40}
-                  height={40}
-                  src="/images/user/owner.png"
-                  alt="User"
-                  className="w-full overflow-hidden rounded-full"
-                />
-                <span className="bg-success-500 absolute end-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900"></span>
-              </span>
-
-              <span className="block">
-                <span className="text-theme-sm mb-1.5 block space-x-1 text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Jocelyn Kenter
-                  </span>
-                  <span>requests permission to change</span>
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Project - Nganter App
-                  </span>
-                </span>
-
-                <span className="text-theme-xs flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                  <span>Project</span>
-                  <span className="h-1 w-1 rounded-full bg-gray-400"></span>
-                  <span>15 min ago</span>
-                </span>
-              </span>
-            </DropdownItem>
-          </li>
-
-          <li>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
-              href="#"
-            >
-              <span className="relative z-1 block h-10 w-full max-w-10 rounded-full">
-                <Image
-                  width={40}
-                  height={40}
-                  src="/images/user/owner.png"
-                  alt="User"
-                  className="w-full overflow-hidden rounded-full"
-                />
-                <span className="bg-error-500 absolute end-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900"></span>
-              </span>
-
-              <span className="block">
-                <span className="text-theme-sm mb-1.5 block space-x-1 text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Brandon Philips
-                  </span>
-                  <span> requests permission to change</span>
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Project - Nganter App
-                  </span>
-                </span>
-
-                <span className="text-theme-xs flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                  <span>Project</span>
-                  <span className="h-1 w-1 rounded-full bg-gray-400"></span>
-                  <span>1 hr ago</span>
-                </span>
-              </span>
-            </DropdownItem>
-          </li>
-
-          <li>
-            <DropdownItem
-              className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
-              onItemClick={closeDropdown}
-            >
-              <span className="relative z-1 block h-10 w-full max-w-10 rounded-full">
-                <Image
-                  width={40}
-                  height={40}
-                  src="/images/user/owner.png"
-                  alt="User"
-                  className="w-full overflow-hidden rounded-full"
-                />
-                <span className="bg-success-500 absolute end-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900"></span>
-              </span>
-
-              <span className="block">
-                <span className="text-theme-sm mb-1.5 block space-x-1 text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Terry Franci
-                  </span>
-                  <span>requests permission to change</span>
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Project - Nganter App
-                  </span>
-                </span>
-
-                <span className="text-theme-xs flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                  <span>Project</span>
-                  <span className="h-1 w-1 rounded-full bg-gray-400"></span>
-                  <span>5 min ago</span>
-                </span>
-              </span>
-            </DropdownItem>
-          </li>
-
-          <li>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
-            >
-              <span className="relative z-1 block h-10 w-full max-w-10 rounded-full">
-                <Image
-                  width={40}
-                  height={40}
-                  src="/images/user/owner.png"
-                  alt="User"
-                  className="w-full overflow-hidden rounded-full"
-                />
-                <span className="bg-success-500 absolute end-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900"></span>
-              </span>
-
-              <span className="block">
-                <span className="text-theme-sm mb-1.5 block space-x-1 text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Alena Franci
-                  </span>
-                  <span>requests permission to change</span>
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Project - Nganter App
-                  </span>
-                </span>
-
-                <span className="text-theme-xs flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                  <span>Project</span>
-                  <span className="h-1 w-1 rounded-full bg-gray-400"></span>
-                  <span>8 min ago</span>
-                </span>
-              </span>
-            </DropdownItem>
-          </li>
-
-          <li>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
-            >
-              <span className="relative z-1 block h-10 w-full max-w-10 rounded-full">
-                <Image
-                  width={40}
-                  height={40}
-                  src="/images/user/owner.png"
-                  alt="User"
-                  className="w-full overflow-hidden rounded-full"
-                />
-                <span className="bg-success-500 absolute end-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900"></span>
-              </span>
-
-              <span className="block">
-                <span className="text-theme-sm mb-1.5 block space-x-1 text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Jocelyn Kenter
-                  </span>
-                  <span>requests permission to change</span>
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Project - Nganter App
-                  </span>
-                </span>
-
-                <span className="text-theme-xs flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                  <span>Project</span>
-                  <span className="h-1 w-1 rounded-full bg-gray-400"></span>
-                  <span>15 min ago</span>
-                </span>
-              </span>
-            </DropdownItem>
-          </li>
-
-          <li>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
-              href="#"
-            >
-              <span className="relative z-1 block h-10 w-full max-w-10 rounded-full">
-                <Image
-                  width={40}
-                  height={40}
-                  src="/images/user/owner.png"
-                  alt="User"
-                  className="overflow-hidden rounded-full"
-                />
-                <span className="bg-error-500 absolute end-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900"></span>
-              </span>
-
-              <span className="block">
-                <span className="text-theme-sm mb-1.5 block space-x-1 text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Brandon Philips
-                  </span>
-                  <span>requests permission to change</span>
-                  <span className="font-medium text-gray-800 dark:text-white/90">
-                    Project - Nganter App
-                  </span>
-                </span>
-
-                <span className="text-theme-xs flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                  <span>Project</span>
-                  <span className="h-1 w-1 rounded-full bg-gray-400"></span>
-                  <span>1 hr ago</span>
-                </span>
-              </span>
-            </DropdownItem>
-          </li>
-          {/* Add more items as needed */}
+              </DropdownItem>
+            </li>
+          ))}
         </ul>
+
         <Link
           href="/"
           className="mt-3 block rounded-lg border border-gray-300 bg-white px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
         >
-          View All Notifications
+          عرض كل الإشعارات
         </Link>
       </Dropdown>
     </div>

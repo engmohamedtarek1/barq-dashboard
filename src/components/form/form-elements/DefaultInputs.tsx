@@ -98,7 +98,7 @@ export default function DefaultInputs() {
             <Input
               type="text"
               placeholder="Card number"
-              className="pl-[62px]"
+              className="ps-[62px]"
             />
             <span className="absolute start-0 top-1/2 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800">
               <svg

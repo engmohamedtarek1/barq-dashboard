@@ -63,8 +63,8 @@ export default function VendorsTable() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search for vendors..."
-            className="h-11 w-full rounded-lg border border-gray-500 bg-transparent py-2.5 pr-14 pl-12 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-1 focus:outline-hidden dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30"
+            placeholder="البحث عن بائعين..."
+            className="h-11 w-full rounded-lg border border-gray-500 bg-transparent py-2.5 ps-12 pe-14 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-1 focus:outline-hidden dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30"
           />
         </div>
 
@@ -78,7 +78,7 @@ export default function VendorsTable() {
           htmlFor="limit"
           className="text-sm text-gray-600 dark:text-white/70"
         >
-          Rows per page:
+          عمود في الصفحة:
         </label>
         <select
           id="limit"
@@ -108,37 +108,37 @@ export default function VendorsTable() {
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Vendor
+                    البائع
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Category
+                    الفئة
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Location
+                    العنوان
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Status
+                    الحالة
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Rating
+                    التقييم
                   </TableCell>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    Actions
+                    الإجراءات
                   </TableCell>
                 </TableRow>
               </TableHeader>
@@ -148,7 +148,7 @@ export default function VendorsTable() {
                 <TableBody>
                   <TableRow>
                     <TableCell className="py-6 text-center text-gray-500">
-                      Loading vendors...
+                      جاري تحميل البائعين
                     </TableCell>
                   </TableRow>
                 </TableBody>

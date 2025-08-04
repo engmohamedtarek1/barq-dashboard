@@ -7,24 +7,23 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Images | Dashboard ",
-  description:
-    "This is Next.js Images page",
+  title: "الصور | برق",
+  description: "هذه هي صفحة الصور حيث يمكنك إدارة الصور.",
   // other metadata
 };
 
 export default function Images() {
   return (
     <div>
-      <PageBreadcrumb pageTitle="Images" />
+      <PageBreadcrumb pageTitle="الصور" />
       <div className="space-y-5 sm:space-y-6">
-        <ComponentCard title="Responsive image">
+        <ComponentCard title="صورة متجاوبة">
           <ResponsiveImage />
         </ComponentCard>
-        <ComponentCard title="Image in 2 Grid">
+        <ComponentCard title="صورة في شبكة 2">
           <TwoColumnImageGrid />
         </ComponentCard>
-        <ComponentCard title="Image in 3 Grid">
+        <ComponentCard title="صورة في شبكة 3">
           <ThreeColumnImageGrid />
         </ComponentCard>
       </div>

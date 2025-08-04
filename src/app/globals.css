@@ -310,7 +310,7 @@
 }
 
 .apexcharts-legend-text {
-  @apply pl-5! !text-gray-700 dark:!text-gray-400;
+  @apply ps-5! !text-gray-700 dark:!text-gray-400;
 }
 .apexcharts-tooltip-series-group {
   @apply !p-0;
@@ -574,7 +574,7 @@ span.flatpickr-weekday,
   @apply text-gray-400 dark:text-white/30;
 }
 .event-fc-color {
-  @apply rounded-lg py-2.5 pr-3 pl-4;
+  @apply rounded-lg py-2.5 ps-4 pe-3;
 }
 .event-fc-color .fc-event-title {
   @apply p-0 text-sm font-normal text-gray-700;

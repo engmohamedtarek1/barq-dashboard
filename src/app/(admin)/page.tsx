@@ -9,8 +9,8 @@ import DemographicCard from "@/components/ecommerce/DemographicCard";
 
 export const metadata: Metadata = {
   title:
-    "Dashboard | Barq",
-  description: "Barq dashboard with metrics, charts, and recent orders",
+    "لوحة التحكم | برق",
+  description: "لوحة تحكم برق مع مقاييس، مخططات، وطلبات حديثة",
   authors: [
     {
       name: "Mohamed Tarek"

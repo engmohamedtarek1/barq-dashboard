@@ -23,10 +23,10 @@ export default function DemographicCard() {
       <div className="flex justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Customers Demographic
+            التركيبة السكانية للعملاء
           </h3>
           <p className="text-theme-sm mt-1 text-gray-500 dark:text-gray-400">
-            Number of customer based on country
+            عدد العملاء حسب الدولة
           </p>
         </div>
 
@@ -43,13 +43,13 @@ export default function DemographicCard() {
               onItemClick={closeDropdown}
               className="flex w-full rounded-lg text-left font-normal text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
-              View More
+              عرض المزيد
             </DropdownItem>
             <DropdownItem
               onItemClick={closeDropdown}
               className="flex w-full rounded-lg text-left font-normal text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
-              Delete
+              حذف
             </DropdownItem>
           </Dropdown>
         </div>
@@ -77,10 +77,10 @@ export default function DemographicCard() {
             </div>
             <div>
               <p className="text-theme-sm font-semibold text-gray-800 dark:text-white/90">
-                USA
+                الولايات المتحدة
               </p>
               <span className="text-theme-xs block text-gray-500 dark:text-gray-400">
-                2,379 Customers
+                2,379 عميل
               </span>
             </div>
           </div>
@@ -108,10 +108,10 @@ export default function DemographicCard() {
             </div>
             <div>
               <p className="text-theme-sm font-semibold text-gray-800 dark:text-white/90">
-                France
+                فرنسا
               </p>
               <span className="text-theme-xs block text-gray-500 dark:text-gray-400">
-                589 Customers
+                589 عميل
               </span>
             </div>
           </div>

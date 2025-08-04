@@ -34,7 +34,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         />
         {checked && (
           <svg
-            className="pointer-events-none absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform"
+            className="pointer-events-none absolute start-1/2 top-1/2 translate-x-1/2 -translate-y-1/2 transform"
             xmlns="http://www.w3.org/2000/svg"
             width="14"
             height="14"

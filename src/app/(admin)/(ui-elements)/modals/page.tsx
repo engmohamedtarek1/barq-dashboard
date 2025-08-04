@@ -8,16 +8,15 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Modals | Dashboard ",
-  description:
-    "This is Next.js Modals page",
+  title: "النوافذ المنبثقة | برق",
+  description: "هذه هي صفحة النوافذ المنبثقة في Next.js",
   // other metadata
 };
 
 export default function Modals() {
   return (
     <div>
-      <PageBreadcrumb pageTitle="Modals" />
+      <PageBreadcrumb pageTitle="النوافذ المنبثقة" />
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-2 xl:gap-6">
         <DefaultModal />
         <VerticallyCenteredModal />

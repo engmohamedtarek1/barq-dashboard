@@ -78,10 +78,10 @@ export default function MonthlyTarget() {
         <div className="flex justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-              Monthly Target
+              الهدف الشهري
             </h3>
             <p className="text-theme-sm mt-1 font-normal text-gray-500 dark:text-gray-400">
-              Target you’ve set for each month
+              الهدف التي وضعته كل شهر
             </p>
           </div>
           <div className="relative inline-block">
@@ -98,14 +98,14 @@ export default function MonthlyTarget() {
                 onItemClick={closeDropdown}
                 className="flex w-full rounded-lg text-left font-normal text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
               >
-                View More
+                عرض المزيد
               </DropdownItem>
               <DropdownItem
                 tag="a"
                 onItemClick={closeDropdown}
                 className="flex w-full rounded-lg text-left font-normal text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
               >
-                Delete
+                حذف
               </DropdownItem>
             </Dropdown>
           </div>
@@ -120,20 +120,19 @@ export default function MonthlyTarget() {
             />
           </div>
 
-          <span className="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 absolute start-1/2 top-full -translate-x-1/2 -translate-y-[95%] rounded-full px-3 py-1 text-xs font-medium">
+          <span className="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 absolute start-1/2 top-full translate-x-1/2 -translate-y-[95%] rounded-full px-3 py-1 text-xs font-medium">
             +10%
           </span>
         </div>
         <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          You earn $3287 today, it&apos;s higher than last month. Keep up your
-          good work!
+          لقد ربحتَ اليوم $3287، وهو أعلى من الشهر الماضي. استمر في عملك الرائع!
         </p>
       </div>
 
       <div className="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5">
         <div>
           <p className="text-theme-xs mb-1 text-center text-gray-500 sm:text-sm dark:text-gray-400">
-            Target
+            الهدف
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 sm:text-lg dark:text-white/90">
             $20K
@@ -158,7 +157,7 @@ export default function MonthlyTarget() {
 
         <div>
           <p className="text-theme-xs mb-1 text-center text-gray-500 sm:text-sm dark:text-gray-400">
-            Revenue
+            العائد
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 sm:text-lg dark:text-white/90">
             $20K
@@ -183,7 +182,7 @@ export default function MonthlyTarget() {
 
         <div>
           <p className="text-theme-xs mb-1 text-center text-gray-500 sm:text-sm dark:text-gray-400">
-            Today
+            اليوم
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 sm:text-lg dark:text-white/90">
             $20K

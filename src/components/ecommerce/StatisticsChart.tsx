@@ -70,18 +70,18 @@ export default function StatisticsChart() {
     xaxis: {
       type: "category", // Category-based x-axis
       categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
+        "يناير",
+        "فبراير",
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس",
+        "سبتمبر",
+        "أكتوبر",
+        "نوفمبر",
+        "ديسمبر",
       ],
       axisBorder: {
         show: false, // Hide x-axis border
@@ -111,11 +111,11 @@ export default function StatisticsChart() {
 
   const series = [
     {
-      name: "Sales",
+      name: "المبيعات",
       data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
     },
     {
-      name: "Revenue",
+      name: "الإيرادات",
       data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
     },
   ];
@@ -124,10 +124,10 @@ export default function StatisticsChart() {
       <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Statistics
+            الاحصائيات
           </h3>
           <p className="text-theme-sm mt-1 text-gray-500 dark:text-gray-400">
-            Target you’ve set for each month
+            الهدف الذي وضعته كل شهر
           </p>
         </div>
         <div className="flex w-full items-start gap-3 sm:justify-end">

@@ -4,15 +4,15 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Videos | Dashboard ",
+  title: "مقاطع الفيديو | برق",
   description:
-    "This is Next.js Videos page",
+    "هذه هي صفحة مقاطع الفيديو حيث يمكنك مشاهدة وإدارة مقاطع الفيديو.",
 };
 
 export default function VideoPage() {
   return (
     <div>
-      <PageBreadcrumb pageTitle="Videos" />
+      <PageBreadcrumb pageTitle="مقاطع الفيديو" />
 
       <VideosExample />
     </div>

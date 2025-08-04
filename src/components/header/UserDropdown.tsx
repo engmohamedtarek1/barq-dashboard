@@ -90,7 +90,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Edit profile
+              تعديل الملف الشخصي
             </DropdownItem>
           </li>
           <li>
@@ -115,7 +115,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Account settings
+              إعدادات الحساب
             </DropdownItem>
           </li>
           <li>
@@ -140,7 +140,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Support
+              الدعم الفني
             </DropdownItem>
           </li>
         </ul>
@@ -163,7 +163,7 @@ export default function UserDropdown() {
               fill=""
             />
           </svg>
-          Sign out
+          تسجيل الخروج
         </Link>
       </Dropdown>
     </div>

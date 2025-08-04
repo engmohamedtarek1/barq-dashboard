@@ -115,13 +115,13 @@ export function AddProductModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                Product Details
+                تفاصيل المنتج
               </h5>
 
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 {/* Product Image */}
                 <div className="lg:col-span-2">
-                  <Label>Product Image</Label>
+                  <Label>صورة المنتج</Label>
                   <FileInput
                     accept="image/*"
                     onChange={(e) => handleChange("image", e.target.files?.[0])}
@@ -130,7 +130,7 @@ export function AddProductModal({
 
                 {/* Name (in Arabic) */}
                 <div>
-                  <Label>Name (in Arabic)</Label>
+                  <Label>الاسم (بالعربية)</Label>
                   <Input
                     type="text"
                     placeholder="محمد طارق"
@@ -140,7 +140,7 @@ export function AddProductModal({
 
                 {/* Name (in English) */}
                 <div>
-                  <Label>Name (in English)</Label>
+                  <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
                     placeholder="Mohamed Tarek"
@@ -150,7 +150,7 @@ export function AddProductModal({
 
                 {/* Price */}
                 <div>
-                  <Label>Price</Label>
+                  <Label>السعر</Label>
                   <Input
                     type="number"
                     placeholder="100"
@@ -160,7 +160,7 @@ export function AddProductModal({
 
                 {/* Amount */}
                 <div>
-                  <Label>Amount</Label>
+                  <Label>الكمية</Label>
                   <Input
                     type="number"
                     placeholder="10"
@@ -170,10 +170,10 @@ export function AddProductModal({
 
                 {/* Description */}
                 <div>
-                  <Label>Description</Label>
+                  <Label>الوصف</Label>
                   <Input
                     type="text"
-                    placeholder="Premium Arabic coffee beans freshly roasted"
+                    placeholder="قهوة عربية فاخرة محمصة طازجة"
                     onChange={(e) =>
                       handleChange("description", e.target.value)
                     }
@@ -182,14 +182,14 @@ export function AddProductModal({
 
                 {/* Category */}
                 <div>
-                  <Label>Category</Label>
+                  <Label>الفئة</Label>
                   <div className="relative">
                     <Select
                       options={categories.map((cat) => ({
                         value: cat._id,
                         label: cat.nameEn,
                       }))}
-                      placeholder="Select Option"
+                      placeholder="اختر فئة"
                       onChange={(val) => handleChange("category", val)}
                       className="dark:bg-dark-900"
                     />
@@ -217,7 +217,7 @@ export function AddProductModal({
 
                 {/* Rating */}
                 <div>
-                  <Label>Rating</Label>
+                  <Label>التقييم</Label>
                   <Input
                     type="number"
                     placeholder="5"
@@ -227,7 +227,7 @@ export function AddProductModal({
 
                 {/* Sold Times */}
                 <div>
-                  <Label>Sold Times</Label>
+                  <Label>مرات البيع</Label>
                   <Input
                     type="number"
                     placeholder="150"
@@ -237,7 +237,7 @@ export function AddProductModal({
 
                 {/* Review Count */}
                 <div>
-                  <Label>Review Count</Label>
+                  <Label>عدد المراجعات</Label>
                   <Input
                     type="number"
                     placeholder="50"
@@ -252,10 +252,10 @@ export function AddProductModal({
 
           <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Close
+              إغلاق
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save Changes
+              حفظ التغييرات
             </Button>
           </div>
         </form>
@@ -275,7 +275,7 @@ export function AddProductButton({ onSuccess }: { onSuccess?: () => void }) {
   return (
     <>
       <Button size="md" variant="primary" onClick={openModal}>
-        + Add Product
+        + أضف منتج
       </Button>
       <AddProductModal
         isOpen={isOpen}
@@ -401,13 +401,13 @@ export function EditProductModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                Product Details
+                تفاصيل المنتج
               </h5>
 
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 {/* Product Image */}
                 <div className="lg:col-span-2">
-                  <Label>Product Image</Label>
+                  <Label>صورة المنتج</Label>
                   {typeof formData.image === "string" && formData.image && (
                     <Image
                       src={formData.image}
@@ -425,7 +425,7 @@ export function EditProductModal({
 
                 {/* Name (in Arabic) */}
                 <div>
-                  <Label>Name (in Arabic)</Label>
+                  <Label>الاسم (بالعربية)</Label>
                   <Input
                     type="text"
                     placeholder="محمد طارق"
@@ -436,7 +436,7 @@ export function EditProductModal({
 
                 {/* Name (in English) */}
                 <div>
-                  <Label>Name (in English)</Label>
+                  <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
                     placeholder="Mohamed Tarek"
@@ -447,7 +447,7 @@ export function EditProductModal({
 
                 {/* Price */}
                 <div>
-                  <Label>Price</Label>
+                  <Label>السعر</Label>
                   <Input
                     type="number"
                     placeholder="100"
@@ -458,7 +458,7 @@ export function EditProductModal({
 
                 {/* Amount */}
                 <div>
-                  <Label>Amount</Label>
+                  <Label>الكمية</Label>
                   <Input
                     type="number"
                     placeholder="10"
@@ -469,10 +469,10 @@ export function EditProductModal({
 
                 {/* Description */}
                 <div>
-                  <Label>Description</Label>
+                  <Label>الوصف</Label>
                   <Input
                     type="text"
-                    placeholder="Premium Arabic coffee beans freshly roasted"
+                    placeholder="قهوة عربية فاخرة محمصة طازجة"
                     defaultValue={formData.description}
                     onChange={(e) =>
                       handleChange("description", e.target.value)
@@ -482,14 +482,14 @@ export function EditProductModal({
 
                 {/* Category */}
                 <div>
-                  <Label>Category</Label>
+                  <Label>الفئة</Label>
                   <div className="relative">
                     <Select
                       options={categories.map((cat) => ({
                         value: cat._id,
                         label: cat.nameEn,
                       }))}
-                      placeholder="Select Option"
+                      placeholder="اختر فئة"
                       defaultValue={formData.categoryId}
                       onChange={(val) => handleChange("category", val)}
                       className="dark:bg-dark-900"
@@ -518,7 +518,7 @@ export function EditProductModal({
 
                 {/* Rating */}
                 <div>
-                  <Label>Rating</Label>
+                  <Label>التقييم</Label>
                   <Input
                     type="number"
                     placeholder="5"
@@ -529,7 +529,7 @@ export function EditProductModal({
 
                 {/* Sold Times */}
                 <div>
-                  <Label>Sold Times</Label>
+                  <Label>مرات البيع</Label>
                   <Input
                     type="number"
                     placeholder="150"
@@ -540,7 +540,7 @@ export function EditProductModal({
 
                 {/* Review Count */}
                 <div>
-                  <Label>Review Count</Label>
+                  <Label>عدد المراجعات</Label>
                   <Input
                     type="number"
                     placeholder="50"
@@ -556,10 +556,10 @@ export function EditProductModal({
 
           <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Close
+              إغلاق
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save Changes
+              حفظ التغييرات
             </Button>
           </div>
         </form>
@@ -625,21 +625,21 @@ export function DeleteProductModal({
       <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11 dark:bg-gray-900">
         <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-5 px-2 pb-3 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-            Product Deletion
+            حذف المنتج
           </h4>
 
-          <p>Are you sure you want to delete this product?</p>
+          <p>هل أنت متأكد من حذف هذا المنتج؟</p>
 
           <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Close
+              إغلاق
             </Button>
             <Button
               size="sm"
               onClick={handleDelete}
               className="bg-error-500 hover:bg-error-700"
             >
-              Delete
+              حذف
             </Button>
           </div>
         </form>
