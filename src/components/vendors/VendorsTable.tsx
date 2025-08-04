@@ -42,7 +42,7 @@ export default function VendorsTable() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         {/* Search Input */}
         <div className="relative w-full sm:max-w-sm">
-          <span className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2">
+          <span className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2">
             <svg
               className="fill-gray-500 dark:fill-gray-400"
               width="20"

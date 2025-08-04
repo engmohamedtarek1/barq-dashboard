@@ -12,7 +12,11 @@ import {
 } from "@/components/ui/table";
 import { useProducts } from "@/hooks/useProducts";
 import Pagination from "../tables/Pagination";
-import { AddProductButton, DeleteProductButton, EditProductButton } from "./ProductsModals";
+import {
+  AddProductButton,
+  DeleteProductButton,
+  EditProductButton,
+} from "./ProductsModals";
 
 const limits = [5, 10, 20, 50];
 
@@ -30,13 +34,15 @@ export default function ProductsTable() {
       product.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  console.log("Filtered Products:", filteredProducts);
+
   return (
     <div className="space-y-4">
       {/* Card Header */}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         {/* Search Input */}
         <div className="relative w-full sm:max-w-sm">
-          <span className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2">
+          <span className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2">
             <svg
               className="fill-gray-500 dark:fill-gray-400"
               width="20"
@@ -104,6 +110,18 @@ export default function ProductsTable() {
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
                     Product
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
+                  >
+                    Category
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
+                  >
+                    Vendor
                   </TableCell>
                   <TableCell
                     isHeader
@@ -179,6 +197,12 @@ export default function ProductsTable() {
                             </span>
                           </div>
                         </div>
+                      </TableCell>
+                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
+                        {product.category.nameAr}
+                      </TableCell>
+                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
+                        {product.shopId.name}
                       </TableCell>
                       <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
                         {product.amount}

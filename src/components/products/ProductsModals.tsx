@@ -193,7 +193,7 @@ export function AddProductModal({
                       onChange={(val) => handleChange("category", val)}
                       className="dark:bg-dark-900"
                     />
-                    <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
                     </span>
                   </div>
@@ -209,7 +209,7 @@ export function AddProductModal({
                       onChange={handleSelectChange}
                       className="dark:bg-dark-900"
                     />
-                    <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                    <span className="pointer-events-none absolute top-1/2 end-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
                     </span>
                   </div>
@@ -494,7 +494,7 @@ export function EditProductModal({
                       onChange={(val) => handleChange("category", val)}
                       className="dark:bg-dark-900"
                     />
-                    <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
                     </span>
                   </div>
@@ -510,7 +510,7 @@ export function EditProductModal({
                       onChange={handleSelectChange}
                       className="dark:bg-dark-900"
                     />
-                    <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                    <span className="pointer-events-none absolute top-1/2 end-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
                     </span>
                   </div>

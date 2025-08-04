@@ -143,7 +143,7 @@ const AppSidebar: React.FC = () => {
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
-                  className={`ml-auto h-5 w-5 transition-transform duration-200 ${
+                  className={`ms-auto h-5 w-5 transition-transform duration-200 ${
                     openSubmenu?.type === menuType &&
                     openSubmenu?.index === index
                       ? "text-brand-500 rotate-180"
@@ -188,7 +188,7 @@ const AppSidebar: React.FC = () => {
                     : "0px",
               }}
             >
-              <ul className="mt-2 ml-9 space-y-1">
+              <ul className="mt-2 ms-9 space-y-1">
                 {nav.subItems.map((subItem) => (
                   <li key={subItem.name}>
                     <Link
@@ -200,10 +200,10 @@ const AppSidebar: React.FC = () => {
                       }`}
                     >
                       {subItem.name}
-                      <span className="ml-auto flex items-center gap-1">
+                      <span className="ms-auto flex items-center gap-1">
                         {subItem.new && (
                           <span
-                            className={`ml-auto ${
+                            className={`ms-auto ${
                               isActive(subItem.path)
                                 ? "menu-dropdown-badge-active"
                                 : "menu-dropdown-badge-inactive"
@@ -214,7 +214,7 @@ const AppSidebar: React.FC = () => {
                         )}
                         {subItem.pro && (
                           <span
-                            className={`ml-auto ${
+                            className={`ms-auto ${
                               isActive(subItem.path)
                                 ? "menu-dropdown-badge-active"
                                 : "menu-dropdown-badge-inactive"
@@ -301,7 +301,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`bg-brand-blue fixed top-0 left-0 z-50 mt-16 flex h-screen flex-col border-e border-gray-600 px-5 text-white transition-all duration-300 ease-in-out lg:mt-0 dark:border-gray-800 dark:bg-gray-900 ${
+      className={`bg-brand-blue fixed top-0 start-0 z-50 mt-16 flex h-screen flex-col border-e border-gray-600 px-5 text-white transition-all duration-300 ease-in-out lg:mt-0 dark:border-gray-800 dark:bg-gray-900 ${
         isExpanded || isMobileOpen
           ? "w-[290px]"
           : isHovered

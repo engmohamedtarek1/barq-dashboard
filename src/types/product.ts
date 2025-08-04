@@ -18,7 +18,7 @@ export interface Product {
   nameEn: string;
   price: number;
   amount: number;
-  shop: {
+  shopId: {
     _id: string;
     name: string;
     mobile: string;
