@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
-interface AlertProps {
+export interface AlertProps {
   variant: "success" | "error" | "warning" | "info"; // Alert type
   title: string; // Title of the alert
   message: string; // Message of the alert
@@ -131,7 +131,7 @@ const Alert: React.FC<AlertProps> = ({
           {showLink && (
             <Link
               href={linkHref}
-              className="inline-block mt-3 text-sm font-medium text-gray-500 underline dark:text-gray-400"
+              className="mt-3 inline-block text-sm font-medium text-gray-500 underline dark:text-gray-400"
             >
               {linkText}
             </Link>

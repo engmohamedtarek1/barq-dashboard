@@ -17,6 +17,7 @@ import {
   DeleteProductButton,
   EditProductButton,
 } from "./ProductsModals";
+import Skeleton from "react-loading-skeleton";
 
 const limits = [5, 10, 20, 50];
 
@@ -163,11 +164,48 @@ export default function ProductsTable() {
               {/* Table Body */}
               {loading ? (
                 <TableBody>
-                  <TableRow>
-                    <TableCell className="py-6 text-center text-gray-500">
-                      جاري التحميل...
-                    </TableCell>
-                  </TableRow>
+                  {Array.from({ length: 6 }).map((_, rowIdx) => (
+                    <TableRow key={rowIdx}>
+                      <TableCell className="flex w-fit gap-3 px-4 py-6 text-center text-gray-500">
+                        <Skeleton
+                          baseColor="#ecebeb"
+                          width={40}
+                          height={40}
+                          circle
+                        />
+                        <div>
+                          <Skeleton
+                            baseColor="#ecebeb"
+                            width={120}
+                            height={18}
+                          />
+                          <Skeleton
+                            baseColor="#ecebeb"
+                            width={120}
+                            height={18}
+                          />
+                        </div>
+                      </TableCell>
+
+                      {Array.from({ length: 7 }).map((_, cellIdx) => (
+                        <TableCell
+                          key={cellIdx}
+                          className="px-4 py-6 text-center text-gray-500"
+                        >
+                          <Skeleton
+                            baseColor="#ecebeb"
+                            width="100%"
+                            height={40}
+                          />
+                        </TableCell>
+                      ))}
+
+                      <TableCell className="flex items-center justify-center gap-3 px-4 py-6 text-gray-500">
+                        <Skeleton baseColor="#ecebeb" width={32} height={32} />
+                        <Skeleton baseColor="#ecebeb" width={32} height={32} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
@@ -175,17 +213,13 @@ export default function ProductsTable() {
                     <TableRow key={product._id}>
                       <TableCell className="px-5 py-4 text-start sm:px-6">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 overflow-hidden rounded-full">
-                            <Image
-                              width={40}
-                              height={40}
-                              src={
-                                product.image || "/images/logo/barq-logo.png"
-                              }
-                              alt={product.nameEn}
-                              className="object-cover"
-                            />
-                          </div>
+                          <Image
+                            width={40}
+                            height={40}
+                            src={product.image || "/images/logo/barq-logo.png"}
+                            alt={product.nameEn}
+                            className="size-10 rounded-full object-cover"
+                          />
                           <div>
                             <span className="block font-medium text-gray-800 dark:text-white/90">
                               {product.nameEn} | {product.nameAr}

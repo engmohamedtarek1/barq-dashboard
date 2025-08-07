@@ -16,12 +16,14 @@ import {
 } from "@/lib/api/categories";
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
+import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 
 export function AddCategoryModal({
   isOpen = false,
   closeModal = () => {},
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -53,9 +55,27 @@ export function AddCategoryModal({
       };
 
       await createCategory(payload);
+      setToast({
+        variant: "success",
+        title: "نجح إنشاء الفئة",
+        message: "تم إنشاء الفئة بنجاح",
+      });
+
+      // Auto hide toast after 5 seconds
+      setTimeout(() => setToast(null), 5000);
+
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في إنشاء الفئة",
+        message: "فشل في إنشاء الفئة. يرجى المحاولة مرة أخرى",
+      });
+
+      // Auto hide toast after 5 seconds
+      setTimeout(() => setToast(null), 5000);
+
       console.error("Failed to add category:", err);
     }
   };
@@ -117,6 +137,12 @@ export function AddCategoryModal({
           </div>
         </form>
       </div>
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed end-4 bottom-4 max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }
@@ -149,6 +175,7 @@ export function EditCategoryModal({
   category = {} as Category,
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -195,9 +222,27 @@ export function EditCategoryModal({
       };
 
       await updateCategory(category._id, payload);
+      setToast({
+        variant: "success",
+        title: "نجح تحديث الفئة",
+        message: "تم تحديث الفئة بنجاح",
+      });
+
+      // Auto hide toast after 5 seconds
+      setTimeout(() => setToast(null), 5000);
+
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في تحديث الفئة",
+        message: "فشل في تحديث الفئة. يرجى المحاولة مرة أخرى",
+      });
+
+      // Auto hide toast after 5 seconds
+      setTimeout(() => setToast(null), 5000);
+
       console.error("Failed to update category:", err);
     }
   };
@@ -270,6 +315,12 @@ export function EditCategoryModal({
           </div>
         </form>
       </div>
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }
@@ -312,12 +363,31 @@ export function DeleteCategoryModal({
   categoryId = "",
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const handleDelete = async () => {
     try {
       await deleteCategory(categoryId);
+      setToast({
+        variant: "success",
+        title: "نجح حذف الفئة",
+        message: "تم حذف الفئة بنجاح",
+      });
+
+      // Auto hide toast after 5 seconds
+      setTimeout(() => setToast(null), 5000);
+
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في حذف الفئة",
+        message: "فشل في حذف الفئة. يرجى المحاولة مرة أخرى",
+      });
+
+      // Auto hide toast after 5 seconds
+      setTimeout(() => setToast(null), 5000);
+
       console.error("Failed to delete category:", err);
     }
   };
@@ -350,6 +420,12 @@ export function DeleteCategoryModal({
           </div>
         </form>
       </div>
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }
