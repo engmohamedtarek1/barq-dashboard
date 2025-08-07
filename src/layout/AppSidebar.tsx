@@ -8,6 +8,7 @@ import {
   BoxCubeIcon,
   ChevronDownIcon,
   GridIcon,
+  ListIcon,
   PageIcon,
   PieChartIcon,
   PlugInIcon,
@@ -42,6 +43,11 @@ const navItems: NavItem[] = [
     icon: <BoxCubeIcon />,
     name: "المنتجات",
     path: "/products",
+  },
+  {
+    icon: <ListIcon />,
+    name: "الفئات",
+    path: "/categories",
   },
   // {
   //   name: "Forms",
