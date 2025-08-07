@@ -1,0 +1,37 @@
+// lib/api/subcategory.ts
+import axios from "axios";
+import { Subcategory, CreateSubcategoryPayload } from "@/types/subcategory";
+import { BASE_URL } from "../config";
+
+export async function createSubcategory(payload: CreateSubcategoryPayload) {
+  return axios.post(`${BASE_URL}/subcategory`, payload);
+}
+
+export async function updateSubcategory(
+  categoryId: string,
+  data: Partial<CreateSubcategoryPayload>,
+) {
+  const response = await axios.patch(
+    `${BASE_URL}/subcategory/${categoryId}`,
+    data,
+  );
+  return response.data;
+}
+
+export async function deleteSubcategory(categoryId: string) {
+  return axios.delete(`${BASE_URL}/subcategory/${categoryId}`);
+}
+
+export const fetchSubcategories = async (
+  page?: number,
+  limit?: number,
+): Promise<{ data: Subcategory[]; pages: number }> => {
+  const response = await axios.get(`${BASE_URL}/subcategory`, {
+    params: { page, limit },
+  });
+
+  return {
+    data: response.data.data,
+    pages: response.data.metadata.pages,
+  };
+};

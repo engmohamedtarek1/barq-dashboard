@@ -8,3 +8,9 @@ export interface Subcategory {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface CreateSubcategoryPayload {
+  nameAr: string;
+  nameEn: string;
+  image: string;
+}

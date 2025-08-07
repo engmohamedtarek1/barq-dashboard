@@ -49,6 +49,11 @@ const navItems: NavItem[] = [
     name: "الفئات",
     path: "/categories",
   },
+  {
+    icon: <ListIcon />,
+    name: "الفئات الفرعية",
+    path: "/subcategories",
+  },
   // {
   //   name: "Forms",
   //   icon: <ListIcon />,

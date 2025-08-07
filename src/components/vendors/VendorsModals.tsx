@@ -14,12 +14,13 @@ import MultiSelect from "../form/MultiSelect";
 import { Category } from "@/types/category";
 import { Subcategory } from "@/types/subcategory";
 import { useModal } from "@/hooks/useModal";
-import { fetchSubcategories } from "@/lib/api/subcategory";
+import { fetchSubcategories } from "@/lib/api/subcategories";
 import { createVendor, deleteVendor, updateVendor } from "@/lib/api/vendors";
 import { uploadImage } from "@/lib/api/uploadImage";
 import { CreateVendorPayload, Vendor } from "@/types/vendor";
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
+import { fetchCategories } from "@/lib/api/categories";
 
 export function AddVendorModal({
   isOpen = false,
@@ -51,8 +52,10 @@ export function AddVendorModal({
 
     const fetchData = async () => {
       try {
-        const { data: subcats, categories } = await fetchSubcategories();
-        setSubcategories(subcats);
+        const { data: subcategories } = await fetchSubcategories();
+        const { data: categories } = await fetchCategories();
+
+        setSubcategories(subcategories);
         setCategories(categories);
       } catch (err) {
         console.error("Failed to fetch data:", err);
@@ -263,8 +266,9 @@ export function EditVendorModal({
 
     const fetchData = async () => {
       try {
-        const { data: subcats, categories } = await fetchSubcategories();
-        setSubcategories(subcats);
+        const { data } = await fetchSubcategories();
+        const { data: categories } = await fetchCategories();
+        setSubcategories(data);
         setCategories(categories);
       } catch (err) {
         console.error("Failed to fetch data:", err);

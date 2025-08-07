@@ -9,7 +9,6 @@ import Label from "../form/Label";
 import FileInput from "../form/input/FileInput";
 import { ChevronDownIcon } from "@/icons";
 import Select from "../form/Select";
-import { fetchSubcategories } from "@/lib/api/subcategory";
 import { Category } from "@/types/category";
 import { uploadImage } from "@/lib/api/uploadImage";
 import { CreateProductPayload, Product } from "@/types/product";
@@ -20,6 +19,7 @@ import {
 } from "@/lib/api/products";
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
+import { fetchCategories } from "@/lib/api/categories";
 
 export function AddProductModal({
   isOpen = false,
@@ -58,7 +58,7 @@ export function AddProductModal({
 
     const fetchData = async () => {
       try {
-        const { categories } = await fetchSubcategories();
+        const { data: categories } = await fetchCategories();
         setCategories(categories);
       } catch (err) {
         console.error("Failed to fetch data:", err);
@@ -324,7 +324,7 @@ export function EditProductModal({
 
     const fetchData = async () => {
       try {
-        const { categories } = await fetchSubcategories();
+        const { data: categories } = await fetchCategories();
         setCategories(categories);
       } catch (err) {
         console.error("Failed to fetch data:", err);
