@@ -35,7 +35,7 @@ export default function UserAddressCard() {
                   المدينة
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  طنطا
+                  مدينة نصر
                 </p>
               </div>
 
@@ -93,7 +93,7 @@ export default function UserAddressCard() {
 
                 <div>
                   <Label>المدينة</Label>
-                  <Input type="text" defaultValue="طنطا" />
+                  <Input type="text" defaultValue="مدينة نصر" />
                 </div>
 
                 <div>

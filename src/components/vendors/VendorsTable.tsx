@@ -193,7 +193,7 @@ export default function VendorsTable() {
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                   {filteredVendors.map((vendor) => (
-                    <TableRow key={vendor._id}>
+                    <TableRow key={vendor._id} className="hover:bg-brand-gray/15">
                       <TableCell className="px-5 py-4 text-start sm:px-6">
                         <div className="flex items-center gap-3">
                           <Image

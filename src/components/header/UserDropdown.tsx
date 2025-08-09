@@ -1,12 +1,22 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import { getAdminData, removeAuthToken, Admin } from "@/lib/api/auth";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [adminData, setAdminData] = useState<Admin | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Get admin data from localStorage on component mount
+    const admin = getAdminData();
+    setAdminData(admin);
+  }, []);
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.stopPropagation();
@@ -15,6 +25,17 @@ export default function UserDropdown() {
 
   function closeDropdown() {
     setIsOpen(false);
+  }
+
+  function handleLogout() {
+    // Clear authentication data
+    removeAuthToken();
+
+    // Redirect to signin page
+    router.push("/signin");
+
+    // Close dropdown
+    closeDropdown();
   }
   return (
     <div className="relative">
@@ -31,7 +52,9 @@ export default function UserDropdown() {
           />
         </span>
 
-        <span className="text-theme-sm me-1 block font-medium">Mohamed</span>
+        <span className="text-theme-sm me-1 block font-medium">
+          {adminData?.name || "Admin"}
+        </span>
 
         <svg
           className={`stroke-gray-500 transition-transform duration-200 dark:stroke-gray-400 ${
@@ -60,11 +83,16 @@ export default function UserDropdown() {
       >
         <div>
           <span className="text-theme-sm block font-medium text-gray-700 dark:text-gray-400">
-            Mohamed Tarek
+            {adminData?.name || "Admin"}
           </span>
           <span className="text-theme-xs mt-0.5 block text-gray-500 dark:text-gray-400">
-            eng.mohamedtarek0@gmail.com
+            {adminData?.email || "admin@example.com"}
           </span>
+          {adminData?.role && (
+            <span className="bg-brand-100 text-brand-700 dark:bg-brand-900/20 dark:text-brand-400 mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium">
+              {adminData.role}
+            </span>
+          )}
         </div>
 
         <ul className="flex flex-col gap-1 border-b border-gray-200 pt-4 pb-3 dark:border-gray-800">
@@ -144,9 +172,9 @@ export default function UserDropdown() {
             </DropdownItem>
           </li>
         </ul>
-        <Link
-          href="/signin"
-          className="group text-theme-sm mt-3 flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+        <button
+          onClick={handleLogout}
+          className="group text-theme-sm mt-3 flex w-full items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
           <svg
             className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
@@ -164,7 +192,7 @@ export default function UserDropdown() {
             />
           </svg>
           تسجيل الخروج
-        </Link>
+        </button>
       </Dropdown>
     </div>
   );
