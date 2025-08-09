@@ -9,6 +9,7 @@ interface Option {
 interface MultiSelectProps {
   label: string;
   options: Option[];
+  placeholder?: string;
   defaultSelected?: string[];
   onChange?: (selected: string[]) => void;
   disabled?: boolean;
@@ -17,6 +18,7 @@ interface MultiSelectProps {
 const MultiSelect: React.FC<MultiSelectProps> = ({
   label,
   options,
+  placeholder,
   defaultSelected = [],
   onChange,
   disabled = false,
@@ -94,10 +96,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                   ))
                 ) : (
                   <input
-                    placeholder="اختر اختيارًا"
-                    className="h-full w-full appearance-none border-0 bg-transparent p-1 pe-2 text-sm outline-hidden placeholder:text-gray-800 focus:border-0 focus:ring-0 focus:outline-hidden dark:placeholder:text-white/90"
+                    placeholder={placeholder || "اختر اختيارًا"}
+                    className="h-full w-full appearance-none border-0 bg-transparent p-1 pe-2 text-sm outline-hidden placeholder:text-gray-400 focus:border-0 focus:ring-0 focus:outline-hidden dark:placeholder:text-white/30"
                     readOnly
-                    value="اختر اختيارًا"
                   />
                 )}
               </div>
@@ -130,20 +131,20 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
           {isOpen && (
             <div
-              className="max-h-select absolute start-0 top-full z-40 w-full overflow-y-auto rounded-lg bg-white shadow-sm dark:bg-gray-900"
+              className="max-h-select absolute start-0 top-8 z-40 w-full overflow-y-auto rounded-lg bg-white shadow-sm dark:bg-gray-900"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex flex-col">
                 {options.map((option, index) => (
                   <div key={index}>
                     <div
-                      className={`hover:bg-primary/5 w-full cursor-pointer rounded-t border-b border-gray-200 dark:border-gray-800`}
+                      className={`hover:bg-brand-gray/20 w-full cursor-pointer rounded-t border-b border-gray-200 dark:border-gray-800`}
                       onClick={() => handleSelect(option.value)}
                     >
                       <div
                         className={`relative flex w-full items-center p-2 ps-2 ${
                           selectedOptions.includes(option.value)
-                            ? "bg-primary/10"
+                            ? "bg-brand-gray/40"
                             : ""
                         }`}
                       >

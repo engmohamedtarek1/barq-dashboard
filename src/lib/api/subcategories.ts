@@ -35,3 +35,15 @@ export const fetchSubcategories = async (
     pages: response.data.metadata.pages,
   };
 };
+
+export const fetchSubcategoriesByCategory = async (
+  categoryId: string,
+): Promise<{ data: Subcategory[] }> => {
+  const response = await axios.get(`${BASE_URL}/subcategory`, {
+    params: { category: categoryId },
+  });
+
+  return {
+    data: response.data.data,
+  };
+};

@@ -14,7 +14,7 @@ import MultiSelect from "../form/MultiSelect";
 import { Category } from "@/types/category";
 import { Subcategory } from "@/types/subcategory";
 import { useModal } from "@/hooks/useModal";
-import { fetchSubcategories } from "@/lib/api/subcategories";
+import { fetchSubcategoriesByCategory } from "@/lib/api/subcategories";
 import { createVendor, deleteVendor, updateVendor } from "@/lib/api/vendors";
 import { uploadImage } from "@/lib/api/uploadImage";
 import { CreateVendorPayload, Vendor } from "@/types/vendor";
@@ -52,11 +52,10 @@ export function AddVendorModal({
 
     const fetchData = async () => {
       try {
-        const { data: subcategories } = await fetchSubcategories();
         const { data: categories } = await fetchCategories();
-
-        setSubcategories(subcategories);
         setCategories(categories);
+        // Clear subcategories when modal opens
+        setSubcategories([]);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -64,6 +63,30 @@ export function AddVendorModal({
 
     fetchData();
   }, [isOpen]);
+
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    if (!formData.category) {
+      setSubcategories([]);
+      return;
+    }
+
+    const fetchSubcategoriesForCategory = async () => {
+      try {
+        const { data: subcategories } = await fetchSubcategoriesByCategory(
+          formData.category,
+        );
+        setSubcategories(subcategories);
+        // Reset selected subcategories when category changes
+        setFormData((prev) => ({ ...prev, subcategories: [] }));
+      } catch (err) {
+        console.error("Failed to fetch subcategories:", err);
+        setSubcategories([]);
+      }
+    };
+
+    fetchSubcategoriesForCategory();
+  }, [formData.category]);
 
   const handleChange = (
     field: string,
@@ -184,17 +207,23 @@ export function AddVendorModal({
                     </span>
                   </div>
                 </div>
-                <div className="relative">
-                  <MultiSelect
-                    label="الفئات الفرعية"
-                    options={subcategories.map((sc) => ({
-                      value: sc._id,
-                      text: sc.nameEn,
-                      selected: formData.subcategories.includes(sc._id),
-                    }))}
-                    onChange={(values) => handleChange("subcategories", values)}
-                  />
-                </div>
+                <MultiSelect
+                  label="الفئات الفرعية"
+                  placeholder={
+                    !formData.category
+                      ? "يرجى اختيار فئة أولاً"
+                      : subcategories.length === 0
+                        ? "لا توجد فئات فرعية لهذه الفئة"
+                        : "اختر الفئات الفرعية"
+                  }
+                  options={subcategories.map((sc) => ({
+                    value: sc._id,
+                    text: sc.nameEn,
+                    selected: formData.subcategories.includes(sc._id),
+                  }))}
+                  onChange={(values) => handleChange("subcategories", values)}
+                  disabled={!formData.category || subcategories.length === 0}
+                />
               </div>
             </div>
           </div>
@@ -266,10 +295,10 @@ export function EditVendorModal({
 
     const fetchData = async () => {
       try {
-        const { data } = await fetchSubcategories();
         const { data: categories } = await fetchCategories();
-        setSubcategories(data);
         setCategories(categories);
+        // Clear subcategories when modal opens
+        setSubcategories([]);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -292,6 +321,28 @@ export function EditVendorModal({
       });
     }
   }, [vendor, isOpen]);
+
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    if (!formData.category) {
+      setSubcategories([]);
+      return;
+    }
+
+    const fetchSubcategoriesForCategory = async () => {
+      try {
+        const { data: subcategories } = await fetchSubcategoriesByCategory(
+          formData.category,
+        );
+        setSubcategories(subcategories);
+      } catch (err) {
+        console.error("Failed to fetch subcategories:", err);
+        setSubcategories([]);
+      }
+    };
+
+    fetchSubcategoriesForCategory();
+  }, [formData.category]);
 
   const handleChange = (
     field: string,
@@ -435,13 +486,31 @@ export function EditVendorModal({
                 <div className="relative">
                   <MultiSelect
                     label="الفئات الفرعية"
+                    placeholder={
+                      !formData.category
+                        ? "يرجى اختيار فئة أولاً"
+                        : subcategories.length === 0
+                          ? "لا توجد فئات فرعية لهذه الفئة"
+                          : "اختر الفئات الفرعية"
+                    }
                     options={subcategories.map((sc) => ({
                       value: sc._id,
                       text: sc.nameEn,
                       selected: formData.subcategories.includes(sc._id),
                     }))}
                     onChange={(values) => handleChange("subcategories", values)}
+                    disabled={!formData.category || subcategories.length === 0}
                   />
+                  {!formData.category && (
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      يرجى اختيار فئة أولاً
+                    </p>
+                  )}
+                  {formData.category && subcategories.length === 0 && (
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      لا توجد فئات فرعية لهذه الفئة
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

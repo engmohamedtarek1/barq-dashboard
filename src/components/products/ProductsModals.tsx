@@ -27,6 +27,7 @@ export function AddProductModal({
   onSuccess = () => {},
 }) {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -54,14 +55,19 @@ export function AddProductModal({
   });
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      setCategoriesLoaded(false);
+      return;
+    }
 
     const fetchData = async () => {
       try {
         const { data: categories } = await fetchCategories();
         setCategories(categories);
+        setCategoriesLoaded(true);
       } catch (err) {
         console.error("Failed to fetch data:", err);
+        setCategoriesLoaded(true); // Set to true even on error to prevent infinite loading
       }
     };
 
@@ -190,7 +196,7 @@ export function AddProductModal({
                         label: cat.nameEn,
                       }))}
                       placeholder="اختر فئة"
-                      onChange={(val) => handleChange("category", val)}
+                      onChange={(val) => handleChange("categoryId", val)}
                       className="dark:bg-dark-900"
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
@@ -293,6 +299,7 @@ export function EditProductModal({
   onSuccess = () => {},
 }) {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -320,23 +327,28 @@ export function EditProductModal({
   });
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      setCategoriesLoaded(false);
+      return;
+    }
 
     const fetchData = async () => {
       try {
         const { data: categories } = await fetchCategories();
         setCategories(categories);
+        setCategoriesLoaded(true);
       } catch (err) {
         console.error("Failed to fetch data:", err);
+        setCategoriesLoaded(true); // Set to true even on error to prevent infinite loading
       }
     };
 
     fetchData();
   }, [isOpen]);
 
-  // Fill formData with product data when modal opens or product changes
+  // Fill formData with product data when modal opens and categories are loaded
   useEffect(() => {
-    if (product && isOpen) {
+    if (product && isOpen && categoriesLoaded) {
       setFormData({
         nameAr: product.nameAr || "",
         nameEn: product.nameEn || "",
@@ -351,7 +363,7 @@ export function EditProductModal({
         soldTimes: product.soldTimes || 0,
       });
     }
-  }, [product, isOpen]);
+  }, [product, isOpen, categoriesLoaded]);
 
   const handleChange = (
     field: string,
@@ -491,7 +503,7 @@ export function EditProductModal({
                       }))}
                       placeholder="اختر فئة"
                       defaultValue={formData.categoryId}
-                      onChange={(val) => handleChange("category", val)}
+                      onChange={(val) => handleChange("categoryId", val)}
                       className="dark:bg-dark-900"
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
