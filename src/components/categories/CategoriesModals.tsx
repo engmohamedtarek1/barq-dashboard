@@ -285,7 +285,7 @@ export function EditCategoryModal({
                   <Label>الاسم (بالعربية)</Label>
                   <Input
                     type="text"
-                    placeholder="محمد طارق"
+                    placeholder="مأكولات بحرية"
                     defaultValue={formData.nameAr}
                     onChange={(e) => handleChange("nameAr", e.target.value)}
                   />
@@ -296,7 +296,7 @@ export function EditCategoryModal({
                   <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
-                    placeholder="Mohamed Tarek"
+                    placeholder="Sea Food"
                     defaultValue={formData.nameEn}
                     onChange={(e) => handleChange("nameEn", e.target.value)}
                   />

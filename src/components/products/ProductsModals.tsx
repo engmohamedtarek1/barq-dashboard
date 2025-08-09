@@ -133,7 +133,7 @@ export function AddProductModal({
                   <Label>الاسم (بالعربية)</Label>
                   <Input
                     type="text"
-                    placeholder="محمد طارق"
+                    placeholder="قهوة عربية"
                     onChange={(e) => handleChange("nameAr", e.target.value)}
                   />
                 </div>
@@ -143,7 +143,7 @@ export function AddProductModal({
                   <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
-                    placeholder="Mohamed Tarek"
+                    placeholder="Arabic Coffee"
                     onChange={(e) => handleChange("nameEn", e.target.value)}
                   />
                 </div>
@@ -428,7 +428,7 @@ export function EditProductModal({
                   <Label>الاسم (بالعربية)</Label>
                   <Input
                     type="text"
-                    placeholder="محمد طارق"
+                    placeholder="قهوة عربية"
                     defaultValue={formData.nameAr}
                     onChange={(e) => handleChange("nameAr", e.target.value)}
                   />
@@ -439,7 +439,7 @@ export function EditProductModal({
                   <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
-                    placeholder="Mohamed Tarek"
+                    placeholder="Arabic Coffee"
                     defaultValue={formData.nameEn}
                     onChange={(e) => handleChange("nameEn", e.target.value)}
                   />
