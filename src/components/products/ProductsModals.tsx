@@ -27,7 +27,6 @@ export function AddProductModal({
   onSuccess = () => {},
 }) {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -56,7 +55,6 @@ export function AddProductModal({
 
   useEffect(() => {
     if (!isOpen) {
-      setCategoriesLoaded(false);
       return;
     }
 
@@ -64,10 +62,8 @@ export function AddProductModal({
       try {
         const { data: categories } = await fetchCategories();
         setCategories(categories);
-        setCategoriesLoaded(true);
       } catch (err) {
         console.error("Failed to fetch data:", err);
-        setCategoriesLoaded(true); // Set to true even on error to prevent infinite loading
       }
     };
 
