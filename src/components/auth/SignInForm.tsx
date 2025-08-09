@@ -76,6 +76,7 @@ export default function SignInForm() {
 
       // Redirect to admin dashboard
       router.push("/");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Login error:", error);
 
@@ -238,31 +239,35 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                    <Button className="w-full flex items-center justify-center gap-2" size="sm" disabled={isLoading}>
-                      {isLoading && (
-                        <svg
-                          className="animate-spin h-4 w-4 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                          ></path>
-                        </svg>
-                      )}
-                      تسجيل الدخول
-                    </Button>
+                  <Button
+                    className="flex w-full items-center justify-center gap-2"
+                    size="sm"
+                    disabled={isLoading}
+                  >
+                    {isLoading && (
+                      <svg
+                        className="h-4 w-4 animate-spin text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        ></path>
+                      </svg>
+                    )}
+                    تسجيل الدخول
+                  </Button>
                 </div>
               </div>
             </form>
