@@ -148,7 +148,7 @@ export function AddVendorModal({
                   <Label>الاسم</Label>
                   <Input
                     type="text"
-                    placeholder="محمد طارق"
+                    placeholder="احمد محمد"
                     onChange={(e) => handleChange("name", e.target.value)}
                   />
                 </div>
@@ -164,7 +164,7 @@ export function AddVendorModal({
                   <Label>الموقع</Label>
                   <Input
                     type="text"
-                    placeholder="ش البحر، طنطا"
+                    placeholder="مدينة نصر"
                     onChange={(e) => handleChange("location", e.target.value)}
                   />
                 </div>
@@ -419,7 +419,7 @@ export function EditVendorModal({
                   <Label>الاسم</Label>
                   <Input
                     type="text"
-                    placeholder="محمد طارق"
+                    placeholder="احمد محمد"
                     defaultValue={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
                   />
@@ -437,7 +437,7 @@ export function EditVendorModal({
                   <Label>الموقع</Label>
                   <Input
                     type="text"
-                    placeholder="ش البحر، طنطا"
+                    placeholder="مدينة نصر"
                     defaultValue={formData.location}
                     onChange={(e) => handleChange("location", e.target.value)}
                   />

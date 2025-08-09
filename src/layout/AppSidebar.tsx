@@ -8,6 +8,7 @@ import {
   BoxCubeIcon,
   ChevronDownIcon,
   GridIcon,
+  ListIcon,
   PageIcon,
   PieChartIcon,
   PlugInIcon,
@@ -43,16 +44,16 @@ const navItems: NavItem[] = [
     name: "المنتجات",
     path: "/products",
   },
-  // {
-  //   icon: <ListIcon />,
-  //   name: "الفئات",
-  //   path: "/categories",
-  // },
-  // {
-  //   icon: <ListIcon />,
-  //   name: "الفئات الفرعية",
-  //   path: "/subcategories",
-  // },
+  {
+    icon: <ListIcon />,
+    name: "الفئات",
+    path: "/categories",
+  },
+  {
+    icon: <ListIcon />,
+    name: "الفئات الفرعية",
+    path: "/subcategories",
+  },
   // {
   //   name: "Forms",
   //   icon: <ListIcon />,
@@ -68,14 +69,14 @@ const navItems: NavItem[] = [
   //   icon: <TableIcon />,
   //   path: "/basic-tables",
   // },
-  {
-    name: "الصفحات",
-    icon: <PageIcon />,
-    subItems: [
-      { name: "تسجيل الدخول", path: "/signin", pro: false },
-      { name: "خطأ 404", path: "/error-404", pro: false },
-    ],
-  },
+  // {
+  //   name: "الصفحات",
+  //   icon: <PageIcon />,
+  //   subItems: [
+  //     { name: "تسجيل الدخول", path: "/signin", pro: false },
+  //     { name: "خطأ 404", path: "/error-404", pro: false },
+  //   ],
+  // },
   {
     icon: <UserCircleIcon />,
     name: "الملف الشخصي",

@@ -40,7 +40,7 @@ export default function NotFound() {
       </div>
 
       {/* <!-- Footer --> */}
-      <p className="absolute start-1/2 bottom-6 -translate-x-1/2 text-center text-sm text-gray-500 dark:text-gray-400">
+      <p className="absolute bottom-6 text-center text-sm text-gray-500 dark:text-gray-400">
         &copy; {new Date().getFullYear()} - Mohamed Tarek - جميع الحقوق محفوظة.
       </p>
     </div>

@@ -6,10 +6,98 @@ import Button from "@/components/ui/button/Button";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  loginAdmin,
+  setAuthToken,
+  setAdminData,
+  LoginPayload,
+} from "@/lib/api/auth";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [formData, setFormData] = useState<LoginPayload>({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState<Partial<LoginPayload>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    // Clear error when user starts typing
+    if (errors[name as keyof LoginPayload]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<LoginPayload> = {};
+
+    if (!formData.email) {
+      newErrors.email = "البريد الالكتروني مطلوب";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "البريد الالكتروني غير صالح";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "كلمة المرور مطلوبة";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "كلمة المرور يجب أن تكون أكثر من 6 أحرف";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await loginAdmin(formData);
+
+      // Store auth data
+      setAuthToken(response.data.accessToken);
+      setAdminData(response.data.admin);
+
+      // Redirect to admin dashboard
+      router.push("/");
+    } catch (error: any) {
+      console.error("Login error:", error);
+
+      // Handle different error scenarios
+      if (error.response?.status === 401) {
+        setErrors({
+          email: "البريد الالكتروني أو كلمة المرور غير صحيحة",
+        });
+      } else if (error.response?.status === 404) {
+        setErrors({
+          email: "المسؤول غير موجود",
+        });
+      } else {
+        setErrors({
+          email: "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex w-full flex-1 flex-col lg:w-1/2">
       <div className="mx-auto mb-5 w-full max-w-md sm:pt-10">
@@ -86,14 +174,24 @@ export default function SignInForm() {
                 </span>
               </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-6">
                 <div>
                   <Label>
                     البريد الاكتروني{" "}
                     <span className="text-error-500">*</span>{" "}
                   </Label>
-                  <Input placeholder="info@gmail.com" type="email" />
+                  <Input
+                    name="email"
+                    placeholder="info@gmail.com"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={errors.email ? "border-red-500" : ""}
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                  )}
                 </div>
                 <div>
                   <Label>
@@ -101,8 +199,12 @@ export default function SignInForm() {
                   </Label>
                   <div className="relative">
                     <Input
+                      name="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="اكتب كلمة المرور"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className={errors.password ? "border-red-500" : ""}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -115,6 +217,11 @@ export default function SignInForm() {
                       )}
                     </span>
                   </div>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -131,9 +238,31 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm">
-                    تسجيل الدخول
-                  </Button>
+                    <Button className="w-full flex items-center justify-center gap-2" size="sm" disabled={isLoading}>
+                      {isLoading && (
+                        <svg
+                          className="animate-spin h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          ></path>
+                        </svg>
+                      )}
+                      تسجيل الدخول
+                    </Button>
                 </div>
               </div>
             </form>
