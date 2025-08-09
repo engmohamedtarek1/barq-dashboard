@@ -9,7 +9,6 @@ import {
   ChevronDownIcon,
   GridIcon,
   ListIcon,
-  PageIcon,
   PieChartIcon,
   PlugInIcon,
   UserCircleIcon,
