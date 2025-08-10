@@ -22,18 +22,22 @@ interface TableBodyProps {
 interface TableRowProps {
   children: ReactNode; // Cells (th or td)
   className?: string; // Optional className for styling
+  onClick?: () => void; // Optional click handler (e.g., row navigation)
+  role?: string; // Accessibility role if needed
+  tabIndex?: number; // Enable keyboard focus
 }
 
 // Props for TableCell
 interface TableCellProps {
   children: ReactNode; // Cell content
   isHeader?: boolean; // If true, renders as <th>, otherwise <td>
+  onClick?: () => void; // Optional click handler (e.g., row navigation)
   className?: string; // Optional className for styling
 }
 
 // Table Component
 const Table: React.FC<TableProps> = ({ children, className }) => {
-  return <table className={`min-w-full  ${className}`}>{children}</table>;
+  return <table className={`min-w-full ${className}`}>{children}</table>;
 };
 
 // TableHeader Component
@@ -47,8 +51,23 @@ const TableBody: React.FC<TableBodyProps> = ({ children, className }) => {
 };
 
 // TableRow Component
-const TableRow: React.FC<TableRowProps> = ({ children, className }) => {
-  return <tr className={className}>{children}</tr>;
+const TableRow: React.FC<TableRowProps> = ({
+  children,
+  className,
+  onClick,
+  role,
+  tabIndex,
+}) => {
+  return (
+    <tr
+      className={className}
+      onClick={onClick}
+      role={role || (onClick ? "button" : undefined)}
+      tabIndex={tabIndex !== undefined ? tabIndex : onClick ? 0 : undefined}
+    >
+      {children}
+    </tr>
+  );
 };
 
 // TableCell Component

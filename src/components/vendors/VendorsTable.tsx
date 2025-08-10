@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   Table,
@@ -18,7 +19,9 @@ import {
   DeleteVendorButton,
   EditVendorButton,
 } from "./VendorsModals";
+import { FaEye } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
+import Link from "next/link";
 
 const limits = [5, 10, 20, 50];
 
@@ -26,6 +29,7 @@ export default function VendorsTable() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
   const { vendors, loading, totalPages, refetch } = useVendors(page, limit);
 
@@ -193,8 +197,14 @@ export default function VendorsTable() {
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                   {filteredVendors.map((vendor) => (
-                    <TableRow key={vendor._id} className="hover:bg-brand-gray/15">
-                      <TableCell className="px-5 py-4 text-start sm:px-6">
+                    <TableRow
+                      key={vendor._id}
+                      className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
+                    >
+                      <TableCell
+                        onClick={() => router.push(`/vendors/${vendor._id}`)}
+                        className="px-5 py-4 text-start sm:px-6"
+                      >
                         <div className="flex items-center gap-3">
                           <Image
                             width={40}
@@ -234,7 +244,14 @@ export default function VendorsTable() {
                       <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
                         ⭐ {vendor.rating}
                       </TableCell>
-                      <TableCell className="space-x-4 px-4 py-3 text-gray-500 dark:text-gray-400">
+                      <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
+                        <Link
+                          href={`/vendors/${vendor._id}`}
+                          className="text-sm text-indigo-600 dark:text-indigo-400"
+                          title="عرض البائع"
+                        >
+                          <FaEye />
+                        </Link>
                         <EditVendorButton vendor={vendor} onSuccess={refetch} />
                         <DeleteVendorButton
                           vendorId={vendor._id}

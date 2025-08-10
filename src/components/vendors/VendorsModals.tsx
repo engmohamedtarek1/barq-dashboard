@@ -582,10 +582,7 @@ export function EditVendorButton({
 
   return (
     <>
-      <button
-        onClick={openModal}
-        className="text-sm text-blue-500 hover:underline"
-      >
+      <button onClick={openModal} className="text-sm text-blue-500">
         <FaPencilAlt />
       </button>
       <EditVendorModal
@@ -680,10 +677,7 @@ export function DeleteVendorButton({
 
   return (
     <>
-      <button
-        onClick={openModal}
-        className="text-sm text-red-500 hover:underline"
-      >
+      <button onClick={openModal} className="text-sm text-red-500">
         <FaTrashAlt />
       </button>
       <DeleteVendorModal

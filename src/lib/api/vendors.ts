@@ -1,11 +1,21 @@
 // lib/api/vendors.ts
 import axios from "axios";
-import { Vendor } from "@/types/vendor";
+import { Vendor, CreateVendorPayload } from "@/types/vendor";
 import { BASE_URL } from "../config";
-import { CreateVendorPayload } from "@/types/vendor";
+
+// Reuse token from localStorage
+const authHeaders = () => {
+  if (typeof window === "undefined") return {};
+  const token = localStorage.getItem("authToken");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 export async function createVendor(payload: CreateVendorPayload) {
-  return axios.post(`${BASE_URL}/admin/users`, payload);
+  return axios.post(`${BASE_URL}/admin/users`, payload, {
+    headers: {
+      ...authHeaders(),
+    },
+  });
 }
 
 export async function updateVendor(
@@ -15,12 +25,30 @@ export async function updateVendor(
   const response = await axios.patch(
     `${BASE_URL}/admin/users/${vendorId}`,
     data,
+    {
+      headers: {
+        ...authHeaders(),
+      },
+    },
   );
   return response.data;
 }
 
 export async function deleteVendor(vendorId: string) {
-  return axios.delete(`${BASE_URL}/admin/users/${vendorId}`);
+  return axios.delete(`${BASE_URL}/admin/users/${vendorId}`, {
+    headers: {
+      ...authHeaders(),
+    },
+  });
+}
+
+export async function getSingleVendor(vendorId: string): Promise<Vendor> {
+  const response = await axios.get(`${BASE_URL}/admin/users/${vendorId}`, {
+    headers: {
+      ...authHeaders(),
+    },
+  });
+  return response.data.data;
 }
 
 export const fetchVendors = async (
@@ -29,6 +57,9 @@ export const fetchVendors = async (
 ): Promise<{ data: Vendor[]; pages: number }> => {
   const response = await axios.get(`${BASE_URL}/admin/vendors`, {
     params: { page, limit },
+    headers: {
+      ...authHeaders(),
+    },
   });
 
   return {
