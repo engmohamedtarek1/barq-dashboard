@@ -13,12 +13,14 @@ import { CreateSubcategoryPayload, Subcategory } from "@/types/subcategory";
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
 import { createSubcategory, deleteSubcategory, updateSubcategory } from "@/lib/api/subcategories";
+import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 
 export function AddSubcategoryModal({
   isOpen = false,
   closeModal = () => {},
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -50,9 +52,21 @@ export function AddSubcategoryModal({
       };
 
       await createSubcategory(payload);
+      setToast({
+        variant: "success",
+        title: "نجح إنشاء الفئة الفرعية",
+        message: "تم إنشاء الفئة الفرعية بنجاح",
+      });
+      setTimeout(() => setToast(null), 5000);
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في إنشاء الفئة الفرعية",
+        message: "فشل في إنشاء الفئة الفرعية. يرجى المحاولة مرة أخرى",
+      });
+      setTimeout(() => setToast(null), 5000);
       console.error("Failed to add subcategory:", err);
     }
   };
@@ -114,6 +128,11 @@ export function AddSubcategoryModal({
           </div>
         </form>
       </div>
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }
@@ -150,6 +169,7 @@ export function EditSubcategoryModal({
   subcategory = {} as Subcategory,
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -196,9 +216,21 @@ export function EditSubcategoryModal({
       };
 
       await updateSubcategory(subcategory._id, payload);
+      setToast({
+        variant: "success",
+        title: "نجح تحديث الفئة الفرعية",
+        message: "تم تحديث الفئة الفرعية بنجاح",
+      });
+      setTimeout(() => setToast(null), 5000);
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في تحديث الفئة الفرعية",
+        message: "فشل في تحديث الفئة الفرعية. يرجى المحاولة مرة أخرى",
+      });
+      setTimeout(() => setToast(null), 5000);
       console.error("Failed to update subcategory:", err);
     }
   };
@@ -271,6 +303,11 @@ export function EditSubcategoryModal({
           </div>
         </form>
       </div>
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }
@@ -313,12 +350,25 @@ export function DeleteSubcategoryModal({
   categoryId = "",
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const handleDelete = async () => {
     try {
       await deleteSubcategory(categoryId);
+      setToast({
+        variant: "success",
+        title: "نجح حذف الفئة الفرعية",
+        message: "تم حذف الفئة الفرعية بنجاح",
+      });
+      setTimeout(() => setToast(null), 5000);
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في حذف الفئة الفرعية",
+        message: "فشل في حذف الفئة الفرعية. يرجى المحاولة مرة أخرى",
+      });
+      setTimeout(() => setToast(null), 5000);
       console.error("Failed to delete subcategory:", err);
     }
   };
@@ -351,6 +401,11 @@ export function DeleteSubcategoryModal({
           </div>
         </form>
       </div>
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }

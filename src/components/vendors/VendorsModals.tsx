@@ -21,12 +21,14 @@ import { CreateVendorPayload, Vendor } from "@/types/vendor";
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
 import { fetchCategories } from "@/lib/api/categories";
+import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 
 export function AddVendorModal({
   isOpen = false,
   closeModal = () => {},
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [formData, setFormData] = useState<{
@@ -114,9 +116,21 @@ export function AddVendorModal({
       };
 
       await createVendor(payload);
+      setToast({
+        variant: "success",
+        title: "نجح إنشاء البائع",
+        message: "تم إنشاء البائع بنجاح",
+      });
+      setTimeout(() => setToast(null), 5000);
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في إنشاء البائع",
+        message: "فشل في إنشاء البائع. يرجى المحاولة مرة أخرى",
+      });
+      setTimeout(() => setToast(null), 5000);
       console.error("Failed to add vendor:", err);
     }
   };
@@ -238,6 +252,11 @@ export function AddVendorModal({
           </div>
         </form>
       </div>
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }
@@ -270,6 +289,7 @@ export function EditVendorModal({
   vendor = {} as Vendor,
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [formData, setFormData] = useState<{
@@ -375,9 +395,20 @@ export function EditVendorModal({
       };
 
       await updateVendor(vendor._id, payload);
+      setToast({
+        variant: "success",
+        title: "نجح تحديث البائع",
+        message: "تم تحديث البائع بنجاح",
+      });
+      setTimeout(() => setToast(null), 5000);
       onSuccess?.();
-      closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في تحديث البائع",
+        message: "فشل في تحديث البائع. يرجى المحاولة مرة أخرى",
+      });
+      setTimeout(() => setToast(null), 5000);
       console.error("Failed to update vendor:", err);
     }
   };
@@ -526,6 +557,11 @@ export function EditVendorModal({
           </div>
         </form>
       </div>
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }
@@ -568,12 +604,25 @@ export function DeleteVendorModal({
   vendorId = "",
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const handleDelete = async () => {
     try {
       await deleteVendor(vendorId);
+      setToast({
+        variant: "success",
+        title: "نجح حذف البائع",
+        message: "تم حذف البائع بنجاح",
+      });
+      setTimeout(() => setToast(null), 5000);
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في حذف البائع",
+        message: "فشل في حذف البائع. يرجى المحاولة مرة أخرى",
+      });
+      setTimeout(() => setToast(null), 5000);
       console.error("Failed to delete vendor:", err);
     }
   };
@@ -606,6 +655,11 @@ export function DeleteVendorModal({
           </div>
         </form>
       </div>
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }

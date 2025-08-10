@@ -128,7 +128,7 @@ export default function SubcategoriesTable() {
               </TableHeader>
 
               {/* Table Body */}
-              {!loading ? (
+              {loading ? (
                 <TableBody>
                   {Array.from({ length: 6 }).map((_, rowIdx) => (
                     <TableRow key={rowIdx}>

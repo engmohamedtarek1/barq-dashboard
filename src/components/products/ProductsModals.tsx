@@ -20,12 +20,14 @@ import {
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
 import { fetchCategories } from "@/lib/api/categories";
+import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 
 export function AddProductModal({
   isOpen = false,
   closeModal = () => {},
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [formData, setFormData] = useState<{
     nameAr: string;
@@ -99,9 +101,22 @@ export function AddProductModal({
       };
 
       await createProduct(payload);
+      setToast({
+        variant: "success",
+        title: "نجح إنشاء المنتج",
+        message: "تم إنشاء المنتج بنجاح",
+      });
+
+      setTimeout(() => setToast(null), 5000);
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في إنشاء المنتج",
+        message: "فشل في إنشاء المنتج. يرجى المحاولة مرة أخرى",
+      });
+      setTimeout(() => setToast(null), 5000);
       console.error("Failed to add product:", err);
     }
   };
@@ -262,6 +277,11 @@ export function AddProductModal({
           </div>
         </form>
       </div>
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }
@@ -294,6 +314,7 @@ export function EditProductModal({
   product = {} as Product,
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const [formData, setFormData] = useState<{
@@ -391,9 +412,21 @@ export function EditProductModal({
       };
 
       await updateProduct(product._id, payload);
+      setToast({
+        variant: "success",
+        title: "نجح تحديث المنتج",
+        message: "تم تحديث المنتج بنجاح",
+      });
+      setTimeout(() => setToast(null), 5000);
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في تحديث المنتج",
+        message: "فشل في تحديث المنتج. يرجى المحاولة مرة أخرى",
+      });
+      setTimeout(() => setToast(null), 5000);
       console.error("Failed to update product:", err);
     }
   };
@@ -572,6 +605,11 @@ export function EditProductModal({
           </div>
         </form>
       </div>
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }
@@ -614,12 +652,25 @@ export function DeleteProductModal({
   productId = "",
   onSuccess = () => {},
 }) {
+  const [toast, setToast] = useState<AlertProps | null>(null);
   const handleDelete = async () => {
     try {
       await deleteProduct(productId);
+      setToast({
+        variant: "success",
+        title: "نجح حذف المنتج",
+        message: "تم حذف المنتج بنجاح",
+      });
+      setTimeout(() => setToast(null), 5000);
       onSuccess?.();
       closeModal();
     } catch (err) {
+      setToast({
+        variant: "error",
+        title: "خطأ في حذف المنتج",
+        message: "فشل في حذف المنتج. يرجى المحاولة مرة أخرى",
+      });
+      setTimeout(() => setToast(null), 5000);
       console.error("Failed to delete product:", err);
     }
   };
@@ -652,6 +703,11 @@ export function DeleteProductModal({
           </div>
         </form>
       </div>
+      {toast && (
+        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <Alert {...toast} />
+        </div>
+      )}
     </Modal>
   );
 }
