@@ -99,10 +99,61 @@ export function AddVendorModal({
 
   const handleSave = async () => {
     try {
-      let profileImageUrl = "";
+      // Validation for required fields
+      if (!formData.name || typeof formData.name !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "اسم البائع مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.mobile || typeof formData.mobile !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "رقم الهاتف مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.location || typeof formData.location !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الموقع مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.workingHours || typeof formData.workingHours !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "ساعات العمل مطلوبة.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.category || typeof formData.category !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الفئة مطلوبة.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
 
-      const uploaded = await uploadImage(formData.profileImage);
-      profileImageUrl = uploaded.data;
+      let profileImageUrl = "";
+      if (
+        formData.profileImage instanceof File &&
+        formData.profileImage.size > 0
+      ) {
+        const uploaded = await uploadImage(formData.profileImage);
+        profileImageUrl = uploaded.data;
+      }
 
       const payload: CreateVendorPayload = {
         name: formData.name,
@@ -159,41 +210,55 @@ export function AddVendorModal({
                   />
                 </div>
                 <div>
-                  <Label>الاسم</Label>
+                  <Label>
+                    الاسم <span className="text-error-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="احمد محمد"
                     onChange={(e) => handleChange("name", e.target.value)}
+                    required
                   />
                 </div>
                 <div>
-                  <Label>الهاتف</Label>
+                  <Label>
+                    الهاتف <span className="text-error-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="01234567890"
                     onChange={(e) => handleChange("mobile", e.target.value)}
+                    required
                   />
                 </div>
                 <div>
-                  <Label>الموقع</Label>
+                  <Label>
+                    الموقع <span className="text-error-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="مدينة نصر"
                     onChange={(e) => handleChange("location", e.target.value)}
+                    required
                   />
                 </div>
                 <div>
-                  <Label>ساعات العمل</Label>
+                  <Label>
+                    ساعات العمل <span className="text-error-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="10 صباحًا - 7 مساءً"
                     onChange={(e) =>
                       handleChange("workingHours", e.target.value)
                     }
+                    required
                   />
                 </div>
                 <div>
-                  <Label>نشط</Label>
+                  <Label>
+                    نشط <span className="text-error-500">*</span>
+                  </Label>
                   <Switch label="" defaultChecked={true} />
                 </div>
               </div>
@@ -205,7 +270,9 @@ export function AddVendorModal({
               </h5>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 <div>
-                  <Label>الفئة</Label>
+                  <Label>
+                    الفئة <span className="text-error-500">*</span>
+                  </Label>
                   <div className="relative">
                     <Select
                       options={categories.map((cat) => ({
@@ -215,13 +282,14 @@ export function AddVendorModal({
                       placeholder="اختر الفئة"
                       onChange={(val) => handleChange("category", val)}
                       className="dark:bg-dark-900"
+                      required
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
                     </span>
                   </div>
                 </div>
-                
+
                 <MultiSelect
                   label="الفئات الفرعية"
                   placeholder={
@@ -238,6 +306,7 @@ export function AddVendorModal({
                   }))}
                   onChange={(values) => handleChange("subcategories", values)}
                   disabled={!formData.category || subcategories.length === 0}
+                  required
                 />
               </div>
             </div>
@@ -454,6 +523,7 @@ export function EditVendorModal({
                     placeholder="احمد محمد"
                     defaultValue={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
+                    required
                   />
                 </div>
                 <div>
@@ -463,6 +533,7 @@ export function EditVendorModal({
                     placeholder="01234567890"
                     defaultValue={formData.mobile}
                     onChange={(e) => handleChange("mobile", e.target.value)}
+                    required
                   />
                 </div>
                 <div>
