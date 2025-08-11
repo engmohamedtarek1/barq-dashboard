@@ -3,7 +3,7 @@ export interface CreateVendorPayload {
   name: string;
   mobile: string;
   location: string;
-  workingHours: string;
+  workingHours: [string, string];
   profileImage: string;
   category: string;
   subcategories: string[];
@@ -20,7 +20,7 @@ export interface Vendor {
   isActive: boolean;
   location: string;
   rating: number;
-  workingHours: string;
+  workingHours: [string, string];
   category: {
     _id: string;
     nameAr: string;

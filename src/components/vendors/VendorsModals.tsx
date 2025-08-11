@@ -35,7 +35,7 @@ export function AddVendorModal({
     name: string;
     mobile: string;
     location: string;
-    workingHours: string;
+    workingHours: [string, string];
     profileImage: File;
     category: string;
     subcategories: string[];
@@ -43,7 +43,7 @@ export function AddVendorModal({
     name: "",
     mobile: "",
     location: "",
-    workingHours: "",
+    workingHours: ["07:00", "15:00"],
     profileImage: new File([], ""), // Initialize with an empty file
     category: "",
     subcategories: [],
@@ -127,11 +127,17 @@ export function AddVendorModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.workingHours || typeof formData.workingHours !== "string") {
+      if (
+        !formData.workingHours ||
+        !Array.isArray(formData.workingHours) ||
+        formData.workingHours.length !== 2 ||
+        !formData.workingHours[0] ||
+        !formData.workingHours[1]
+      ) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
-          message: "ساعات العمل مطلوبة.",
+          message: "ساعات العمل (بداية ونهاية) مطلوبة.",
         });
         setTimeout(() => setToast(null), 5000);
         return;
@@ -246,14 +252,31 @@ export function AddVendorModal({
                   <Label>
                     ساعات العمل <span className="text-error-500">*</span>
                   </Label>
-                  <Input
-                    type="text"
-                    placeholder="10 صباحًا - 7 مساءً"
-                    onChange={(e) =>
-                      handleChange("workingHours", e.target.value)
-                    }
-                    required
-                  />
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="time"
+                      value={formData.workingHours[0]}
+                      onChange={(e) =>
+                        handleChange("workingHours", [
+                          e.target.value,
+                          formData.workingHours[1],
+                        ])
+                      }
+                      required
+                    />
+                    <span className="text-gray-500">إلى</span>
+                    <Input
+                      type="time"
+                      value={formData.workingHours[1]}
+                      onChange={(e) =>
+                        handleChange("workingHours", [
+                          formData.workingHours[0],
+                          e.target.value,
+                        ])
+                      }
+                      required
+                    />
+                  </div>
                 </div>
                 <div>
                   <Label>
@@ -366,7 +389,7 @@ export function EditVendorModal({
     name: string;
     mobile: string;
     location: string;
-    workingHours: string;
+    workingHours: [string, string];
     profileImage: File | string;
     category: string;
     subcategories: string[];
@@ -374,7 +397,7 @@ export function EditVendorModal({
     name: "",
     mobile: "",
     location: "",
-    workingHours: "",
+    workingHours: ["07:00", "15:00"],
     profileImage: "", // can be url or File
     category: "",
     subcategories: [],
@@ -404,7 +427,10 @@ export function EditVendorModal({
         name: vendor.name || "",
         mobile: vendor.mobile || "",
         location: vendor.location || "",
-        workingHours: vendor.workingHours || "",
+        workingHours:
+          Array.isArray(vendor.workingHours) && vendor.workingHours.length === 2
+            ? vendor.workingHours
+            : ["07:00", "15:00"],
         profileImage: vendor.profileImage || "",
         category: vendor.category._id || "",
         subcategories: vendor.subcategories.map((sc) => sc._id) || [],
@@ -547,14 +573,31 @@ export function EditVendorModal({
                 </div>
                 <div>
                   <Label>ساعات العمل</Label>
-                  <Input
-                    type="text"
-                    placeholder="10 صباحًا - 7 مساءً"
-                    defaultValue={formData.workingHours}
-                    onChange={(e) =>
-                      handleChange("workingHours", e.target.value)
-                    }
-                  />
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="time"
+                      value={formData.workingHours[0]}
+                      onChange={(e) =>
+                        handleChange("workingHours", [
+                          e.target.value,
+                          formData.workingHours[1],
+                        ])
+                      }
+                      required
+                    />
+                    <span className="text-gray-500">إلى</span>
+                    <Input
+                      type="time"
+                      value={formData.workingHours[1]}
+                      onChange={(e) =>
+                        handleChange("workingHours", [
+                          formData.workingHours[0],
+                          e.target.value,
+                        ])
+                      }
+                      required
+                    />
+                  </div>
                 </div>
                 <div>
                   <Label>نشط</Label>
@@ -586,35 +629,23 @@ export function EditVendorModal({
                     </span>
                   </div>
                 </div>
-                <div className="relative">
-                  <MultiSelect
-                    label="الفئات الفرعية"
-                    placeholder={
-                      !formData.category
-                        ? "يرجى اختيار فئة أولاً"
-                        : subcategories.length === 0
-                          ? "لا توجد فئات فرعية لهذه الفئة"
-                          : "اختر الفئات الفرعية"
-                    }
-                    options={subcategories.map((sc) => ({
-                      value: sc._id,
-                      text: sc.nameEn,
-                      selected: formData.subcategories.includes(sc._id),
-                    }))}
-                    onChange={(values) => handleChange("subcategories", values)}
-                    disabled={!formData.category || subcategories.length === 0}
-                  />
-                  {!formData.category && (
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      يرجى اختيار فئة أولاً
-                    </p>
-                  )}
-                  {formData.category && subcategories.length === 0 && (
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      لا توجد فئات فرعية لهذه الفئة
-                    </p>
-                  )}
-                </div>
+                <MultiSelect
+                  label="الفئات الفرعية"
+                  placeholder={
+                    !formData.category
+                      ? "يرجى اختيار فئة أولاً"
+                      : subcategories.length === 0
+                        ? "لا توجد فئات فرعية لهذه الفئة"
+                        : "اختر الفئات الفرعية"
+                  }
+                  options={subcategories.map((sc) => ({
+                    value: sc._id,
+                    text: sc.nameEn,
+                    selected: formData.subcategories.includes(sc._id),
+                  }))}
+                  onChange={(values) => handleChange("subcategories", values)}
+                  disabled={!formData.category || subcategories.length === 0}
+                />
               </div>
             </div>
           </div>

@@ -107,7 +107,7 @@ export default function VendorDetailsPage() {
                     <InfoItem label="الاسم" value={vendor.name} />
                     <InfoItem label="الهاتف" value={vendor.mobile} />
                     <InfoItem label="الموقع" value={vendor.location} />
-                    <InfoItem label="ساعات العمل" value={vendor.workingHours} />
+                    <InfoItem label="ساعات العمل" value={Array.isArray(vendor.workingHours) ? vendor.workingHours.join(" - ") : vendor.workingHours} />
                     <InfoItem label="التقييم" value={`${vendor.rating} ⭐`} />
                     {/* If reviewCount becomes available in Vendor type, re-enable */}
                     {/* <InfoItem label="عدد المراجعات" value={`${vendor.reviewCount ?? 0}`} /> */}
