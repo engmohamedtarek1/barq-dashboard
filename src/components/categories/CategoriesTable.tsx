@@ -170,7 +170,7 @@ export default function CategoriesTable() {
                           onSuccess={refetch}
                         />
                         <DeleteCategoryButton
-                          categoryId={category._id}
+                          category={category._id}
                           onSuccess={refetch}
                         />
                       </TableCell>

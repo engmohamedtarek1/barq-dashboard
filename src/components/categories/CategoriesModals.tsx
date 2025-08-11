@@ -360,13 +360,13 @@ export function EditCategoryButton({
 export function DeleteCategoryModal({
   isOpen = false,
   closeModal = () => {},
-  categoryId = "",
+  category = "",
   onSuccess = () => {},
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
   const handleDelete = async () => {
     try {
-      await deleteCategory(categoryId);
+      await deleteCategory(category);
       setToast({
         variant: "success",
         title: "نجح حذف الفئة",
@@ -431,10 +431,10 @@ export function DeleteCategoryModal({
 }
 
 export function DeleteCategoryButton({
-  categoryId,
+  category,
   onSuccess,
 }: {
-  categoryId: string;
+  category: string;
   onSuccess?: () => void;
 }) {
   const { isOpen, openModal, closeModal } = useModal();
@@ -455,7 +455,7 @@ export function DeleteCategoryButton({
       <DeleteCategoryModal
         isOpen={isOpen}
         closeModal={closeModal}
-        categoryId={categoryId}
+        category={category}
         onSuccess={handleAfterDelete}
       />
     </>

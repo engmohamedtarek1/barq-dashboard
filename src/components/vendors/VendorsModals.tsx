@@ -221,6 +221,7 @@ export function AddVendorModal({
                     </span>
                   </div>
                 </div>
+                
                 <MultiSelect
                   label="الفئات الفرعية"
                   placeholder={

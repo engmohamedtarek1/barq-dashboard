@@ -2,14 +2,11 @@ export interface CreateProductPayload {
   nameAr: string;
   nameEn: string;
   price: number;
-  amount: number;
-  // shopId: string;
+  shopId: string;
   description: string;
-  categoryId: string;
-  rating: number;
-  image: string;
-  soldTimes: number;
-  reviewCount: number;
+  category: string;
+  categoryshops: string[];
+  image?: string;
 }
 
 export interface Product {
@@ -31,6 +28,7 @@ export interface Product {
     nameAr: string;
     nameEn: string;
   };
+  categoryshops: string[];
   rating: number;
   image: string;
   soldTimes: number;

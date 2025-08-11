@@ -8,18 +8,18 @@ export async function createSubcategory(payload: CreateSubcategoryPayload) {
 }
 
 export async function updateSubcategory(
-  categoryId: string,
+  category: string,
   data: Partial<CreateSubcategoryPayload>,
 ) {
   const response = await axios.patch(
-    `${BASE_URL}/subcategory/${categoryId}`,
+    `${BASE_URL}/subcategory/${category}`,
     data,
   );
   return response.data;
 }
 
-export async function deleteSubcategory(categoryId: string) {
-  return axios.delete(`${BASE_URL}/subcategory/${categoryId}`);
+export async function deleteSubcategory(category: string) {
+  return axios.delete(`${BASE_URL}/subcategory/${category}`);
 }
 
 export const fetchSubcategories = async (
@@ -37,10 +37,10 @@ export const fetchSubcategories = async (
 };
 
 export const fetchSubcategoriesByCategory = async (
-  categoryId: string,
+  category: string,
 ): Promise<{ data: Subcategory[] }> => {
   const response = await axios.get(`${BASE_URL}/subcategory`, {
-    params: { category: categoryId },
+    params: { category: category },
   });
 
   return {

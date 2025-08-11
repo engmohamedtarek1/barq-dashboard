@@ -52,8 +52,8 @@ export async function getSingleVendor(vendorId: string): Promise<Vendor> {
 }
 
 export const fetchVendors = async (
-  page: number,
-  limit: number,
+  page?: number,
+  limit?: number,
 ): Promise<{ data: Vendor[]; pages: number }> => {
   const response = await axios.get(`${BASE_URL}/admin/vendors`, {
     params: { page, limit },

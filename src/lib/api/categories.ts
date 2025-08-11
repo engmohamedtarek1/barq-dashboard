@@ -8,18 +8,15 @@ export async function createCategory(payload: CreateCategoryPayload) {
 }
 
 export async function updateCategory(
-  categoryId: string,
+  category: string,
   data: Partial<CreateCategoryPayload>,
 ) {
-  const response = await axios.patch(
-    `${BASE_URL}/category/${categoryId}`,
-    data,
-  );
+  const response = await axios.patch(`${BASE_URL}/category/${category}`, data);
   return response.data;
 }
 
-export async function deleteCategory(categoryId: string) {
-  return axios.delete(`${BASE_URL}/category/${categoryId}`);
+export async function deleteCategory(category: string) {
+  return axios.delete(`${BASE_URL}/category/${category}`);
 }
 
 export const fetchCategories = async (): Promise<{

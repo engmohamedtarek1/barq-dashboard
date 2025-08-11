@@ -21,6 +21,11 @@ import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
 import { fetchCategories } from "@/lib/api/categories";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
+import { fetchVendors } from "@/lib/api/vendors";
+import { Vendor } from "@/types/vendor";
+import MultiSelect from "../form/MultiSelect";
+import { fetchCategoryshopsByVendor } from "@/lib/api/categoryshop";
+import { Categoryshop } from "@/types/categoryshop";
 
 export function AddProductModal({
   isOpen = false,
@@ -29,30 +34,26 @@ export function AddProductModal({
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [categoryshops, setCategoryshops] = useState<Categoryshop[]>([]);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
     price: number;
-    amount: number;
-    // shopId: string;
+    shopId: string;
     description: string;
-    categoryId: string;
-    rating: number;
+    category: string;
     image: File;
-    soldTimes: number;
-    reviewCount: number;
+    categoryshops: string[];
   }>({
     nameAr: "",
     nameEn: "",
     price: 0,
-    amount: 0,
-    // shopId: "",
+    shopId: "",
     description: "",
-    categoryId: "",
+    category: "",
     image: new File([], ""),
-    rating: 0,
-    reviewCount: 0,
-    soldTimes: 0,
+    categoryshops: [],
   });
 
   useEffect(() => {
@@ -63,7 +64,10 @@ export function AddProductModal({
     const fetchData = async () => {
       try {
         const { data: categories } = await fetchCategories();
+        const { data: vendors } = await fetchVendors();
         setCategories(categories);
+        setVendors(vendors);
+        setCategoryshops([]);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -71,6 +75,29 @@ export function AddProductModal({
 
     fetchData();
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!formData.shopId) {
+      setCategoryshops([]);
+      return;
+    }
+
+    const fetchCategoryshopsForVendor = async () => {
+      try {
+        const { data: categoryshops } = await fetchCategoryshopsByVendor(
+          formData.shopId,
+        );
+        setCategoryshops(categoryshops);
+        // Reset selected categoryshops when shopId changes
+        setFormData((prev) => ({ ...prev, categoryshops: [] }));
+      } catch (err) {
+        console.error("Failed to fetch categoryshops:", err);
+        setCategoryshops([]);
+      }
+    };
+
+    fetchCategoryshopsForVendor();
+  }, [formData.shopId]);
 
   const handleChange = (
     field: string,
@@ -81,23 +108,77 @@ export function AddProductModal({
 
   const handleSave = async () => {
     try {
-      let imageUrl = "";
+      // Validation for required fields
+      if (!formData.nameAr || typeof formData.nameAr !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الاسم (بالعربية) مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.nameEn || typeof formData.nameEn !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الاسم (بالإنجليزية) مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (formData.price < 0) {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "السعر مطلوب ويجب أن يكون رقمًا أكبر أو يساوي صفر.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.description || typeof formData.description !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الوصف مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.category || typeof formData.category !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الفئة مطلوبة.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.shopId || typeof formData.shopId !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "معرف المتجر مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
 
-      const uploaded = await uploadImage(formData.image);
-      imageUrl = uploaded.data;
+      let imageUrl = "";
+      if (formData.image instanceof File && formData.image.size > 0) {
+        const uploaded = await uploadImage(formData.image);
+        imageUrl = uploaded.data;
+      }
 
       const payload: CreateProductPayload = {
         nameAr: formData.nameAr,
         nameEn: formData.nameEn,
         price: formData.price,
-        amount: formData.amount,
-        // shopId: formData.shopId,
+        shopId: formData.shopId,
         description: formData.description,
-        categoryId: formData.categoryId,
-        rating: formData.rating,
+        category: formData.category,
+        categoryshops: formData.categoryshops,
         image: imageUrl,
-        soldTimes: formData.soldTimes,
-        reviewCount: formData.reviewCount,
       };
 
       await createProduct(payload);
@@ -106,7 +187,6 @@ export function AddProductModal({
         title: "نجح إنشاء المنتج",
         message: "تم إنشاء المنتج بنجاح",
       });
-
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
       closeModal();
@@ -132,7 +212,7 @@ export function AddProductModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                تفاصيل المنتج
+                إضافة منتج جديد
               </h5>
 
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
@@ -147,59 +227,65 @@ export function AddProductModal({
 
                 {/* Name (in Arabic) */}
                 <div>
-                  <Label>الاسم (بالعربية)</Label>
+                  <Label>
+                    الاسم (بالعربية) <span className="text-error-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="قهوة عربية"
                     onChange={(e) => handleChange("nameAr", e.target.value)}
+                    required
                   />
                 </div>
 
                 {/* Name (in English) */}
                 <div>
-                  <Label>الاسم (بالإنجليزية)</Label>
+                  <Label>
+                    الاسم (بالإنجليزية){" "}
+                    <span className="text-error-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="Arabic Coffee"
                     onChange={(e) => handleChange("nameEn", e.target.value)}
+                    required
                   />
                 </div>
 
                 {/* Price */}
                 <div>
-                  <Label>السعر</Label>
+                  <Label>
+                    السعر <span className="text-error-500">*</span>
+                  </Label>
                   <Input
                     type="number"
                     placeholder="100"
                     onChange={(e) => handleChange("price", e.target.value)}
-                  />
-                </div>
-
-                {/* Amount */}
-                <div>
-                  <Label>الكمية</Label>
-                  <Input
-                    type="number"
-                    placeholder="10"
-                    onChange={(e) => handleChange("amount", e.target.value)}
+                    required
+                    min="0"
                   />
                 </div>
 
                 {/* Description */}
                 <div>
-                  <Label>الوصف</Label>
+                  <Label>
+                    الوصف <span className="text-error-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="قهوة عربية فاخرة محمصة طازجة"
                     onChange={(e) =>
                       handleChange("description", e.target.value)
                     }
+                    required
                   />
                 </div>
 
                 {/* Category */}
                 <div>
-                  <Label>الفئة</Label>
+                  <Label>
+                    الفئة <span className="text-error-500">*</span>
+                  </Label>
                   <div className="relative">
                     <Select
                       options={categories.map((cat) => ({
@@ -207,8 +293,9 @@ export function AddProductModal({
                         label: cat.nameEn,
                       }))}
                       placeholder="اختر فئة"
-                      onChange={(val) => handleChange("categoryId", val)}
+                      onChange={(val) => handleChange("category", val)}
                       className="dark:bg-dark-900"
+                      required
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
@@ -217,52 +304,46 @@ export function AddProductModal({
                 </div>
 
                 {/* Shop */}
-                {/* <div>
-                  <Label>Shop</Label>
+                <div>
+                  <Label>
+                    المتجر <span className="text-error-500">*</span>
+                  </Label>
                   <div className="relative">
                     <Select
-                      options={options}
-                      placeholder="Select Option"
-                      onChange={handleSelectChange}
+                      options={vendors.map((vendor) => ({
+                        value: vendor._id,
+                        label: vendor.name,
+                      }))}
+                      placeholder="اختر متجراً"
+                      onChange={(val) => handleChange("shopId", val)}
                       className="dark:bg-dark-900"
+                      required
                     />
-                    <span className="pointer-events-none absolute top-1/2 end-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
                     </span>
                   </div>
-                </div> */}
-
-                {/* Rating */}
-                <div>
-                  <Label>التقييم</Label>
-                  <Input
-                    type="number"
-                    placeholder="5"
-                    onChange={(e) => handleChange("rating", e.target.value)}
-                  />
                 </div>
 
-                {/* Sold Times */}
-                <div>
-                  <Label>مرات البيع</Label>
-                  <Input
-                    type="number"
-                    placeholder="150"
-                    onChange={(e) => handleChange("soldTimes", e.target.value)}
-                  />
-                </div>
-
-                {/* Review Count */}
-                <div>
-                  <Label>عدد المراجعات</Label>
-                  <Input
-                    type="number"
-                    placeholder="50"
-                    onChange={(e) =>
-                      handleChange("reviewCount", e.target.value)
-                    }
-                  />
-                </div>
+                {/* Category Shop */}
+                <MultiSelect
+                  label="فئة المتجر"
+                  placeholder={
+                    !formData.shopId
+                      ? "يرجى اختيار متجر أولاً"
+                      : categoryshops.length === 0
+                        ? "لا توجد فئات فرعية لهذا المتجر"
+                        : "اختر الفئات الفرعية"
+                  }
+                  options={categoryshops.map((categoryshop) => ({
+                    value: categoryshop._id,
+                    text: categoryshop.nameEn,
+                    selected: formData.categoryshops.includes(categoryshop._id),
+                  }))}
+                  onChange={(values) => handleChange("categoryshops", values)}
+                  disabled={!formData.category || categoryshops.length === 0}
+                  required
+                />
               </div>
             </div>
           </div>
@@ -316,15 +397,18 @@ export function EditProductModal({
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [categoryshops, setCategoryshops] = useState<Categoryshop[]>([]);
   const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
     price: number;
     amount: number;
-    // shopId: string;
+    shopId: string;
     description: string;
-    categoryId: string;
+    category: string;
+    categoryshops: string[];
     rating: number;
     image: string | File;
     soldTimes: number;
@@ -334,9 +418,10 @@ export function EditProductModal({
     nameEn: "",
     price: 0,
     amount: 0,
-    // shopId: "",
+    shopId: "",
     description: "",
-    categoryId: "",
+    category: "",
+    categoryshops: [],
     image: new File([], ""),
     rating: 0,
     reviewCount: 0,
@@ -352,7 +437,10 @@ export function EditProductModal({
     const fetchData = async () => {
       try {
         const { data: categories } = await fetchCategories();
+        const { data: vendors } = await fetchVendors();
         setCategories(categories);
+        setVendors(vendors);
+        setCategoryshops([]);
         setCategoriesLoaded(true);
       } catch (err) {
         console.error("Failed to fetch data:", err);
@@ -363,6 +451,29 @@ export function EditProductModal({
     fetchData();
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!formData.shopId) {
+      setCategoryshops([]);
+      return;
+    }
+
+    const fetchCategoryshopsForVendor = async () => {
+      try {
+        const { data: categoryshops } = await fetchCategoryshopsByVendor(
+          formData.shopId,
+        );
+        setCategoryshops(categoryshops);
+        // Reset selected categoryshops when shopId changes
+        setFormData((prev) => ({ ...prev, categoryshops: [] }));
+      } catch (err) {
+        console.error("Failed to fetch categoryshops:", err);
+        setCategoryshops([]);
+      }
+    };
+
+    fetchCategoryshopsForVendor();
+  }, [formData.shopId]);
+
   // Fill formData with product data when modal opens and categories are loaded
   useEffect(() => {
     if (product && isOpen && categoriesLoaded) {
@@ -371,9 +482,10 @@ export function EditProductModal({
         nameEn: product.nameEn || "",
         price: product.price || 0,
         amount: product.amount || 0,
-        // shopId: product.shop._id || "",
+        shopId: product.shopId._id || "",
         description: product.description || "",
-        categoryId: product.category._id || "",
+        category: product.category._id || "",
+        categoryshops: product.categoryshops,
         image: product.image || "",
         rating: product.rating || 0,
         reviewCount: product.reviewCount || 0,
@@ -404,10 +516,10 @@ export function EditProductModal({
         nameAr: formData.nameAr,
         nameEn: formData.nameEn,
         price: formData.price,
-        amount: formData.amount,
-        // shopId: formData.shopId,
+        shopId: formData.shopId,
         description: formData.description,
-        categoryId: formData.categoryId,
+        category: formData.category,
+        categoryshops: formData.categoryshops,
         image: imageUrl,
       };
 
@@ -531,8 +643,8 @@ export function EditProductModal({
                         label: cat.nameEn,
                       }))}
                       placeholder="اختر فئة"
-                      defaultValue={formData.categoryId}
-                      onChange={(val) => handleChange("categoryId", val)}
+                      defaultValue={formData.category}
+                      onChange={(val) => handleChange("category", val)}
                       className="dark:bg-dark-900"
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
@@ -541,21 +653,25 @@ export function EditProductModal({
                   </div>
                 </div>
 
-                {/* Shop */}
-                {/* <div>
-                  <Label>Shop</Label>
-                  <div className="relative">
-                    <Select
-                      options={options}
-                      placeholder="Select Option"
-                      onChange={handleSelectChange}
-                      className="dark:bg-dark-900"
-                    />
-                    <span className="pointer-events-none absolute top-1/2 end-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                      <ChevronDownIcon />
-                    </span>
-                  </div>
-                </div> */}
+                {/* Category Shop */}
+                <MultiSelect
+                  label="فئة المتجر"
+                  placeholder={
+                    !formData.shopId
+                      ? "يرجى اختيار متجر أولاً"
+                      : categoryshops.length === 0
+                        ? "لا توجد فئات فرعية لهذا المتجر"
+                        : "اختر الفئات الفرعية"
+                  }
+                  options={categoryshops.map((categoryshop) => ({
+                    value: categoryshop._id,
+                    text: categoryshop.nameEn,
+                    selected: formData.categoryshops.includes(categoryshop._id),
+                  }))}
+                  onChange={(values) => handleChange("categoryshops", values)}
+                  disabled={!formData.category || categoryshops.length === 0}
+                  required
+                />
 
                 {/* Rating */}
                 <div>

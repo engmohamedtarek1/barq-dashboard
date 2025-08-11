@@ -221,7 +221,7 @@ export default function SubcategoriesTable() {
                           onSuccess={refetch}
                         />
                         <DeleteSubcategoryButton
-                          categoryId={subcategory._id}
+                          category={subcategory._id}
                           onSuccess={refetch}
                         />
                       </TableCell>

@@ -12,7 +12,11 @@ import { CreateSubcategoryPayload, Subcategory } from "@/types/subcategory";
 
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
-import { createSubcategory, deleteSubcategory, updateSubcategory } from "@/lib/api/subcategories";
+import {
+  createSubcategory,
+  deleteSubcategory,
+  updateSubcategory,
+} from "@/lib/api/subcategories";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 
 export function AddSubcategoryModal({
@@ -347,13 +351,13 @@ export function EditSubcategoryButton({
 export function DeleteSubcategoryModal({
   isOpen = false,
   closeModal = () => {},
-  categoryId = "",
+  category = "",
   onSuccess = () => {},
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
   const handleDelete = async () => {
     try {
-      await deleteSubcategory(categoryId);
+      await deleteSubcategory(category);
       setToast({
         variant: "success",
         title: "نجح حذف الفئة الفرعية",
@@ -411,10 +415,10 @@ export function DeleteSubcategoryModal({
 }
 
 export function DeleteSubcategoryButton({
-  categoryId,
+  category,
   onSuccess,
 }: {
-  categoryId: string;
+  category: string;
   onSuccess?: () => void;
 }) {
   const { isOpen, openModal, closeModal } = useModal();
@@ -435,7 +439,7 @@ export function DeleteSubcategoryButton({
       <DeleteSubcategoryModal
         isOpen={isOpen}
         closeModal={closeModal}
-        categoryId={categoryId}
+        category={category}
         onSuccess={handleAfterDelete}
       />
     </>
