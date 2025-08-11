@@ -27,7 +27,7 @@ const Alert: React.FC<AlertProps> = ({
     },
     error: {
       container:
-        "border-error-500 bg-error-50 dark:border-error-500/30 dark:bg-error-500/15",
+        "border-error-500 bg-error-50 dark:border-error-500/30 dark:bg-red-500/20",
       icon: "text-error-500",
     },
     warning: {
