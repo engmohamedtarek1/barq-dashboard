@@ -16,7 +16,7 @@ export async function updateProduct(
   productId: string,
   data: Partial<CreateProductPayload>,
 ) {
-  const response = await axios.patch(`${BASE_URL}/product/${productId}`, data, {
+  const response = await axios.put(`${BASE_URL}/product/${productId}`, data, {
     headers: {
       ...authHeaders(),
     },

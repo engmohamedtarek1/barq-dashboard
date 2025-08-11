@@ -5,7 +5,6 @@ export interface CreateProductPayload {
   shopId: string;
   description: string;
   category: string;
-  categoryshops: string[];
   image?: string;
 }
 
@@ -28,7 +27,6 @@ export interface Product {
     nameAr: string;
     nameEn: string;
   };
-  categoryshops: string[];
   rating: number;
   image: string;
   soldTimes: number;

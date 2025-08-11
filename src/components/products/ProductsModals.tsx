@@ -23,9 +23,6 @@ import { fetchCategories } from "@/lib/api/categories";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 import { fetchVendors } from "@/lib/api/vendors";
 import { Vendor } from "@/types/vendor";
-import MultiSelect from "../form/MultiSelect";
-import { fetchCategoryshopsByVendor } from "@/lib/api/categoryshop";
-import { Categoryshop } from "@/types/categoryshop";
 
 export function AddProductModal({
   isOpen = false,
@@ -35,7 +32,6 @@ export function AddProductModal({
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
-  const [categoryshops, setCategoryshops] = useState<Categoryshop[]>([]);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -44,7 +40,6 @@ export function AddProductModal({
     description: string;
     category: string;
     image: File;
-    categoryshops: string[];
   }>({
     nameAr: "",
     nameEn: "",
@@ -53,7 +48,6 @@ export function AddProductModal({
     description: "",
     category: "",
     image: new File([], ""),
-    categoryshops: [],
   });
 
   useEffect(() => {
@@ -67,7 +61,6 @@ export function AddProductModal({
         const { data: vendors } = await fetchVendors();
         setCategories(categories);
         setVendors(vendors);
-        setCategoryshops([]);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -75,29 +68,6 @@ export function AddProductModal({
 
     fetchData();
   }, [isOpen]);
-
-  useEffect(() => {
-    if (!formData.shopId) {
-      setCategoryshops([]);
-      return;
-    }
-
-    const fetchCategoryshopsForVendor = async () => {
-      try {
-        const { data: categoryshops } = await fetchCategoryshopsByVendor(
-          formData.shopId,
-        );
-        setCategoryshops(categoryshops);
-        // Reset selected categoryshops when shopId changes
-        setFormData((prev) => ({ ...prev, categoryshops: [] }));
-      } catch (err) {
-        console.error("Failed to fetch categoryshops:", err);
-        setCategoryshops([]);
-      }
-    };
-
-    fetchCategoryshopsForVendor();
-  }, [formData.shopId]);
 
   const handleChange = (
     field: string,
@@ -177,7 +147,6 @@ export function AddProductModal({
         shopId: formData.shopId,
         description: formData.description,
         category: formData.category,
-        categoryshops: formData.categoryshops,
         image: imageUrl,
       };
 
@@ -290,7 +259,7 @@ export function AddProductModal({
                     <Select
                       options={categories.map((cat) => ({
                         value: cat._id,
-                        label: cat.nameEn,
+                        label: cat.nameAr,
                       }))}
                       placeholder="اختر فئة"
                       onChange={(val) => handleChange("category", val)}
@@ -324,26 +293,6 @@ export function AddProductModal({
                     </span>
                   </div>
                 </div>
-
-                {/* Category Shop */}
-                <MultiSelect
-                  label="فئة المتجر"
-                  placeholder={
-                    !formData.shopId
-                      ? "يرجى اختيار متجر أولاً"
-                      : categoryshops.length === 0
-                        ? "لا توجد فئات فرعية لهذا المتجر"
-                        : "اختر الفئات الفرعية"
-                  }
-                  options={categoryshops.map((categoryshop) => ({
-                    value: categoryshop._id,
-                    text: categoryshop.nameEn,
-                    selected: formData.categoryshops.includes(categoryshop._id),
-                  }))}
-                  onChange={(values) => handleChange("categoryshops", values)}
-                  disabled={!formData.category || categoryshops.length === 0}
-                  required
-                />
               </div>
             </div>
           </div>
@@ -398,7 +347,6 @@ export function EditProductModal({
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
-  const [categoryshops, setCategoryshops] = useState<Categoryshop[]>([]);
   const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const [formData, setFormData] = useState<{
     nameAr: string;
@@ -408,7 +356,6 @@ export function EditProductModal({
     shopId: string;
     description: string;
     category: string;
-    categoryshops: string[];
     rating: number;
     image: string | File;
     soldTimes: number;
@@ -421,7 +368,6 @@ export function EditProductModal({
     shopId: "",
     description: "",
     category: "",
-    categoryshops: [],
     image: new File([], ""),
     rating: 0,
     reviewCount: 0,
@@ -440,7 +386,6 @@ export function EditProductModal({
         const { data: vendors } = await fetchVendors();
         setCategories(categories);
         setVendors(vendors);
-        setCategoryshops([]);
         setCategoriesLoaded(true);
       } catch (err) {
         console.error("Failed to fetch data:", err);
@@ -450,29 +395,6 @@ export function EditProductModal({
 
     fetchData();
   }, [isOpen]);
-
-  useEffect(() => {
-    if (!formData.shopId) {
-      setCategoryshops([]);
-      return;
-    }
-
-    const fetchCategoryshopsForVendor = async () => {
-      try {
-        const { data: categoryshops } = await fetchCategoryshopsByVendor(
-          formData.shopId,
-        );
-        setCategoryshops(categoryshops);
-        // Reset selected categoryshops when shopId changes
-        setFormData((prev) => ({ ...prev, categoryshops: [] }));
-      } catch (err) {
-        console.error("Failed to fetch categoryshops:", err);
-        setCategoryshops([]);
-      }
-    };
-
-    fetchCategoryshopsForVendor();
-  }, [formData.shopId]);
 
   // Fill formData with product data when modal opens and categories are loaded
   useEffect(() => {
@@ -485,7 +407,6 @@ export function EditProductModal({
         shopId: product.shopId._id || "",
         description: product.description || "",
         category: product.category._id || "",
-        categoryshops: product.categoryshops,
         image: product.image || "",
         rating: product.rating || 0,
         reviewCount: product.reviewCount || 0,
@@ -519,7 +440,6 @@ export function EditProductModal({
         shopId: formData.shopId,
         description: formData.description,
         category: formData.category,
-        categoryshops: formData.categoryshops,
         image: imageUrl,
       };
 
@@ -633,6 +553,27 @@ export function EditProductModal({
                   />
                 </div>
 
+                {/* Shop */}
+                <div>
+                  <Label>
+                    المتجر <span className="text-error-500">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Select
+                      options={vendors.map((vendor) => ({
+                        value: vendor._id,
+                        label: vendor.name,
+                      }))}
+                      placeholder="اختر متجراً"
+                      onChange={(val) => handleChange("shopId", val)}
+                      className="dark:bg-dark-900"
+                    />
+                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                      <ChevronDownIcon />
+                    </span>
+                  </div>
+                </div>
+
                 {/* Category */}
                 <div>
                   <Label>الفئة</Label>
@@ -652,26 +593,6 @@ export function EditProductModal({
                     </span>
                   </div>
                 </div>
-
-                {/* Category Shop */}
-                <MultiSelect
-                  label="فئة المتجر"
-                  placeholder={
-                    !formData.shopId
-                      ? "يرجى اختيار متجر أولاً"
-                      : categoryshops.length === 0
-                        ? "لا توجد فئات فرعية لهذا المتجر"
-                        : "اختر الفئات الفرعية"
-                  }
-                  options={categoryshops.map((categoryshop) => ({
-                    value: categoryshop._id,
-                    text: categoryshop.nameEn,
-                    selected: formData.categoryshops.includes(categoryshop._id),
-                  }))}
-                  onChange={(values) => handleChange("categoryshops", values)}
-                  disabled={!formData.category || categoryshops.length === 0}
-                  required
-                />
 
                 {/* Rating */}
                 <div>
