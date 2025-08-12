@@ -6,6 +6,7 @@ import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import React from "react";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 export default function AdminLayout({
   children,
