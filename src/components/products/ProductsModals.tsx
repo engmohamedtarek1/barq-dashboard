@@ -433,7 +433,7 @@ export function EditProductModal({
         imageUrl = formData.image;
       }
 
-      const payload: Partial<CreateProductPayload> = {
+      const payloadRaw: Partial<CreateProductPayload> = {
         nameAr: formData.nameAr,
         nameEn: formData.nameEn,
         price: formData.price,
@@ -442,6 +442,13 @@ export function EditProductModal({
         category: formData.category,
         image: imageUrl,
       };
+      // Remove empty-string fields
+      const payload = Object.fromEntries(
+        Object.entries(payloadRaw).filter((entry) => {
+          const v = entry[1] as unknown;
+          return typeof v === "string" ? v.trim() !== "" : true;
+        }),
+      ) as Partial<CreateProductPayload>;
 
       await updateProduct(product._id, payload);
       setToast({

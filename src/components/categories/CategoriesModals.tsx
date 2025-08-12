@@ -43,16 +43,44 @@ export function AddCategoryModal({
 
   const handleSave = async () => {
     try {
+      // Validation for required fields
+      if (!formData.nameAr || typeof formData.nameAr !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الاسم (بالعربية) مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.nameEn || typeof formData.nameEn !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الاسم (بالإنجليزية) مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
       let imageUrl = "";
+      if (formData.image instanceof File && formData.image.size > 0) {
+        const uploaded = await uploadImage(formData.image);
+        imageUrl = uploaded.data;
+      }
 
-      const uploaded = await uploadImage(formData.image);
-      imageUrl = uploaded.data;
-
-      const payload: CreateCategoryPayload = {
+      const payloadRaw: CreateCategoryPayload = {
         nameAr: formData.nameAr,
         nameEn: formData.nameEn,
         image: imageUrl,
       };
+      // Remove empty-string fields
+      const payload = Object.fromEntries(
+        Object.entries(payloadRaw).filter((entry) => {
+          const v = entry[1] as unknown;
+          return typeof v === "string" ? v.trim() !== "" : true;
+        }),
+      ) as CreateCategoryPayload;
 
       await createCategory(payload);
       setToast({
@@ -106,21 +134,28 @@ export function AddCategoryModal({
 
                 {/* Name (in Arabic) */}
                 <div>
-                  <Label>الاسم (بالعربية)</Label>
+                  <Label>
+                    الاسم (بالعربية) <span className="text-error-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="مأكولات بحرية"
                     onChange={(e) => handleChange("nameAr", e.target.value)}
+                    required
                   />
                 </div>
 
                 {/* Name (in English) */}
                 <div>
-                  <Label>الاسم (بالإنجليزية)</Label>
+                  <Label>
+                    الاسم (بالإنجليزية){" "}
+                    <span className="text-error-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="Sea Food"
                     onChange={(e) => handleChange("nameEn", e.target.value)}
+                    required
                   />
                 </div>
               </div>

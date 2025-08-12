@@ -136,8 +136,23 @@ export default function CategoriesTable() {
                         <div>
                           <Skeleton
                             baseColor="#ecebeb"
-                            width={500}
+                            width={300}
                             height={24}
+                          />
+                        </div>
+                      </TableCell>
+
+                      <TableCell className="items-center justify-center gap-3 px-4 py-6">
+                        <div className="flex gap-2">
+                          <Skeleton
+                            baseColor="#ecebeb"
+                            width={32}
+                            height={32}
+                          />
+                          <Skeleton
+                            baseColor="#ecebeb"
+                            width={32}
+                            height={32}
                           />
                         </div>
                       </TableCell>
