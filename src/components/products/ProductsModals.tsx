@@ -270,7 +270,6 @@ export function AddProductModal({
                       }))}
                       placeholder="اختر فئة"
                       onChange={(val) => handleChange("category", val)}
-                      className="dark:bg-dark-900"
                       required
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
@@ -292,7 +291,6 @@ export function AddProductModal({
                       }))}
                       placeholder="اختر متجراً"
                       onChange={(val) => handleChange("shopId", val)}
-                      className="dark:bg-dark-900"
                       required
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
@@ -578,7 +576,6 @@ export function EditProductModal({
                       }))}
                       placeholder="اختر متجراً"
                       onChange={(val) => handleChange("shopId", val)}
-                      className="dark:bg-dark-900"
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
@@ -598,7 +595,6 @@ export function EditProductModal({
                       placeholder="اختر فئة"
                       defaultValue={formData.category}
                       onChange={(val) => handleChange("category", val)}
-                      className="dark:bg-dark-900"
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />

@@ -18,6 +18,10 @@ import {
   updateSubcategory,
 } from "@/lib/api/subcategories";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
+import { fetchCategories } from "@/lib/api/categories";
+import { Category } from "@/types/category";
+import Select from "../form/Select";
+import { ChevronDownIcon } from "@/icons";
 
 export function AddSubcategoryModal({
   isOpen = false,
@@ -25,15 +29,33 @@ export function AddSubcategoryModal({
   onSuccess = () => {},
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
+    category: string;
     image: File;
   }>({
     nameAr: "",
     nameEn: "",
+    category: "",
     image: new File([], ""),
   });
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const fetchData = async () => {
+      try {
+        const { data: categories } = await fetchCategories();
+        setCategories(categories);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      }
+    };
+
+    fetchData();
+  }, [isOpen]);
 
   const handleChange = (
     field: string,
@@ -44,16 +66,54 @@ export function AddSubcategoryModal({
 
   const handleSave = async () => {
     try {
+      // Validation for required fields
+      if (!formData.nameAr || typeof formData.nameAr !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الاسم (بالعربية) مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.nameEn || typeof formData.nameEn !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الاسم (بالإنجليزية) مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.category || typeof formData.category !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الفئة المطلوبة.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
       let imageUrl = "";
+      if (formData.image instanceof File && formData.image.size > 0) {
+        const uploaded = await uploadImage(formData.image);
+        imageUrl = uploaded.data;
+      }
 
-      const uploaded = await uploadImage(formData.image);
-      imageUrl = uploaded.data;
-
-      const payload: CreateSubcategoryPayload = {
+      const payloadRaw: CreateSubcategoryPayload = {
         nameAr: formData.nameAr,
         nameEn: formData.nameEn,
+        category: formData.category,
         image: imageUrl,
       };
+      // Remove empty-string fields
+      const payload = Object.fromEntries(
+        Object.entries(payloadRaw).filter((entry) => {
+          const v = entry[1] as unknown;
+          return typeof v === "string" ? v.trim() !== "" : true;
+        }),
+      ) as CreateSubcategoryPayload;
 
       await createSubcategory(payload);
       setToast({
@@ -101,22 +161,49 @@ export function AddSubcategoryModal({
 
                 {/* Name (in Arabic) */}
                 <div>
-                  <Label>الاسم (بالعربية)</Label>
+                  <Label>
+                    الاسم (بالعربية) <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="مأكولات بحرية"
                     onChange={(e) => handleChange("nameAr", e.target.value)}
+                    required
                   />
                 </div>
 
                 {/* Name (in English) */}
                 <div>
-                  <Label>الاسم (بالإنجليزية)</Label>
+                  <Label>
+                    الاسم (بالإنجليزية) <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     type="text"
                     placeholder="Sea Food"
                     onChange={(e) => handleChange("nameEn", e.target.value)}
+                    required
                   />
+                </div>
+
+                {/* Category */}
+                <div>
+                  <Label>
+                    الفئة <span className="text-error-500">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Select
+                      options={categories.map((cat) => ({
+                        value: cat._id,
+                        label: cat.nameAr,
+                      }))}
+                      placeholder="اختر فئة"
+                      onChange={(val) => handleChange("category", val)}
+                      required
+                    />
+                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                      <ChevronDownIcon />
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -156,7 +243,7 @@ export function AddSubcategoryButton({
   return (
     <>
       <Button size="md" variant="primary" onClick={openModal}>
-        + أضف فئة
+        + أضف فئة فرعية
       </Button>
       <AddSubcategoryModal
         isOpen={isOpen}
@@ -174,15 +261,33 @@ export function EditSubcategoryModal({
   onSuccess = () => {},
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
+    category: string;
     image: string | File;
   }>({
     nameAr: "",
     nameEn: "",
+    category: "",
     image: new File([], ""),
   });
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const fetchData = async () => {
+      try {
+        const { data: categories } = await fetchCategories();
+        setCategories(categories);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      }
+    };
+
+    fetchData();
+  }, [isOpen]);
 
   // Fill formData with subcategory data when modal opens or subcategory changes
   useEffect(() => {
@@ -190,6 +295,7 @@ export function EditSubcategoryModal({
       setFormData({
         nameAr: subcategory.nameAr || "",
         nameEn: subcategory.nameEn || "",
+        category: subcategory.category._id || "",
         image: "",
       });
     }
@@ -213,11 +319,19 @@ export function EditSubcategoryModal({
         imageUrl = formData.image;
       }
 
-      const payload: Partial<CreateSubcategoryPayload> = {
+      const payloadRaw: Partial<CreateSubcategoryPayload> = {
         nameAr: formData.nameAr,
         nameEn: formData.nameEn,
+        category: formData.category,
         image: imageUrl,
       };
+      // Remove empty-string fields
+      const payload = Object.fromEntries(
+        Object.entries(payloadRaw).filter((entry) => {
+          const v = entry[1] as unknown;
+          return typeof v === "string" ? v.trim() !== "" : true;
+        }),
+      ) as Partial<CreateSubcategoryPayload>;
 
       await updateSubcategory(subcategory._id, payload);
       setToast({
@@ -277,7 +391,7 @@ export function EditSubcategoryModal({
                   <Label>الاسم (بالعربية)</Label>
                   <Input
                     type="text"
-                    placeholder="محمد طارق"
+                    placeholder="مأكولات بحرية"
                     defaultValue={formData.nameAr}
                     onChange={(e) => handleChange("nameAr", e.target.value)}
                   />
@@ -288,10 +402,28 @@ export function EditSubcategoryModal({
                   <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
-                    placeholder="Mohamed Tarek"
+                    placeholder="Sea Food"
                     defaultValue={formData.nameEn}
                     onChange={(e) => handleChange("nameEn", e.target.value)}
                   />
+                </div>
+
+                {/* Category */}
+                <div>
+                  <Label>الفئة</Label>
+                  <div className="relative">
+                    <Select
+                      options={categories.map((cat) => ({
+                        value: cat._id,
+                        label: cat.nameAr,
+                      }))}
+                      placeholder="اختر فئة"
+                      onChange={(val) => handleChange("category", val)}
+                    />
+                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                      <ChevronDownIcon />
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

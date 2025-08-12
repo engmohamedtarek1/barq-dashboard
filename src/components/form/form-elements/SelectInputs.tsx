@@ -36,7 +36,6 @@ export default function SelectInputs() {
               options={options}
               placeholder="اختر اختيارًا"
               onChange={handleSelectChange}
-              className="dark:bg-dark-900"
             />
             <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
               <ChevronDownIcon />
@@ -50,9 +49,7 @@ export default function SelectInputs() {
             defaultSelected={["1", "3"]}
             onChange={(values) => setSelectedValues(values)}
           />
-          <p className="sr-only">
-            القيم المختارة: {selectedValues.join(", ")}
-          </p>
+          <p className="sr-only">القيم المختارة: {selectedValues.join(", ")}</p>
         </div>
       </div>
     </ComponentCard>

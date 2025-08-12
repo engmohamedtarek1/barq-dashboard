@@ -91,7 +91,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
         value={phoneNumber}
         onChange={handlePhoneNumberChange}
         placeholder={placeholder}
-        className={`dark:bg-dark-900 h-11 w-full ${
+        className={`h-11 w-full ${
           selectPosition === "start" ? "ps-[84px]" : "pe-[84px]"
         } shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 rounded-lg border border-gray-300 bg-transparent px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30`}
       />
