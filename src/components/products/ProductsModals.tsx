@@ -555,9 +555,7 @@ export function EditProductModal({
 
                 {/* Shop */}
                 <div>
-                  <Label>
-                    المتجر <span className="text-error-500">*</span>
-                  </Label>
+                  <Label>المتجر</Label>
                   <div className="relative">
                     <Select
                       options={vendors.map((vendor) => ({

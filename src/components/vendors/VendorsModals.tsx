@@ -161,7 +161,7 @@ export function AddVendorModal({
         profileImageUrl = uploaded.data;
       }
 
-      const payload: CreateVendorPayload = {
+      const payloadRaw: CreateVendorPayload = {
         name: formData.name,
         mobile: formData.mobile,
         location: formData.location,
@@ -171,6 +171,13 @@ export function AddVendorModal({
         subcategories: formData.subcategories,
         role: "shop",
       };
+      // Remove empty-string fields
+      const payload = Object.fromEntries(
+        Object.entries(payloadRaw).filter((entry) => {
+          const v = entry[1] as unknown;
+          return typeof v === "string" ? v.trim() !== "" : true;
+        }),
+      ) as CreateVendorPayload;
 
       await createVendor(payload);
       setToast({
@@ -264,6 +271,7 @@ export function AddVendorModal({
                       }
                       required
                     />
+
                     <span className="text-gray-500">إلى</span>
                     <Input
                       type="time"
@@ -432,8 +440,8 @@ export function EditVendorModal({
             ? vendor.workingHours
             : ["07:00", "15:00"],
         profileImage: vendor.profileImage || "",
-        category: vendor.category._id || "",
-        subcategories: vendor.subcategories.map((sc) => sc._id) || [],
+        category: vendor.category?._id || "",
+        subcategories: vendor.subcategories?.map((sc) => sc._id) || [],
       });
     }
   }, [vendor, isOpen]);
@@ -478,7 +486,7 @@ export function EditVendorModal({
         profileImageUrl = formData.profileImage;
       }
 
-      const payload: Partial<CreateVendorPayload> = {
+      const payloadRaw: Partial<CreateVendorPayload> = {
         name: formData.name,
         mobile: formData.mobile,
         location: formData.location,
@@ -489,6 +497,13 @@ export function EditVendorModal({
         role: "shop",
         isActive: true,
       };
+      // Remove empty-string fields
+      const payload = Object.fromEntries(
+        Object.entries(payloadRaw).filter((entry) => {
+          const v = entry[1] as unknown;
+          return typeof v === "string" ? v.trim() !== "" : true;
+        }),
+      ) as Partial<CreateVendorPayload>;
 
       await updateVendor(vendor._id, payload);
       setToast({
@@ -739,7 +754,9 @@ export function DeleteVendorModal({
             حذف البائع
           </h4>
 
-          <p>هل أنت متأكد أنك تريد حذف هذا البائع؟</p>
+          <p className="text-gray-800 dark:text-white/90">
+            هل أنت متأكد أنك تريد حذف هذا البائع؟
+          </p>
 
           <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
             <Button size="sm" variant="outline" onClick={closeModal}>

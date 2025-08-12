@@ -1,3 +1,6 @@
+import { Category } from "./category";
+import { Subcategory } from "./subcategory";
+
 // types/vendor.ts
 export interface CreateVendorPayload {
   name: string;
@@ -15,20 +18,13 @@ export interface Vendor {
   _id: string;
   name: string;
   mobile: string;
-  profileImage: string;
+  profileImage?: string;
   role: string;
-  isActive: boolean;
-  location: string;
-  rating: number;
-  workingHours: [string, string];
-  category: {
-    _id: string;
-    nameAr: string;
-    nameEn: string;
-  };
-  subcategories: {
-    _id: string;
-    nameAr: string;
-    nameEn: string;
-  }[];
+  isActive?: boolean;
+  location?: string;
+  rating?: number;
+  workingHours?: [string, string];
+  category?: Category;
+  subcategories?: Subcategory[];
+  reviewCount?: number;
 }
