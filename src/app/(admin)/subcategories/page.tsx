@@ -6,14 +6,14 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "الفئات | برق",
-  description: "هذه هي صفحة الفئات حيث يمكنك إدارة بيانات الفئات.",
+  title: "الفئات الفرعية | برق",
+  description: "هذه هي صفحة الفئات الفرعية حيث يمكنك إدارة بيانات الفئات.",
 };
 
 export default function Subcategories() {
   return (
     <div>
-      <PageBreadcrumb pageTitle="الفئات" />
+      <PageBreadcrumb pageTitle="الفئات الفرعية" />
 
       <div
         className={`space-y-6 rounded-2xl border border-t border-gray-100 bg-white p-4 sm:p-6 dark:border-gray-800 dark:bg-white/[0.03]`}
