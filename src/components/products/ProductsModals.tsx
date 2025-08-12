@@ -590,7 +590,7 @@ export function EditProductModal({
                     <Select
                       options={categories.map((cat) => ({
                         value: cat._id,
-                        label: cat.nameEn,
+                        label: cat.nameAr,
                       }))}
                       placeholder="اختر فئة"
                       defaultValue={formData.category}

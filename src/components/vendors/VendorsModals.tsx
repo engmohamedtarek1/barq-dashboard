@@ -308,7 +308,7 @@ export function AddVendorModal({
                     <Select
                       options={categories.map((cat) => ({
                         value: cat._id,
-                        label: cat.nameEn,
+                        label: cat.nameAr,
                       }))}
                       placeholder="اختر الفئة"
                       onChange={(val) => handleChange("category", val)}
@@ -331,7 +331,7 @@ export function AddVendorModal({
                   }
                   options={subcategories.map((sc) => ({
                     value: sc._id,
-                    text: sc.nameEn,
+                    text: sc.nameAr,
                     selected: formData.subcategories.includes(sc._id),
                   }))}
                   onChange={(values) => handleChange("subcategories", values)}
@@ -417,8 +417,6 @@ export function EditVendorModal({
       try {
         const { data: categories } = await fetchCategories();
         setCategories(categories);
-        // Clear subcategories when modal opens
-        setSubcategories([]);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -631,7 +629,7 @@ export function EditVendorModal({
                     <Select
                       options={categories.map((cat) => ({
                         value: cat._id,
-                        label: cat.nameEn,
+                        label: cat.nameAr,
                       }))}
                       placeholder="اختر الفئة"
                       defaultValue={formData.category}
@@ -653,7 +651,7 @@ export function EditVendorModal({
                   }
                   options={subcategories.map((sc) => ({
                     value: sc._id,
-                    text: sc.nameEn,
+                    text: sc.nameAr,
                     selected: formData.subcategories.includes(sc._id),
                   }))}
                   onChange={(values) => handleChange("subcategories", values)}
