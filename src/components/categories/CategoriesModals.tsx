@@ -250,11 +250,18 @@ export function EditCategoryModal({
         imageUrl = formData.image;
       }
 
-      const payload: Partial<CreateCategoryPayload> = {
+      const payloadRaw: Partial<CreateCategoryPayload> = {
         nameAr: formData.nameAr,
         nameEn: formData.nameEn,
         image: imageUrl,
       };
+      // Remove empty-string fields
+      const payload = Object.fromEntries(
+        Object.entries(payloadRaw).filter((entry) => {
+          const v = entry[1] as unknown;
+          return typeof v === "string" ? v.trim() !== "" : true;
+        }),
+      ) as Partial<CreateCategoryPayload>;
 
       await updateCategory(category._id, payload);
       setToast({

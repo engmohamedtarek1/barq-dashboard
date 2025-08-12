@@ -140,7 +140,7 @@ export function AddProductModal({
         imageUrl = uploaded.data;
       }
 
-      const payload: CreateProductPayload = {
+      const payloadRaw: CreateProductPayload = {
         nameAr: formData.nameAr,
         nameEn: formData.nameEn,
         price: formData.price,
@@ -149,6 +149,13 @@ export function AddProductModal({
         category: formData.category,
         image: imageUrl,
       };
+      // Remove empty-string fields
+      const payload = Object.fromEntries(
+        Object.entries(payloadRaw).filter((entry) => {
+          const v = entry[1] as unknown;
+          return typeof v === "string" ? v.trim() !== "" : true;
+        }),
+      ) as CreateProductPayload;
 
       await createProduct(payload);
       setToast({
