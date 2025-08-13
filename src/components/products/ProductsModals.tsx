@@ -23,6 +23,7 @@ import { fetchCategories } from "@/lib/api/categories";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 import { fetchVendors } from "@/lib/api/vendors";
 import { Vendor } from "@/types/vendor";
+import { fetchCategoryshopsByVendor } from "@/lib/api/categoryshop";
 
 export function AddProductModal({
   isOpen = false,
@@ -68,6 +69,30 @@ export function AddProductModal({
 
     fetchData();
   }, [isOpen]);
+
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    if (!formData.shopId) {
+      setCategories([]);
+      return;
+    }
+
+    const fetchCategoriesForCategory = async () => {
+      try {
+        const { data: categories } = await fetchCategoryshopsByVendor(
+          formData.shopId,
+        );
+        setCategories(categories);
+        // Reset selected subcategories when category changes
+        setFormData((prev) => ({ ...prev, categories: [] }));
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+        setCategories([]);
+      }
+    };
+
+    fetchCategoriesForCategory();
+  }, [formData.shopId]);
 
   const handleChange = (
     field: string,
@@ -115,20 +140,20 @@ export function AddProductModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.category || typeof formData.category !== "string") {
-        setToast({
-          variant: "error",
-          title: "حقل مطلوب",
-          message: "الفئة مطلوبة.",
-        });
-        setTimeout(() => setToast(null), 5000);
-        return;
-      }
       if (!formData.shopId || typeof formData.shopId !== "string") {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
           message: "معرف المتجر مطلوب.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+      if (!formData.category || typeof formData.category !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "الفئة مطلوبة.",
         });
         setTimeout(() => setToast(null), 5000);
         return;
@@ -257,27 +282,6 @@ export function AddProductModal({
                   />
                 </div>
 
-                {/* Category */}
-                <div>
-                  <Label>
-                    الفئة <span className="text-error-500">*</span>
-                  </Label>
-                  <div className="relative">
-                    <Select
-                      options={categories.map((cat) => ({
-                        value: cat._id,
-                        label: cat.nameAr,
-                      }))}
-                      placeholder="اختر فئة"
-                      onChange={(val) => handleChange("category", val)}
-                      required
-                    />
-                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                      <ChevronDownIcon />
-                    </span>
-                  </div>
-                </div>
-
                 {/* Shop */}
                 <div>
                   <Label>
@@ -291,6 +295,7 @@ export function AddProductModal({
                       }))}
                       placeholder="اختر متجراً"
                       onChange={(val) => handleChange("shopId", val)}
+                      className="dark:bg-dark-900"
                       required
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
@@ -298,6 +303,55 @@ export function AddProductModal({
                     </span>
                   </div>
                 </div>
+
+                {/* Category */}
+                <div>
+                  <Label>
+                    الفئة <span className="text-error-500">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Select
+                      options={categories.map((cat) => ({
+                        value: cat._id,
+                        label: cat.nameAr,
+                      }))}
+                      placeholder={
+                        !formData.shopId
+                          ? "يرجى اختيار متجر أولاً"
+                          : categories.length === 0
+                            ? "لا توجد فئات لهذا المتجر"
+                            : "اختر الفئات"
+                      }
+                      onChange={(val) => handleChange("category", val)}
+                      disabled={!formData.shopId || categories.length === 0}
+                      className="dark:bg-dark-900"
+                      required
+                    />
+                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                      <ChevronDownIcon />
+                    </span>
+                  </div>
+                </div>
+
+                {/* Subcategories */}
+                {/* <MultiSelect
+                  label="الفئات الفرعية"
+                  placeholder={
+                    !formData.category
+                      ? "يرجى اختيار فئة أولاً"
+                      : subcategories.length === 0
+                        ? "لا توجد فئات فرعية لهذه الفئة"
+                        : "اختر الفئات الفرعية"
+                  }
+                  options={subcategories.map((sc) => ({
+                    value: sc._id,
+                    text: sc.nameAr,
+                    selected: formData.subcategories.includes(sc._id),
+                  }))}
+                  onChange={(values) => handleChange("subcategories", values)}
+                  disabled={!formData.category || subcategories.length === 0}
+                  required
+                /> */}
               </div>
             </div>
           </div>
@@ -576,6 +630,7 @@ export function EditProductModal({
                       }))}
                       placeholder="اختر متجراً"
                       onChange={(val) => handleChange("shopId", val)}
+                      className="dark:bg-dark-900"
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
@@ -590,11 +645,12 @@ export function EditProductModal({
                     <Select
                       options={categories.map((cat) => ({
                         value: cat._id,
-                        label: cat.nameAr,
+                        label: cat.nameEn,
                       }))}
                       placeholder="اختر فئة"
                       defaultValue={formData.category}
                       onChange={(val) => handleChange("category", val)}
+                      className="dark:bg-dark-900"
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />

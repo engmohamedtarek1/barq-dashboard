@@ -213,6 +213,7 @@ export function AddVendorModal({
                 معلومات البائع
               </h5>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                {/* Profile Image */}
                 <div className="lg:col-span-2">
                   <Label>صورة الملف الشخصي</Label>
                   <FileInput
@@ -222,6 +223,8 @@ export function AddVendorModal({
                     }
                   />
                 </div>
+
+                {/* Name */}
                 <div>
                   <Label>
                     الاسم <span className="text-error-500">*</span>
@@ -233,6 +236,8 @@ export function AddVendorModal({
                     required
                   />
                 </div>
+
+                {/* Mobile */}
                 <div>
                   <Label>
                     الهاتف <span className="text-error-500">*</span>
@@ -244,6 +249,8 @@ export function AddVendorModal({
                     required
                   />
                 </div>
+
+                {/* Location */}
                 <div>
                   <Label>
                     الموقع <span className="text-error-500">*</span>
@@ -255,6 +262,8 @@ export function AddVendorModal({
                     required
                   />
                 </div>
+
+                {/* Working Hours */}
                 <div>
                   <Label>
                     ساعات العمل <span className="text-error-500">*</span>
@@ -286,6 +295,8 @@ export function AddVendorModal({
                     />
                   </div>
                 </div>
+
+                {/* Active */}
                 <div>
                   <Label>
                     نشط <span className="text-error-500">*</span>
@@ -300,6 +311,7 @@ export function AddVendorModal({
                 تفاصيل متجر البائع
               </h5>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                {/* Category */}
                 <div>
                   <Label>
                     الفئة <span className="text-error-500">*</span>
@@ -320,6 +332,7 @@ export function AddVendorModal({
                   </div>
                 </div>
 
+                {/* Subcategories */}
                 <MultiSelect
                   label="الفئات الفرعية"
                   placeholder={
