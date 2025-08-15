@@ -2,7 +2,6 @@
 import React from "react";
 // import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import ChartTab from "../common/ChartTab";
 import dynamic from "next/dynamic";
 
 // Dynamically import the ReactApexChart component
@@ -130,9 +129,9 @@ export default function StatisticsChart() {
             الهدف الذي وضعته كل شهر
           </p>
         </div>
-        <div className="flex w-full items-start gap-3 sm:justify-end">
+        {/* <div className="flex w-full items-start gap-3 sm:justify-end">
           <ChartTab />
-        </div>
+        </div> */}
       </div>
 
       <div className="custom-scrollbar max-w-full overflow-x-auto">

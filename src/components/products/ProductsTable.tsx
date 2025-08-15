@@ -126,12 +126,6 @@ export default function ProductsTable() {
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    المبلغ
-                  </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
                     مرات البيع
                   </TableCell>
                   <TableCell
@@ -187,7 +181,7 @@ export default function ProductsTable() {
                         </div>
                       </TableCell>
 
-                      {Array.from({ length: 7 }).map((_, cellIdx) => (
+                      {Array.from({ length: 6 }).map((_, cellIdx) => (
                         <TableCell
                           key={cellIdx}
                           className="px-4 py-6 text-center text-gray-500"
@@ -235,9 +229,6 @@ export default function ProductsTable() {
                       </TableCell>
                       <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
                         {product.shopId.name}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {product.amount}
                       </TableCell>
                       <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
                         {product.soldTimes}

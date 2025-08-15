@@ -24,6 +24,7 @@ export function AddCategoryModal({
   onSuccess = () => {},
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -42,6 +43,8 @@ export function AddCategoryModal({
   };
 
   const handleSave = async () => {
+    setIsLoading(true);
+
     try {
       // Validation for required fields
       if (!formData.nameAr || typeof formData.nameAr !== "string") {
@@ -88,23 +91,23 @@ export function AddCategoryModal({
         title: "نجح إنشاء الفئة",
         message: "تم إنشاء الفئة بنجاح",
       });
-
-      // Auto hide toast after 5 seconds
+      setFormData({
+        nameAr: "",
+        nameEn: "",
+        image: new File([], ""),
+      });
       setTimeout(() => setToast(null), 5000);
-
       onSuccess?.();
-      closeModal();
     } catch (err) {
       setToast({
         variant: "error",
         title: "خطأ في إنشاء الفئة",
         message: "فشل في إنشاء الفئة. يرجى المحاولة مرة أخرى",
       });
-
-      // Auto hide toast after 5 seconds
       setTimeout(() => setToast(null), 5000);
-
       console.error("Failed to add category:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -166,7 +169,29 @@ export function AddCategoryModal({
             <Button size="sm" variant="outline" onClick={closeModal}>
               إغلاق
             </Button>
-            <Button size="sm" onClick={handleSave}>
+            <Button size="sm" onClick={handleSave} disabled={isLoading}>
+              {isLoading && (
+                <svg
+                  className="h-4 w-4 animate-spin text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              )}
               حفظ التغييرات
             </Button>
           </div>
@@ -211,6 +236,7 @@ export function EditCategoryModal({
   onSuccess = () => {},
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -240,6 +266,8 @@ export function EditCategoryModal({
   };
 
   const handleSave = async () => {
+    setIsLoading(true);
+
     try {
       let imageUrl = "";
 
@@ -272,20 +300,17 @@ export function EditCategoryModal({
 
       // Auto hide toast after 5 seconds
       setTimeout(() => setToast(null), 5000);
-
       onSuccess?.();
-      closeModal();
     } catch (err) {
       setToast({
         variant: "error",
         title: "خطأ في تحديث الفئة",
         message: "فشل في تحديث الفئة. يرجى المحاولة مرة أخرى",
       });
-
-      // Auto hide toast after 5 seconds
       setTimeout(() => setToast(null), 5000);
-
       console.error("Failed to update category:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -351,7 +376,29 @@ export function EditCategoryModal({
             <Button size="sm" variant="outline" onClick={closeModal}>
               إغلاق
             </Button>
-            <Button size="sm" onClick={handleSave}>
+            <Button size="sm" onClick={handleSave} disabled={isLoading}>
+              {isLoading && (
+                <svg
+                  className="h-4 w-4 animate-spin text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              )}
               حفظ التغييرات
             </Button>
           </div>
@@ -417,9 +464,7 @@ export function DeleteCategoryModal({
 
       // Auto hide toast after 5 seconds
       setTimeout(() => setToast(null), 5000);
-
       onSuccess?.();
-      closeModal();
     } catch (err) {
       setToast({
         variant: "error",

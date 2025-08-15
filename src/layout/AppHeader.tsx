@@ -76,7 +76,7 @@ const AppHeader: React.FC = () => {
             {/* Cross Icon */}
           </button>
 
-          <div className="hidden lg:block">
+          {/* <div className="hidden lg:block">
             <form>
               <div className="relative">
                 <span className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2">
@@ -109,7 +109,7 @@ const AppHeader: React.FC = () => {
                 </button>
               </div>
             </form>
-          </div>
+          </div> */}
 
           <div
             className={`flex items-center gap-4 lg:justify-end lg:px-0 lg:shadow-none`}

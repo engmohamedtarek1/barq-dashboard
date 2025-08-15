@@ -33,6 +33,7 @@ export function AddProductModal({
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -102,6 +103,8 @@ export function AddProductModal({
   };
 
   const handleSave = async () => {
+    setIsLoading(true);
+
     try {
       // Validation for required fields
       if (!formData.nameAr || typeof formData.nameAr !== "string") {
@@ -190,7 +193,16 @@ export function AddProductModal({
       });
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
-      closeModal();
+      setIsLoading(false);
+      setFormData({
+        nameAr: "",
+        nameEn: "",
+        price: 0,
+        shopId: "",
+        description: "",
+        category: "",
+        image: new File([], ""),
+      });
     } catch (err) {
       setToast({
         variant: "error",
@@ -199,6 +211,8 @@ export function AddProductModal({
       });
       setTimeout(() => setToast(null), 5000);
       console.error("Failed to add product:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -360,7 +374,29 @@ export function AddProductModal({
             <Button size="sm" variant="outline" onClick={closeModal}>
               إغلاق
             </Button>
-            <Button size="sm" onClick={handleSave}>
+            <Button size="sm" onClick={handleSave} disabled={isLoading}>
+              {isLoading && (
+                <svg
+                  className="h-4 w-4 animate-spin text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              )}
               حفظ التغييرات
             </Button>
           </div>
@@ -407,6 +443,8 @@ export function EditProductModal({
   const [categories, setCategories] = useState<Category[]>([]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -482,6 +520,8 @@ export function EditProductModal({
   };
 
   const handleSave = async () => {
+    setIsLoading(true);
+
     try {
       let imageUrl = "";
 
@@ -517,7 +557,6 @@ export function EditProductModal({
       });
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
-      closeModal();
     } catch (err) {
       setToast({
         variant: "error",
@@ -526,6 +565,8 @@ export function EditProductModal({
       });
       setTimeout(() => setToast(null), 5000);
       console.error("Failed to update product:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -700,7 +741,29 @@ export function EditProductModal({
             <Button size="sm" variant="outline" onClick={closeModal}>
               إغلاق
             </Button>
-            <Button size="sm" onClick={handleSave}>
+            <Button size="sm" onClick={handleSave} disabled={isLoading}>
+              {isLoading && (
+                <svg
+                  className="h-4 w-4 animate-spin text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              )}
               حفظ التغييرات
             </Button>
           </div>

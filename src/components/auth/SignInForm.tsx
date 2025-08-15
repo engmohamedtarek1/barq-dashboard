@@ -1,10 +1,8 @@
 "use client";
-import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
-import Link from "next/link";
+import { EyeCloseIcon, EyeIcon } from "@/icons";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -16,7 +14,6 @@ import {
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
   const [formData, setFormData] = useState<LoginPayload>({
     email: "",
     password: "",
@@ -101,29 +98,20 @@ export default function SignInForm() {
 
   return (
     <div className="flex w-full flex-1 flex-col lg:w-1/2">
-      <div className="mx-auto mb-5 w-full max-w-md sm:pt-10">
-        <Link
-          href="/"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <span className="scale-x-[-1]">
-            <ChevronLeftIcon />
-          </span>
-          الرجوع إلى لوحة التحكم
-        </Link>
-      </div>
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
+        {/* Header & Description */}
         <div>
-          <div className="mb-5 sm:mb-8">
-            <h1 className="text-title-sm sm:text-title-md mb-2 font-semibold text-gray-800 dark:text-white/90">
-              تسجيل الدخول
-            </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              اكتب البريد الاكتروني وكلمة المرور لتسجيل الدخول
-            </p>
-          </div>
-          <div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
+          <h1 className="text-title-sm sm:text-title-md mb-2 font-semibold text-gray-800 dark:text-white/90">
+            تسجيل الدخول
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            اكتب البريد الاكتروني وكلمة المرور لتسجيل الدخول
+          </p>
+        </div>
+
+        <div>
+          {/* Google and X buttons */}
+          {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
               <button className="inline-flex items-center justify-center gap-3 rounded-lg bg-gray-100 px-7 py-3 text-sm font-normal text-gray-700 transition-colors hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
                 <svg
                   width="20"
@@ -164,67 +152,75 @@ export default function SignInForm() {
                 </svg>
                 سجل دخولك باستخدام اكس
               </button>
+            </div> */}
+
+          {/* Border */}
+          <div className="relative py-3 sm:py-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
             </div>
-            <div className="relative py-3 sm:py-5">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
+            {/* <div className="relative flex justify-center text-sm">
                 <span className="bg-white p-2 text-gray-400 sm:px-5 sm:py-2 dark:bg-gray-900">
                   أو
                 </span>
+              </div> */}
+          </div>
+
+          {/* Sign in Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email */}
+            <div>
+              <Label>
+                البريد الاكتروني <span className="text-error-500">*</span>{" "}
+              </Label>
+              <Input
+                name="email"
+                placeholder="info@gmail.com"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className={errors.email ? "border-red-500" : ""}
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <Label>
+                كلمة المرور <span className="text-error-500">*</span>{" "}
+              </Label>
+              <div className="relative">
+                <Input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="اكتب كلمة المرور"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={errors.password ? "border-red-500" : ""}
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute end-4 top-1/2 z-30 -translate-y-1/2 cursor-pointer"
+                >
+                  {showPassword ? (
+                    <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                  ) : (
+                    <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                  )}
+                </span>
               </div>
             </div>
-            <form onSubmit={handleSubmit}>
-              <div className="space-y-6">
-                <div>
-                  <Label>
-                    البريد الاكتروني{" "}
-                    <span className="text-error-500">*</span>{" "}
-                  </Label>
-                  <Input
-                    name="email"
-                    placeholder="info@gmail.com"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className={errors.email ? "border-red-500" : ""}
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-                  )}
-                </div>
-                <div>
-                  <Label>
-                    كلمة المرور <span className="text-error-500">*</span>{" "}
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="اكتب كلمة المرور"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      className={errors.password ? "border-red-500" : ""}
-                    />
-                    <span
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute end-4 top-1/2 z-30 -translate-y-1/2 cursor-pointer"
-                    >
-                      {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                      ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                      )}
-                    </span>
-                  </div>
-                  {errors.password && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.password}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center justify-between">
+
+            {/* Errors */}
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+            )}
+
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+            )}
+
+            {/* Remember Me and Forget Password */}
+            {/* <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Checkbox checked={isChecked} onChange={setIsChecked} />
                     <span className="text-theme-sm block font-normal text-gray-700 dark:text-gray-400">
@@ -237,42 +233,42 @@ export default function SignInForm() {
                   >
                     نسيت كلمة المرور؟
                   </Link>
-                </div>
-                <div>
-                  <Button
-                    className="flex w-full items-center justify-center gap-2"
-                    size="sm"
-                    disabled={isLoading}
-                  >
-                    {isLoading && (
-                      <svg
-                        className="h-4 w-4 animate-spin text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                        ></path>
-                      </svg>
-                    )}
-                    تسجيل الدخول
-                  </Button>
-                </div>
-              </div>
-            </form>
+                </div> */}
 
-            <div className="mt-5">
+            {/* Submit Button */}
+            <Button
+              className="flex w-full items-center justify-center gap-2"
+              size="sm"
+              disabled={isLoading}
+            >
+              {isLoading && (
+                <svg
+                  className="h-4 w-4 animate-spin text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              )}
+              تسجيل الدخول
+            </Button>
+          </form>
+
+          {/* Register Now */}
+          {/* <div className="mt-5">
               <p className="text-center text-sm font-normal text-gray-700 sm:text-start dark:text-gray-400">
                 ليس لديك حساب؟{" "}
                 <Link
@@ -282,8 +278,7 @@ export default function SignInForm() {
                   تسجيل جديد
                 </Link>
               </p>
-            </div>
-          </div>
+            </div> */}
         </div>
       </div>
     </div>

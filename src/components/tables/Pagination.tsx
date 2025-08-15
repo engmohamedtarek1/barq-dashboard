@@ -9,10 +9,12 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
-  const pagesAroundCurrent = Array.from(
-    { length: Math.min(3, totalPages) },
-    (_, i) => i + Math.max(currentPage - 1, 1),
-  );
+  const startPage = Math.max(currentPage - 1, 1);
+  const endPage = Math.min(startPage + 2, totalPages);
+  const pagesAroundCurrent = [];
+  for (let page = startPage; page <= endPage; page++) {
+    pagesAroundCurrent.push(page);
+  }
 
   return (
     <div className="flex items-center">

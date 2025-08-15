@@ -2,7 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   Table,
@@ -29,7 +28,6 @@ export default function VendorsTable() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const router = useRouter();
 
   const { vendors, loading, totalPages, refetch } = useVendors(page, limit);
 
@@ -188,8 +186,9 @@ export default function VendorsTable() {
                       ))}
 
                       <TableCell className="flex items-center justify-center gap-3 px-4 py-6 text-gray-500">
-                        <Skeleton baseColor="#ecebeb" width={32} height={32} />
-                        <Skeleton baseColor="#ecebeb" width={32} height={32} />
+                        <Skeleton baseColor="#ecebeb" width={24} height={24} />
+                        <Skeleton baseColor="#ecebeb" width={24} height={24} />
+                        <Skeleton baseColor="#ecebeb" width={24} height={24} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -201,11 +200,11 @@ export default function VendorsTable() {
                       key={vendor._id}
                       className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
                     >
-                      <TableCell
-                        onClick={() => router.push(`/vendors/${vendor._id}`)}
-                        className="px-5 py-4 text-start sm:px-6"
-                      >
-                        <div className="flex items-center gap-3">
+                      <TableCell className="text-start">
+                        <Link
+                          href={`/vendors/${vendor._id}`}
+                          className="hover:bg-brand-gray/20 dark:hover:bg-brand-gray/15 flex items-center gap-3 px-5 py-4 sm:px-6"
+                        >
                           <Image
                             width={40}
                             height={40}
@@ -224,7 +223,7 @@ export default function VendorsTable() {
                               {vendor.mobile}
                             </span>
                           </div>
-                        </div>
+                        </Link>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
                         {vendor.category?.nameEn}
