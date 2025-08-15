@@ -164,6 +164,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
         title: "خطأ في التعديل",
         message: "فشل تعديل الفئة للبائع",
       });
+      setTimeout(() => setToast(null), 5000);
     }
   };
 
@@ -176,6 +177,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
         title: "تم حذف الفئة",
         message: "تم حذف الفئة بنجاح",
       });
+      setTimeout(() => setToast(null), 5000);
       setDeleteId(null);
       closeDeleteModal();
       await refetchCategoryshops();
@@ -185,6 +187,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
         title: "خطأ في الحذف",
         message: "فشل حذف الفئة للبائع",
       });
+      setTimeout(() => setToast(null), 5000);
     }
   };
 
@@ -203,11 +206,11 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
         <div>جاري التحميل...</div>
       ) : (
         <div className="space-y-4">
-          <ul className="space-y-2">
+          <ul className="grid grid-cols-1 gap-4 space-y-2 sm:grid-cols-2">
             {categoryshops.map((cat) => (
               <li
                 key={cat._id}
-                className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white px-4 py-2 dark:border-white/10 dark:bg-white/[0.05]"
+                className="flex h-full items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white px-4 py-2 dark:border-white/10 dark:bg-white/[0.05]"
               >
                 <span className="font-medium text-gray-700 dark:text-white/80">
                   {cat.nameAr} / {cat.nameEn}
@@ -345,9 +348,9 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
         onClose={closeDeleteModal}
         className="z-50 m-4 max-w-[400px] bg-black"
       >
-        <div className="no-scrollbar relative w-full max-w-[400px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-8 dark:bg-gray-900">
+        <div className="no-scrollbar relative w-full max-w-[400px] overflow-y-auto rounded-3xl bg-white p-4 text-gray-800 lg:p-8 dark:bg-gray-900 dark:text-white/90">
           <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
-            <h4 className="mb-5 px-2 pb-3 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
+            <h4 className="mb-5 px-2 pb-3 text-lg font-medium lg:mb-6">
               حذف الفئة
             </h4>
             <p>هل أنت متأكد من حذف هذه الفئة؟</p>

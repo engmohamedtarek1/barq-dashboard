@@ -102,7 +102,7 @@ export default function VendorDetailsComponent() {
                 </Badge>
               </div>
 
-              <div className="flex-1 space-y-4">
+              <div className="flex-1 space-y-6">
                 {/* Name, Phone Number, Location, Working Hours, Rating, Review Count */}
                 <div>
                   <h2 className="mb-1 text-lg font-medium text-gray-800 dark:text-white/90">
