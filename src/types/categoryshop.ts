@@ -8,4 +8,5 @@ export interface Categoryshop {
 export interface CreateCategoryshopPayload {
   nameAr: string;
   nameEn: string;
+  shop?: string;
 }

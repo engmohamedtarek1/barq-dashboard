@@ -12,11 +12,13 @@ import {
   EditVendorButton,
   DeleteVendorButton,
 } from "@/components/vendors/VendorsModals";
+import CategoryShopCRUD from "./CategoryShopCRUD";
 
 export default function VendorDetailsComponent() {
   const { vendorId } = useParams<{ vendorId: string }>();
   const router = useRouter();
   const [vendor, setVendor] = useState<Vendor | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -99,7 +101,9 @@ export default function VendorDetailsComponent() {
                   {vendor.isActive ? "نشط" : "غير نشط"}
                 </Badge>
               </div>
+
               <div className="flex-1 space-y-4">
+                {/* Name, Phone Number, Location, Working Hours, Rating, Review Count */}
                 <div>
                   <h2 className="mb-1 text-lg font-medium text-gray-800 dark:text-white/90">
                     معلومات عامة
@@ -126,6 +130,8 @@ export default function VendorDetailsComponent() {
                     />
                   </div>
                 </div>
+
+                {/* Category */}
                 <div>
                   <h2 className="mb-1 text-lg font-medium text-gray-800 dark:text-white/90">
                     الفئة
@@ -138,6 +144,8 @@ export default function VendorDetailsComponent() {
                     </p>
                   </div>
                 </div>
+
+                {/* Subcategories */}
                 <div>
                   <h2 className="mb-1 text-lg font-medium text-gray-800 dark:text-white/90">
                     الفئات الفرعية
@@ -159,6 +167,9 @@ export default function VendorDetailsComponent() {
                     )}
                   </div>
                 </div>
+
+                {/* Shop Categories */}
+                {vendor && <CategoryShopCRUD vendorId={vendor._id} />}
               </div>
             </div>
           </div>

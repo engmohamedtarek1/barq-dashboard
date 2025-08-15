@@ -188,6 +188,7 @@ export function AddVendorModal({
         title: "نجح إنشاء البائع",
         message: "تم إنشاء البائع بنجاح",
       });
+      setTimeout(() => setToast(null), 5000);
       setFormData({
         name: "",
         mobile: "",
@@ -197,7 +198,6 @@ export function AddVendorModal({
         category: "",
         subcategories: [],
       });
-      setTimeout(() => setToast(null), 5000);
       onSuccess?.();
     } catch (err) {
       setToast({

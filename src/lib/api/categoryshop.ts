@@ -2,9 +2,14 @@
 import axios from "axios";
 import { Categoryshop, CreateCategoryshopPayload } from "@/types/categoryshop";
 import { BASE_URL } from "../config";
+import { authHeaders } from "./auth";
 
 export async function createCategoryshop(payload: CreateCategoryshopPayload) {
-  return axios.post(`${BASE_URL}/category-shop`, payload);
+  return axios.post(`${BASE_URL}/category-shop`, payload, {
+    headers: {
+      ...authHeaders(),
+    },
+  });
 }
 
 export async function updateCategoryshop(
@@ -14,12 +19,21 @@ export async function updateCategoryshop(
   const response = await axios.patch(
     `${BASE_URL}/category-shop/${category}`,
     data,
+    {
+      headers: {
+        ...authHeaders(),
+      },
+    },
   );
   return response.data;
 }
 
 export async function deleteCategoryshop(category: string) {
-  return axios.delete(`${BASE_URL}/category-shop/${category}`);
+  return axios.delete(`${BASE_URL}/category-shop/${category}`, {
+    headers: {
+      ...authHeaders(),
+    },
+  });
 }
 
 export const fetchCategoryshops = async (
