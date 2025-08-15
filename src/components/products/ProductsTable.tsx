@@ -225,10 +225,10 @@ export default function ProductsTable() {
                         </div>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {product.category.nameAr}
+                        {product.category?.nameAr}
                       </TableCell>
                       <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {product.shopId.name}
+                        {product.shopId?.name}
                       </TableCell>
                       <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
                         {product.soldTimes}

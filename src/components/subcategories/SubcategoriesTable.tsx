@@ -199,18 +199,18 @@ export default function SubcategoriesTable() {
                             width={40}
                             height={40}
                             src={
-                              subcategory.category.image ||
+                              subcategory.category?.image ||
                               "/images/logo/barq-logo.png"
                             }
-                            alt={subcategory.category.nameEn}
+                            alt={subcategory.category?.nameEn}
                             className="size-10 rounded-full object-cover"
                           />
                           <div>
                             <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {subcategory.category.nameAr}
+                              {subcategory.category?.nameAr}
                             </span>
                             <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {subcategory.category.nameEn}
+                              {subcategory.category?.nameEn}
                             </span>
                           </div>
                         </div>
