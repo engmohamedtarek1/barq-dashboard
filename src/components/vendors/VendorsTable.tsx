@@ -1,7 +1,7 @@
 // src/components/vendors/VendorsTable.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
   Table,
@@ -21,6 +21,7 @@ import {
 import { FaEye } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import Link from "next/link";
+import { fetchVendorsByKeyword } from "@/lib/api/vendors";
 
 const limits = [5, 10, 20, 50];
 
@@ -28,16 +29,51 @@ export default function VendorsTable() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<typeof vendors>([]);
+  const [searchPages, setSearchPages] = useState(1);
 
   const { vendors, loading, totalPages, refetch } = useVendors(page, limit);
 
-  const filteredVendors = vendors.filter(
-    (vendor) =>
-      vendor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vendor.mobile?.includes(searchTerm) ||
-      vendor.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vendor.category?.nameEn?.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  useEffect(() => {
+    const trimmed = searchTerm.trim();
+    if (!trimmed) {
+      setSearchResults([]);
+      setSearchPages(1);
+      return;
+    }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      try {
+        const { data, pages } = await fetchVendorsByKeyword(
+          trimmed,
+          page,
+          limit,
+        );
+        if (!cancelled) {
+          setSearchResults(data);
+          setSearchPages(pages);
+        }
+      } catch {
+        if (!cancelled) setSearchResults([]);
+      } finally {
+      }
+    }, 350);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [searchTerm, page, limit]);
+
+  const filteredVendors = useMemo(() => {
+    const trimmed = searchTerm.trim();
+    if (!trimmed) return vendors;
+    return searchResults;
+  }, [vendors, searchResults, searchTerm]);
+
+  const effectiveTotalPages = useMemo(() => {
+    const trimmed = searchTerm.trim();
+    return trimmed ? searchPages : totalPages;
+  }, [searchTerm, searchPages, totalPages]);
 
   return (
     <div className="space-y-4">
@@ -270,7 +306,7 @@ export default function VendorsTable() {
       <div className="flex justify-end pt-2">
         <Pagination
           currentPage={page}
-          totalPages={totalPages}
+          totalPages={effectiveTotalPages}
           onPageChange={setPage}
         />
       </div>

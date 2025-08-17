@@ -45,3 +45,17 @@ export const fetchProducts = async (
     pages: response.data.metadata.pages,
   };
 };
+
+export const fetchProductsByKeyword = async (
+  keyword: string,
+  page: number,
+  limit: number,
+): Promise<{ data: Product[]; pages: number }> => {
+  const response = await axios.get(`${BASE_URL}/product`, {
+    params: { keyword, page, limit },
+  });
+  return {
+    data: response.data.data ?? [],
+    pages: response.data?.metadata?.pages ?? 1,
+  };
+};

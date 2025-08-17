@@ -67,3 +67,17 @@ export const fetchVendors = async (
     pages: response.data.metadata.pages,
   };
 };
+
+export const fetchVendorsByKeyword = async (
+  keyword: string,
+  page: number,
+  limit: number,
+): Promise<{ data: Vendor[]; pages: number }> => {
+  const response = await axios.get(`${BASE_URL}/admin/vendors`, {
+    params: { keyword, page, limit },
+  });
+  return {
+    data: response.data.data ?? [],
+    pages: response.data?.metadata?.pages ?? 1,
+  };
+};
