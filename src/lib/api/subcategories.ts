@@ -47,3 +47,17 @@ export const fetchSubcategoriesByCategory = async (
     data: response.data.data,
   };
 };
+
+export const fetchSubcategoriesByKeyword = async (
+  keyword: string,
+  page: number,
+  limit: number,
+): Promise<{ data: Subcategory[]; pages: number }> => {
+  const response = await axios.get(`${BASE_URL}/subcategory`, {
+    params: { keyword, page, limit },
+  });
+  return {
+    data: response.data.data ?? [],
+    pages: response.data?.metadata?.pages ?? 1,
+  };
+};

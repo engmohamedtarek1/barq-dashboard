@@ -1,7 +1,7 @@
 // src/components/products/ProductsTable.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
   Table,
@@ -18,6 +18,7 @@ import {
 } from "./SubcategoriesModals";
 import { useSubcategories } from "@/hooks/useSubcategories";
 import Skeleton from "react-loading-skeleton";
+import { fetchSubcategoriesByKeyword } from "@/lib/api/subcategories";
 
 const limits = [5, 10, 20, 50];
 
@@ -25,17 +26,55 @@ export default function SubcategoriesTable() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<typeof subcategories>([]);
+  const [searchPages, setSearchPages] = useState(1);
 
   const { subcategories, loading, totalPages, refetch } = useSubcategories(
     page,
     limit,
   );
 
-  const filteredSubcategories = subcategories.filter(
-    (subcategory) =>
-      subcategory.nameEn?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      subcategory.nameAr?.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  useEffect(() => {
+    const trimmed = searchTerm.trim();
+    if (!trimmed) {
+      setSearchResults([]);
+      setSearchPages(1);
+      return;
+    }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      try {
+        const { data, pages } = await fetchSubcategoriesByKeyword(
+          trimmed,
+          page,
+          limit,
+        );
+        if (!cancelled) {
+          setSearchResults(data);
+          setSearchPages(pages);
+        }
+      } catch {
+        if (!cancelled) setSearchResults([]);
+      } finally {
+        // no-op
+      }
+    }, 350);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [searchTerm, page, limit]);
+
+  const filteredSubcategories = useMemo(() => {
+    const trimmed = searchTerm.trim();
+    if (!trimmed) return subcategories;
+    return searchResults;
+  }, [subcategories, searchResults, searchTerm]);
+
+  const effectiveTotalPages = useMemo(() => {
+    const trimmed = searchTerm.trim();
+    return trimmed ? searchPages : totalPages;
+  }, [searchTerm, searchPages, totalPages]);
 
   return (
     <div className="space-y-4">
@@ -238,7 +277,7 @@ export default function SubcategoriesTable() {
       <div className="flex justify-end pt-2">
         <Pagination
           currentPage={page}
-          totalPages={totalPages}
+          totalPages={effectiveTotalPages}
           onPageChange={setPage}
         />
       </div>

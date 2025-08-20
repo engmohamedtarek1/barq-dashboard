@@ -28,3 +28,17 @@ export const fetchCategories = async (): Promise<{
     data: response.data.data,
   };
 };
+
+export const fetchCategoriesByKeyword = async (
+  keyword: string,
+  page: number,
+  limit: number,
+): Promise<{ data: Category[]; pages: number }> => {
+  const response = await axios.get(`${BASE_URL}/category`, {
+    params: { keyword, page, limit },
+  });
+  return {
+    data: response.data.data ?? [],
+    pages: response.data?.metadata?.pages ?? 1,
+  };
+};
