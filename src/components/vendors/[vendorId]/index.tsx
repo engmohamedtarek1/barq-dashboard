@@ -13,6 +13,7 @@ import {
   DeleteVendorButton,
 } from "@/components/vendors/VendorsModals";
 import CategoryShopCRUD from "./CategoryShopCRUD";
+import { AddProductButton } from "@/components/products/ProductsModals";
 
 export default function VendorDetailsComponent() {
   const { vendorId } = useParams<{ vendorId: string }>();
@@ -206,6 +207,13 @@ export default function VendorDetailsComponent() {
                     <DeleteVendorButton
                       vendorId={vendor._id}
                       onSuccess={() => router.push("/vendors")}
+                    />
+                    {/* Add Product for this vendor */}
+                    <AddProductButton
+                      vendorId={vendor._id}
+                      onSuccess={() => {
+                        /* refresh products section if added later */
+                      }}
                     />
                   </>
                 )}

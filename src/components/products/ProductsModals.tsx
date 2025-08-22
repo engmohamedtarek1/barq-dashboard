@@ -29,6 +29,12 @@ export function AddProductModal({
   isOpen = false,
   closeModal = () => {},
   onSuccess = () => {},
+  vendorId,
+}: {
+  isOpen?: boolean;
+  closeModal?: () => void;
+  onSuccess?: () => void;
+  vendorId?: string;
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -53,23 +59,24 @@ export function AddProductModal({
   });
 
   useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
+    if (!isOpen) return;
     const fetchData = async () => {
       try {
-        const { data: categories } = await fetchCategories();
-        const { data: vendors } = await fetchVendors();
-        setCategories(categories);
-        setVendors(vendors);
+        const { data: baseCategories } = await fetchCategories();
+        setCategories(baseCategories);
+        // Always fetch vendors so we have label even if locked
+        const { data: vendorsList } = await fetchVendors(1, 1000);
+        setVendors(vendorsList);
+        // Preselect vendor if provided
+        if (vendorId) {
+          setFormData((prev) => ({ ...prev, shopId: vendorId }));
+        }
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
     };
-
     fetchData();
-  }, [isOpen]);
+  }, [isOpen, vendorId]);
 
   // Fetch subcategories when category changes
   useEffect(() => {
@@ -301,11 +308,18 @@ export function AddProductModal({
                       onChange={(val) => handleChange("shopId", val)}
                       className="dark:bg-dark-900"
                       required
+                      defaultValue={vendorId || undefined}
+                      disabled={!!vendorId}
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
                     </span>
                   </div>
+                  {vendorId && (
+                    <p className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
+                      مرتبط تلقائياً بهذا المتجر.
+                    </p>
+                  )}
                 </div>
 
                 {/* Category */}
@@ -401,7 +415,13 @@ export function AddProductModal({
   );
 }
 
-export function AddProductButton({ onSuccess }: { onSuccess?: () => void }) {
+export function AddProductButton({
+  onSuccess,
+  vendorId,
+}: {
+  onSuccess?: () => void;
+  vendorId?: string;
+}) {
   const { isOpen, openModal, closeModal } = useModal();
 
   const handleAfterCreate = async () => {
@@ -418,6 +438,7 @@ export function AddProductButton({ onSuccess }: { onSuccess?: () => void }) {
         isOpen={isOpen}
         closeModal={closeModal}
         onSuccess={handleAfterCreate}
+        vendorId={vendorId}
       />
     </>
   );
