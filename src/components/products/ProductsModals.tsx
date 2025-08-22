@@ -116,15 +116,6 @@ export function AddProductModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.nameEn || typeof formData.nameEn !== "string") {
-        setToast({
-          variant: "error",
-          title: "حقل مطلوب",
-          message: "الاسم (بالإنجليزية) مطلوب.",
-        });
-        setTimeout(() => setToast(null), 5000);
-        return;
-      }
       if (formData.price < 0) {
         setToast({
           variant: "error",
@@ -161,6 +152,9 @@ export function AddProductModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
+      const effectiveNameEn = formData.nameEn?.trim()
+        ? formData.nameEn.trim()
+        : formData.nameAr.trim();
 
       let imageUrl = "";
       if (formData.image instanceof File && formData.image.size > 0) {
@@ -170,7 +164,7 @@ export function AddProductModal({
 
       const payloadRaw: CreateProductPayload = {
         nameAr: formData.nameAr,
-        nameEn: formData.nameEn,
+        nameEn: effectiveNameEn,
         price: formData.price,
         shopId: formData.shopId,
         description: formData.description,
@@ -255,15 +249,11 @@ export function AddProductModal({
 
                 {/* Name (in English) */}
                 <div>
-                  <Label>
-                    الاسم (بالإنجليزية){" "}
-                    <span className="text-error-500">*</span>
-                  </Label>
+                  <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
                     placeholder="Arabic Coffee"
                     onChange={(e) => handleChange("nameEn", e.target.value)}
-                    required
                   />
                 </div>
 
@@ -534,7 +524,9 @@ export function EditProductModal({
 
       const payloadRaw: Partial<CreateProductPayload> = {
         nameAr: formData.nameAr,
-        nameEn: formData.nameEn,
+        nameEn: formData.nameEn?.trim()
+          ? formData.nameEn.trim()
+          : formData.nameAr.trim(),
         price: formData.price,
         shopId: formData.shopId,
         description: formData.description,
@@ -686,7 +678,7 @@ export function EditProductModal({
                     <Select
                       options={categories.map((cat) => ({
                         value: cat._id,
-                        label: cat.nameEn,
+                        label: cat.nameEn || cat.nameAr,
                       }))}
                       placeholder="اختر فئة"
                       defaultValue={formData.category}

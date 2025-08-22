@@ -56,15 +56,10 @@ export function AddCategoryModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.nameEn || typeof formData.nameEn !== "string") {
-        setToast({
-          variant: "error",
-          title: "حقل مطلوب",
-          message: "الاسم (بالإنجليزية) مطلوب.",
-        });
-        setTimeout(() => setToast(null), 5000);
-        return;
-      }
+      // nameEn optional: fallback to nameAr if empty
+      const effectiveNameEn = formData.nameEn?.trim()
+        ? formData.nameEn.trim()
+        : formData.nameAr.trim();
 
       let imageUrl = "";
       if (formData.image instanceof File && formData.image.size > 0) {
@@ -74,7 +69,7 @@ export function AddCategoryModal({
 
       const payloadRaw: CreateCategoryPayload = {
         nameAr: formData.nameAr,
-        nameEn: formData.nameEn,
+        nameEn: effectiveNameEn,
         image: imageUrl,
       };
       // Remove empty-string fields
@@ -150,15 +145,11 @@ export function AddCategoryModal({
 
                 {/* Name (in English) */}
                 <div>
-                  <Label>
-                    الاسم (بالإنجليزية){" "}
-                    <span className="text-error-500">*</span>
-                  </Label>
+                  <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
                     placeholder="Sea Food"
                     onChange={(e) => handleChange("nameEn", e.target.value)}
-                    required
                   />
                 </div>
               </div>
@@ -280,7 +271,9 @@ export function EditCategoryModal({
 
       const payloadRaw: Partial<CreateCategoryPayload> = {
         nameAr: formData.nameAr,
-        nameEn: formData.nameEn,
+        nameEn: formData.nameEn?.trim()
+          ? formData.nameEn.trim()
+          : formData.nameAr.trim(),
         image: imageUrl,
       };
       // Remove empty-string fields

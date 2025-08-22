@@ -86,27 +86,25 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
 
   const handleCreate = async () => {
     try {
-      // Validation for required fields
-      if (!form.nameEn || typeof form.nameEn !== "string") {
-        setToast({
-          variant: "error",
-          title: "حقل مطلوب",
-          message: "اسم البائع (بالعربية) مطلوب.",
-        });
-        setTimeout(() => setToast(null), 5000);
-        return;
-      }
+      // Require only Arabic name; English optional
       if (!form.nameAr || typeof form.nameAr !== "string") {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
-          message: "اسم البائع (بالإنجليزية) مطلوب.",
+          message: "الاسم (بالعربية) مطلوب.",
         });
         setTimeout(() => setToast(null), 5000);
         return;
       }
+      const effectiveNameEn = form.nameEn?.trim()
+        ? form.nameEn.trim()
+        : form.nameAr.trim();
 
-      await createCategoryshop({ ...form, shop: vendorId });
+      await createCategoryshop({
+        nameAr: form.nameAr,
+        nameEn: effectiveNameEn,
+        shop: vendorId,
+      });
       setToast({
         variant: "success",
         title: "تم إضافة الفئة",
@@ -137,7 +135,9 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
     try {
       const payloadRaw: Partial<CreateCategoryshopPayload> = {
         nameAr: editForm.nameAr,
-        nameEn: editForm.nameEn,
+        nameEn: editForm.nameEn?.trim()
+          ? editForm.nameEn.trim()
+          : editForm.nameAr.trim(),
       };
       // Remove empty-string fields
       const payload = Object.fromEntries(
@@ -213,7 +213,10 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
                 className="flex h-full items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white px-4 py-2 dark:border-white/10 dark:bg-white/[0.05]"
               >
                 <span className="font-medium text-gray-700 dark:text-white/80">
-                  {cat.nameAr} / {cat.nameEn}
+                  {cat.nameAr}
+                  {cat.nameEn && cat.nameEn.trim() !== cat.nameAr.trim()
+                    ? ` / ${cat.nameEn}`
+                    : ""}
                 </span>
                 <span className="flex gap-2">
                   <button

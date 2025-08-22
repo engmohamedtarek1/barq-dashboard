@@ -79,15 +79,6 @@ export function AddSubcategoryModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.nameEn || typeof formData.nameEn !== "string") {
-        setToast({
-          variant: "error",
-          title: "حقل مطلوب",
-          message: "الاسم (بالإنجليزية) مطلوب.",
-        });
-        setTimeout(() => setToast(null), 5000);
-        return;
-      }
       if (!formData.category || typeof formData.category !== "string") {
         setToast({
           variant: "error",
@@ -97,6 +88,9 @@ export function AddSubcategoryModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
+      const effectiveNameEn = formData.nameEn?.trim()
+        ? formData.nameEn.trim()
+        : formData.nameAr.trim();
 
       let imageUrl = "";
       if (formData.image instanceof File && formData.image.size > 0) {
@@ -106,7 +100,7 @@ export function AddSubcategoryModal({
 
       const payloadRaw: CreateSubcategoryPayload = {
         nameAr: formData.nameAr,
-        nameEn: formData.nameEn,
+        nameEn: effectiveNameEn,
         category: formData.category,
         image: imageUrl,
       };
@@ -184,14 +178,11 @@ export function AddSubcategoryModal({
 
                 {/* Name (in English) */}
                 <div>
-                  <Label>
-                    الاسم (بالإنجليزية) <span className="text-red-500">*</span>
-                  </Label>
+                  <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
                     placeholder="Sea Food"
                     onChange={(e) => handleChange("nameEn", e.target.value)}
-                    required
                   />
                 </div>
 
@@ -356,7 +347,9 @@ export function EditSubcategoryModal({
 
       const payloadRaw: Partial<CreateSubcategoryPayload> = {
         nameAr: formData.nameAr,
-        nameEn: formData.nameEn,
+        nameEn: formData.nameEn?.trim()
+          ? formData.nameEn.trim()
+          : formData.nameAr.trim(),
         category: formData.category,
         image: imageUrl,
       };
