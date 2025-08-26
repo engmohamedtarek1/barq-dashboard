@@ -490,9 +490,9 @@ export function EditProductModal({
 
     const fetchData = async () => {
       try {
-        const { data: categories } = await fetchCategories();
+        // Load vendors list for selector
         const { data: vendors } = await fetchVendors();
-        setCategories(categories);
+        setVendors(vendors);
         setVendors(vendors);
         setCategoriesLoaded(true);
       } catch (err) {
@@ -522,6 +522,24 @@ export function EditProductModal({
       });
     }
   }, [product, isOpen, categoriesLoaded]);
+
+  // Fetch vendor-specific categories (categoryshops) when shop changes (like AddProductModal)
+  useEffect(() => {
+    if (!formData.shopId) {
+      setCategories([]);
+      return;
+    }
+    const fetchVendorCategories = async () => {
+      try {
+        const { data } = await fetchCategoryshopsByVendor(formData.shopId);
+        setCategories(data);
+      } catch (err) {
+        console.error("Failed to fetch vendor categories:", err);
+        setCategories([]);
+      }
+    };
+    fetchVendorCategories();
+  }, [formData.shopId]);
 
   const handleChange = (
     field: string,
@@ -699,11 +717,27 @@ export function EditProductModal({
                     <Select
                       options={categories.map((cat) => ({
                         value: cat._id,
-                        label: cat.nameEn || cat.nameAr,
+                        label:
+                          (
+                            cat as unknown as {
+                              nameAr?: string;
+                              nameEn?: string;
+                              _id: string;
+                            }
+                          ).nameAr ||
+                          (cat as unknown as { nameEn?: string }).nameEn ||
+                          cat._id,
                       }))}
-                      placeholder="اختر فئة"
+                      placeholder={
+                        !formData.shopId
+                          ? "يرجى اختيار متجر أولاً"
+                          : categories.length === 0
+                            ? "لا توجد فئات لهذا المتجر"
+                            : "اختر الفئات"
+                      }
                       defaultValue={formData.category}
                       onChange={(val) => handleChange("category", val)}
+                      disabled={!formData.shopId || categories.length === 0}
                       className="dark:bg-dark-900"
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">

@@ -28,7 +28,7 @@ const Input: FC<InputProps> = ({
   value,
   onChange,
   className = "",
-  min,
+  min = 0,
   max,
   step,
   disabled = false,
