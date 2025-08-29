@@ -22,6 +22,7 @@ import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
 import { fetchCategories } from "@/lib/api/categories";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
+import { AxiosError } from "axios";
 
 export function AddVendorModal({
   isOpen = false,
@@ -200,11 +201,21 @@ export function AddVendorModal({
       });
       onSuccess?.();
     } catch (err) {
-      setToast({
-        variant: "error",
-        title: "خطأ في إنشاء البائع",
-        message: "فشل في إنشاء البائع. يرجى المحاولة مرة أخرى",
-      });
+      if (err instanceof AxiosError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في إنشاء البائع",
+          message:
+            err.response?.data?.message ||
+            "فشل في إنشاء البائع. يرجى المحاولة مرة أخرى",
+        });
+      } else {
+        setToast({
+          variant: "error",
+          title: "خطأ غير متوقع",
+          message: "حدث خطأ غير معروف",
+        });
+      }
       setTimeout(() => setToast(null), 5000);
       console.error("Failed to add vendor:", err);
     } finally {
@@ -401,7 +412,7 @@ export function AddVendorModal({
         </form>
       </div>
       {toast && (
-        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+        <div className="fixed end-4 top-4 z-[9999] max-w-sm">
           <Alert {...toast} />
         </div>
       )}
@@ -563,11 +574,21 @@ export function EditVendorModal({
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
     } catch (err) {
-      setToast({
-        variant: "error",
-        title: "خطأ في تحديث البائع",
-        message: "فشل في تحديث البائع. يرجى المحاولة مرة أخرى",
-      });
+      if (err instanceof AxiosError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في تحديث البائع",
+          message:
+            err.response?.data?.message ||
+            "فشل في تحديث البائع. يرجى المحاولة مرة أخرى",
+        });
+      } else {
+        setToast({
+          variant: "error",
+          title: "خطأ غير متوقع",
+          message: "حدث خطأ غير معروف",
+        });
+      }
       setTimeout(() => setToast(null), 5000);
       console.error("Failed to update vendor:", err);
     } finally {
@@ -748,7 +769,7 @@ export function EditVendorModal({
         </form>
       </div>
       {toast && (
-        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+        <div className="fixed end-4 top-4 z-[9999] max-w-sm">
           <Alert {...toast} />
         </div>
       )}
@@ -804,11 +825,21 @@ export function DeleteVendorModal({
       onSuccess?.();
       closeModal();
     } catch (err) {
-      setToast({
-        variant: "error",
-        title: "خطأ في حذف البائع",
-        message: "فشل في حذف البائع. يرجى المحاولة مرة أخرى",
-      });
+      if (err instanceof AxiosError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في حذف البائع",
+          message:
+            err.response?.data?.message ||
+            "فشل في حذف البائع. يرجى المحاولة مرة أخرى",
+        });
+      } else {
+        setToast({
+          variant: "error",
+          title: "خطأ غير متوقع",
+          message: "حدث خطأ غير معروف",
+        });
+      }
       setTimeout(() => setToast(null), 5000);
       console.error("Failed to delete vendor:", err);
     }
@@ -845,7 +876,7 @@ export function DeleteVendorModal({
         </form>
       </div>
       {toast && (
-        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+        <div className="fixed end-4 top-4 z-[9999] max-w-sm">
           <Alert {...toast} />
         </div>
       )}

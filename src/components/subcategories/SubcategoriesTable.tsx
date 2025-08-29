@@ -219,7 +219,10 @@ export default function SubcategoriesTable() {
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                   {filteredSubcategories.map((subcategory) => (
-                    <TableRow key={subcategory._id}>
+                    <TableRow
+                      key={subcategory._id}
+                      className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
+                    >
                       <TableCell className="px-5 py-4 text-start sm:px-6">
                         <div className="flex items-center gap-3">
                           <div>

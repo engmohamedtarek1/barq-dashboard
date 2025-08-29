@@ -291,7 +291,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
           </form>
         </div>
         {toast && (
-          <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <div className="fixed end-4 top-4 z-[9999] max-w-sm">
             <Alert {...toast} />
           </div>
         )}
@@ -339,7 +339,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
           </form>
         </div>
         {toast && (
-          <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <div className="fixed end-4 top-4 z-[9999] max-w-sm">
             <Alert {...toast} />
           </div>
         )}
@@ -372,7 +372,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
           </form>
         </div>
         {toast && (
-          <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+          <div className="fixed end-4 top-4 z-[9999] max-w-sm">
             <Alert {...toast} />
           </div>
         )}
@@ -380,7 +380,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
 
       {/* Toast for non-modal actions */}
       {toast && !isAddOpen && !isEditOpen && !isDeleteOpen && (
-        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+        <div className="fixed end-4 top-4 z-[9999] max-w-sm">
           <Alert {...toast} />
         </div>
       )}

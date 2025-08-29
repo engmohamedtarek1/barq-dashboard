@@ -1,63 +1,34 @@
+// components/admins/AddAdminModal.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
-import FileInput from "../form/input/FileInput";
-import { uploadImage } from "@/lib/api/uploadImage";
-import { CreateSubcategoryPayload, Subcategory } from "@/types/subcategory";
-
+import { createAdmin, deleteAdmin, updateAdmin } from "@/lib/api/admins";
+import { CreateAdminPayload, Admin } from "@/types/admin";
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
-import Image from "next/image";
-import {
-  createSubcategory,
-  deleteSubcategory,
-  updateSubcategory,
-} from "@/lib/api/subcategories";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
-import { fetchCategories } from "@/lib/api/categories";
-import { Category } from "@/types/category";
-import Select from "../form/Select";
-import { ChevronDownIcon } from "@/icons";
+import { useModal } from "@/hooks/useModal";
 import { AxiosError } from "axios";
 
-export function AddSubcategoryModal({
+export function AddAdminModal({
   isOpen = false,
   closeModal = () => {},
   onSuccess = () => {},
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<{
-    nameAr: string;
-    nameEn: string;
-    category: string;
-    image: File;
+    name: string;
+    email: string;
+    password: string;
   }>({
-    nameAr: "",
-    nameEn: "",
-    category: "",
-    image: new File([], ""),
+    name: "",
+    email: "",
+    password: "",
   });
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const fetchData = async () => {
-      try {
-        const { data: categories } = await fetchCategories();
-        setCategories(categories);
-      } catch (err) {
-        console.error("Failed to fetch data:", err);
-      }
-    };
-
-    fetchData();
-  }, [isOpen]);
 
   const handleChange = (
     field: string,
@@ -71,39 +42,38 @@ export function AddSubcategoryModal({
 
     try {
       // Validation for required fields
-      if (!formData.nameAr || typeof formData.nameAr !== "string") {
+      if (!formData.name || typeof formData.name !== "string") {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
-          message: "الاسم (بالعربية) مطلوب.",
+          message: "اسم المشرف مطلوب.",
         });
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.category || typeof formData.category !== "string") {
+      if (!formData.email || typeof formData.email !== "string") {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
-          message: "الفئة المطلوبة.",
+          message: "البريد الإلكتروني مطلوب.",
         });
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      const effectiveNameEn = formData.nameEn?.trim()
-        ? formData.nameEn.trim()
-        : formData.nameAr.trim();
-
-      let imageUrl = "";
-      if (formData.image instanceof File && formData.image.size > 0) {
-        const uploaded = await uploadImage(formData.image);
-        imageUrl = uploaded.data;
+      if (!formData.password || typeof formData.password !== "string") {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "كلمة المرور مطلوبة.",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
       }
 
-      const payloadRaw: CreateSubcategoryPayload = {
-        nameAr: formData.nameAr,
-        nameEn: effectiveNameEn,
-        category: formData.category,
-        image: imageUrl,
+      const payloadRaw: CreateAdminPayload = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
       };
       // Remove empty-string fields
       const payload = Object.fromEntries(
@@ -111,30 +81,29 @@ export function AddSubcategoryModal({
           const v = entry[1] as unknown;
           return typeof v === "string" ? v.trim() !== "" : true;
         }),
-      ) as CreateSubcategoryPayload;
+      ) as CreateAdminPayload;
 
-      await createSubcategory(payload);
+      await createAdmin(payload);
       setToast({
         variant: "success",
-        title: "نجح إنشاء الفئة الفرعية",
-        message: "تم إنشاء الفئة الفرعية بنجاح",
-      });
-      setFormData({
-        nameAr: "",
-        nameEn: "",
-        category: "",
-        image: new File([], ""),
+        title: "نجح إنشاء المشرف",
+        message: "تم إنشاء المشرف بنجاح",
       });
       setTimeout(() => setToast(null), 5000);
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+      });
       onSuccess?.();
     } catch (err) {
       if (err instanceof AxiosError) {
         setToast({
           variant: "error",
-          title: "خطأ في إنشاء الفئة الفرعية",
+          title: "خطأ في إنشاء المشرف",
           message:
             err.response?.data?.message ||
-            "فشل في إنشاء الفئة الفرعية. يرجى المحاولة مرة أخرى",
+            "فشل في إنشاء المشرف. يرجى المحاولة مرة أخرى",
         });
       } else {
         setToast({
@@ -144,7 +113,6 @@ export function AddSubcategoryModal({
         });
       }
       setTimeout(() => setToast(null), 5000);
-      console.error("Failed to add subcategory:", err);
     } finally {
       setIsLoading(false);
     }
@@ -161,61 +129,46 @@ export function AddSubcategoryModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                تفاصيل الفئة
+                معلومات المشرف
               </h5>
-
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                {/* Subcategory Image */}
-                <div className="lg:col-span-2">
-                  <Label>صورة الفئة</Label>
-                  <FileInput
-                    accept="image/*"
-                    onChange={(e) => handleChange("image", e.target.files?.[0])}
-                  />
-                </div>
-
-                {/* Name (in Arabic) */}
+                {/* Name */}
                 <div>
                   <Label>
-                    الاسم (بالعربية) <span className="text-red-500">*</span>
+                    الاسم <span className="text-error-500">*</span>
                   </Label>
                   <Input
                     type="text"
-                    placeholder="مأكولات بحرية"
-                    onChange={(e) => handleChange("nameAr", e.target.value)}
+                    placeholder="اسم المشرف"
+                    onChange={(e) => handleChange("name", e.target.value)}
                     required
                   />
                 </div>
 
-                {/* Name (in English) */}
+                {/* البريد الإلكتروني */}
                 <div>
-                  <Label>الاسم (بالإنجليزية)</Label>
+                  <Label>
+                    البريد الإلكتروني <span className="text-error-500">*</span>
+                  </Label>
                   <Input
-                    type="text"
-                    placeholder="Sea Food"
-                    onChange={(e) => handleChange("nameEn", e.target.value)}
+                    type="email"
+                    placeholder="البريد الإلكتروني"
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    required
                   />
                 </div>
 
-                {/* Category */}
+                {/* كلمة المرور */}
                 <div>
                   <Label>
-                    الفئة <span className="text-error-500">*</span>
+                    كلمة المرور <span className="text-error-500">*</span>
                   </Label>
-                  <div className="relative">
-                    <Select
-                      options={categories.map((cat) => ({
-                        value: cat._id,
-                        label: cat.nameAr,
-                      }))}
-                      placeholder="اختر فئة"
-                      onChange={(val) => handleChange("category", val)}
-                      required
-                    />
-                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                      <ChevronDownIcon />
-                    </span>
-                  </div>
+                  <Input
+                    type="password"
+                    placeholder="كلمة المرور"
+                    onChange={(e) => handleChange("password", e.target.value)}
+                    required
+                  />
                 </div>
               </div>
             </div>
@@ -262,11 +215,7 @@ export function AddSubcategoryModal({
   );
 }
 
-export function AddSubcategoryButton({
-  onSuccess,
-}: {
-  onSuccess?: () => void;
-}) {
+export function AddAdminButton({ onSuccess }: { onSuccess?: () => void }) {
   const { isOpen, openModal, closeModal } = useModal();
 
   const handleAfterCreate = async () => {
@@ -277,9 +226,9 @@ export function AddSubcategoryButton({
   return (
     <>
       <Button size="md" variant="primary" onClick={openModal}>
-        + أضف فئة فرعية
+        + إضافة مشرف
       </Button>
-      <AddSubcategoryModal
+      <AddAdminModal
         isOpen={isOpen}
         closeModal={closeModal}
         onSuccess={handleAfterCreate}
@@ -288,53 +237,35 @@ export function AddSubcategoryButton({
   );
 }
 
-export function EditSubcategoryModal({
+export function EditAdminModal({
   isOpen = false,
   closeModal = () => {},
-  subcategory = {} as Subcategory,
+  admin = {} as Admin,
   onSuccess = () => {},
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const [formData, setFormData] = useState<{
-    nameAr: string;
-    nameEn: string;
-    category: string;
-    image: string | File;
+    name: string;
+    email: string;
+    password: string;
   }>({
-    nameAr: "",
-    nameEn: "",
-    category: "",
-    image: new File([], ""),
+    name: "",
+    email: "",
+    password: "",
   });
 
+  // Fill formData with admin data when modal opens or admin changes
   useEffect(() => {
-    if (!isOpen) return;
-
-    const fetchData = async () => {
-      try {
-        const { data: categories } = await fetchCategories();
-        setCategories(categories);
-      } catch (err) {
-        console.error("Failed to fetch data:", err);
-      }
-    };
-
-    fetchData();
-  }, [isOpen]);
-
-  // Fill formData with subcategory data when modal opens or subcategory changes
-  useEffect(() => {
-    if (subcategory && isOpen) {
+    if (admin && isOpen) {
       setFormData({
-        nameAr: subcategory.nameAr || "",
-        nameEn: subcategory.nameEn || "",
-        category: subcategory.category._id || "",
-        image: "",
+        name: admin.name || "",
+        email: admin.email || "",
+        password: admin.password || "",
       });
     }
-  }, [subcategory, isOpen]);
+  }, [admin, isOpen]);
 
   const handleChange = (
     field: string,
@@ -347,22 +278,10 @@ export function EditSubcategoryModal({
     setIsLoading(true);
 
     try {
-      let imageUrl = "";
-
-      if (formData.image instanceof File) {
-        const uploaded = await uploadImage(formData.image);
-        imageUrl = uploaded.data || uploaded.url;
-      } else if (typeof formData.image === "string") {
-        imageUrl = formData.image;
-      }
-
-      const payloadRaw: Partial<CreateSubcategoryPayload> = {
-        nameAr: formData.nameAr,
-        nameEn: formData.nameEn?.trim()
-          ? formData.nameEn.trim()
-          : formData.nameAr.trim(),
-        category: formData.category,
-        image: imageUrl,
+      const payloadRaw: Partial<CreateAdminPayload> = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
       };
       // Remove empty-string fields
       const payload = Object.fromEntries(
@@ -370,13 +289,13 @@ export function EditSubcategoryModal({
           const v = entry[1] as unknown;
           return typeof v === "string" ? v.trim() !== "" : true;
         }),
-      ) as Partial<CreateSubcategoryPayload>;
+      ) as Partial<CreateAdminPayload>;
 
-      await updateSubcategory(subcategory._id, payload);
+      await updateAdmin(admin._id, payload);
       setToast({
         variant: "success",
-        title: "نجح تحديث الفئة الفرعية",
-        message: "تم تحديث الفئة الفرعية بنجاح",
+        title: "نجح تحديث المشرف",
+        message: "تم تحديث المشرف بنجاح",
       });
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
@@ -384,10 +303,10 @@ export function EditSubcategoryModal({
       if (err instanceof AxiosError) {
         setToast({
           variant: "error",
-          title: "خطأ في تحديث الفئة الفرعية",
+          title: "خطأ في تحديث المشرف",
           message:
             err.response?.data?.message ||
-            "فشل في تحديث الفئة الفرعية. يرجى المحاولة مرة أخرى",
+            "فشل في تحديث المشرف. يرجى المحاولة مرة أخرى",
         });
       } else {
         setToast({
@@ -397,7 +316,7 @@ export function EditSubcategoryModal({
         });
       }
       setTimeout(() => setToast(null), 5000);
-      console.error("Failed to update subcategory:", err);
+      console.error("Failed to update admin:", err);
     } finally {
       setIsLoading(false);
     }
@@ -414,66 +333,29 @@ export function EditSubcategoryModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                تفاصيل الفئة
+                معلومات المشرف
               </h5>
-
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                {/* Subcategory Image */}
-                <div className="lg:col-span-2">
-                  <Label>صورة الفئة</Label>
-                  {typeof formData.image === "string" && formData.image && (
-                    <Image
-                      src={formData.image}
-                      width={160}
-                      height={160}
-                      alt="Current Profile"
-                      className="mb-4 justify-self-center"
-                    />
-                  )}
-                  <FileInput
-                    accept="image/*"
-                    onChange={(e) => handleChange("image", e.target.files?.[0])}
-                  />
-                </div>
-
-                {/* Name (in Arabic) */}
                 <div>
-                  <Label>الاسم (بالعربية)</Label>
+                  <Label>الاسم</Label>
                   <Input
                     type="text"
-                    placeholder="مأكولات بحرية"
-                    defaultValue={formData.nameAr}
-                    onChange={(e) => handleChange("nameAr", e.target.value)}
+                    placeholder="اسم المشرف"
+                    defaultValue={formData.name}
+                    onChange={(e) => handleChange("name", e.target.value)}
+                    required
                   />
                 </div>
 
-                {/* Name (in English) */}
                 <div>
-                  <Label>الاسم (بالإنجليزية)</Label>
+                  <Label>البريد الإلكتروني</Label>
                   <Input
                     type="text"
-                    placeholder="Sea Food"
-                    defaultValue={formData.nameEn}
-                    onChange={(e) => handleChange("nameEn", e.target.value)}
+                    placeholder="البريد الإلكتروني"
+                    defaultValue={formData.email}
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    required
                   />
-                </div>
-
-                {/* Category */}
-                <div>
-                  <Label>الفئة</Label>
-                  <div className="relative">
-                    <Select
-                      options={categories.map((cat) => ({
-                        value: cat._id,
-                        label: cat.nameAr,
-                      }))}
-                      placeholder="اختر فئة"
-                      onChange={(val) => handleChange("category", val)}
-                    />
-                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                      <ChevronDownIcon />
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -520,11 +402,11 @@ export function EditSubcategoryModal({
   );
 }
 
-export function EditSubcategoryButton({
-  subcategory,
+export function EditAdminButton({
+  admin,
   onSuccess,
 }: {
-  subcategory: Subcategory;
+  admin: Admin;
   onSuccess?: () => void;
 }) {
   const { isOpen, openModal, closeModal } = useModal();
@@ -536,36 +418,33 @@ export function EditSubcategoryButton({
 
   return (
     <>
-      <button
-        onClick={openModal}
-        className="text-sm text-blue-500 hover:underline"
-      >
+      <button onClick={openModal} className="text-sm text-blue-500">
         <FaPencilAlt />
       </button>
-      <EditSubcategoryModal
+      <EditAdminModal
         isOpen={isOpen}
         closeModal={closeModal}
-        subcategory={subcategory}
+        admin={admin}
         onSuccess={handleAfterEdit}
       />
     </>
   );
 }
 
-export function DeleteSubcategoryModal({
+export function DeleteAdminModal({
   isOpen = false,
   closeModal = () => {},
-  category = "",
+  adminId = "",
   onSuccess = () => {},
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
   const handleDelete = async () => {
     try {
-      await deleteSubcategory(category);
+      await deleteAdmin(adminId);
       setToast({
         variant: "success",
-        title: "نجح حذف الفئة الفرعية",
-        message: "تم حذف الفئة الفرعية بنجاح",
+        title: "نجح حذف المشرف",
+        message: "تم حذف المشرف بنجاح",
       });
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
@@ -574,10 +453,10 @@ export function DeleteSubcategoryModal({
       if (err instanceof AxiosError) {
         setToast({
           variant: "error",
-          title: "خطأ في حذف الفئة الفرعية",
+          title: "خطأ في حذف المشرف",
           message:
             err.response?.data?.message ||
-            "فشل في حذف الفئة الفرعية. يرجى المحاولة مرة أخرى",
+            "فشل في حذف المشرف. يرجى المحاولة مرة أخرى",
         });
       } else {
         setToast({
@@ -587,7 +466,7 @@ export function DeleteSubcategoryModal({
         });
       }
       setTimeout(() => setToast(null), 5000);
-      console.error("Failed to delete subcategory:", err);
+      console.error("Failed to delete admin:", err);
     }
   };
 
@@ -600,10 +479,12 @@ export function DeleteSubcategoryModal({
       <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11 dark:bg-gray-900">
         <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-5 px-2 pb-3 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-            حذف الفئة
+            حذف المشرف
           </h4>
 
-          <p>هل أنت متأكد من حذف هذا الفئة؟</p>
+          <p className="text-gray-800 dark:text-white/90">
+            هل أنت متأكد أنك تريد حذف هذا المشرف؟
+          </p>
 
           <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
             <Button size="sm" variant="outline" onClick={closeModal}>
@@ -628,11 +509,11 @@ export function DeleteSubcategoryModal({
   );
 }
 
-export function DeleteSubcategoryButton({
-  category,
+export function DeleteAdminButton({
+  adminId,
   onSuccess,
 }: {
-  category: string;
+  adminId: string;
   onSuccess?: () => void;
 }) {
   const { isOpen, openModal, closeModal } = useModal();
@@ -644,16 +525,13 @@ export function DeleteSubcategoryButton({
 
   return (
     <>
-      <button
-        onClick={openModal}
-        className="text-sm text-red-500 hover:underline"
-      >
+      <button onClick={openModal} className="text-sm text-red-500">
         <FaTrashAlt />
       </button>
-      <DeleteSubcategoryModal
+      <DeleteAdminModal
         isOpen={isOpen}
         closeModal={closeModal}
-        category={category}
+        adminId={adminId}
         onSuccess={handleAfterDelete}
       />
     </>

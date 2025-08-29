@@ -1,8 +1,7 @@
-// src/components/products/ProductsTable.tsx
+// src/components/admins/AdminsTable.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,71 +9,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCategories } from "@/hooks/useCategories";
+import { useAdmins } from "@/hooks/useAdmins";
 import Pagination from "../tables/Pagination";
 import {
-  AddCategoryButton,
-  DeleteCategoryButton,
-  EditCategoryButton,
-} from "./CategoriesModals";
+  AddAdminButton,
+  DeleteAdminButton,
+  EditAdminButton,
+} from "./AdminsModals";
 import Skeleton from "react-loading-skeleton";
-import { fetchCategoriesByKeyword } from "@/lib/api/categories";
 
 const limits = [5, 10, 20, 50];
 
-export default function CategoriesTable() {
+export default function AdminsTable() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<typeof categories>([]);
-  const [searchPages, setSearchPages] = useState(1);
 
-  const { categories, loading, totalPages, refetch } = useCategories(
-    page,
-    limit,
+  const { admins, loading, totalPages, refetch } = useAdmins(page, limit);
+
+  const filteredAdmins = admins.filter(
+    (admin) =>
+      admin.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      admin.email?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-
-  useEffect(() => {
-    const trimmed = searchTerm.trim();
-    if (!trimmed) {
-      setSearchResults([]);
-      setSearchPages(1);
-      return;
-    }
-    let cancelled = false;
-    const t = setTimeout(async () => {
-      try {
-        const { data, pages } = await fetchCategoriesByKeyword(
-          trimmed,
-          page,
-          limit,
-        );
-        if (!cancelled) {
-          setSearchResults(data);
-          setSearchPages(pages);
-        }
-      } catch {
-        if (!cancelled) setSearchResults([]);
-      } finally {
-        // no-op
-      }
-    }, 350);
-    return () => {
-      cancelled = true;
-      clearTimeout(t);
-    };
-  }, [searchTerm, page, limit]);
-
-  const filteredCategories = useMemo(() => {
-    const trimmed = searchTerm.trim();
-    if (!trimmed) return categories;
-    return searchResults;
-  }, [categories, searchResults, searchTerm]);
-
-  const effectiveTotalPages = useMemo(() => {
-    const trimmed = searchTerm.trim();
-    return trimmed ? searchPages : totalPages;
-  }, [searchTerm, searchPages, totalPages]);
 
   return (
     <div className="space-y-4">
@@ -103,13 +60,13 @@ export default function CategoriesTable() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="البحث عن الفئات..."
+            placeholder="البحث عن مشرفين..."
             className="h-11 w-full rounded-lg border border-gray-500 bg-transparent py-2.5 ps-12 pe-14 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-1 focus:outline-hidden dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30"
           />
         </div>
 
-        {/* Add Category Button */}
-        <AddCategoryButton onSuccess={refetch} />
+        {/* Add Admin Button */}
+        <AddAdminButton onSuccess={refetch} />
       </div>
 
       {/* Limit Selector */}
@@ -118,14 +75,14 @@ export default function CategoriesTable() {
           htmlFor="limit"
           className="text-sm text-gray-600 dark:text-white/70"
         >
-          عناصر لكل صفحة:
+          عمود في الصفحة:
         </label>
         <select
           id="limit"
           value={limit}
           onChange={(e) => {
             setLimit(Number(e.target.value));
-            setPage(1); // Reset to first page when limit changes
+            setPage(1);
           }}
           className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/80"
         >
@@ -140,16 +97,21 @@ export default function CategoriesTable() {
       {/* Table */}
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
-          <div className="">
+          <div>
             <Table>
-              {/* Table Header */}
               <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
                   <TableCell
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    الفئة
+                    اسم المشرف
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
+                  >
+                    البريد الإلكتروني
                   </TableCell>
                   <TableCell
                     isHeader
@@ -165,69 +127,47 @@ export default function CategoriesTable() {
                 <TableBody>
                   {Array.from({ length: 6 }).map((_, rowIdx) => (
                     <TableRow key={rowIdx}>
-                      <TableCell className="flex w-fit items-center gap-3 px-4 py-6 text-gray-500">
+                      <TableCell className="flex w-fit gap-3 px-4 py-6 text-center text-gray-500">
                         <Skeleton
                           baseColor="#ecebeb"
                           width={40}
                           height={40}
                           circle
                         />
-                        <div>
-                          <Skeleton
-                            baseColor="#ecebeb"
-                            width={300}
-                            height={24}
-                          />
-                        </div>
                       </TableCell>
 
-                      <TableCell className="items-center justify-center gap-3 px-4 py-6">
-                        <div className="flex gap-2">
-                          <Skeleton
-                            baseColor="#ecebeb"
-                            width={32}
-                            height={32}
-                          />
-                          <Skeleton
-                            baseColor="#ecebeb"
-                            width={32}
-                            height={32}
-                          />
-                        </div>
+                      <TableCell className="px-4 py-6 text-center text-gray-500">
+                        <Skeleton
+                          baseColor="#ecebeb"
+                          width="100%"
+                          height={40}
+                        />
+                      </TableCell>
+
+                      <TableCell className="flex items-center justify-center gap-3 px-4 py-6 text-gray-500">
+                        <Skeleton baseColor="#ecebeb" width={24} height={24} />
+                        <Skeleton baseColor="#ecebeb" width={24} height={24} />
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {filteredCategories.map((category) => (
+                  {filteredAdmins.map((admin) => (
                     <TableRow
-                      key={category._id}
+                      key={admin._id}
                       className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
                     >
-                      <TableCell className="px-5 py-4 text-start sm:px-6">
-                        <div className="flex items-center gap-3">
-                          <Image
-                            width={40}
-                            height={40}
-                            src={category.image || "/images/logo/barq-logo.png"}
-                            alt={category.nameEn}
-                            className="size-10 rounded-full object-cover"
-                          />
-                          <div>
-                            <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {category.nameEn} | {category.nameAr}
-                            </span>
-                          </div>
-                        </div>
+                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
+                        {admin.name}
                       </TableCell>
-                      <TableCell className="space-x-4 px-4 py-3 text-gray-500 dark:text-gray-400">
-                        <EditCategoryButton
-                          category={category}
-                          onSuccess={refetch}
-                        />
-                        <DeleteCategoryButton
-                          category={category._id}
+                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
+                        {admin.email}
+                      </TableCell>
+                      <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
+                        <EditAdminButton admin={admin} onSuccess={refetch} />
+                        <DeleteAdminButton
+                          adminId={admin._id}
                           onSuccess={refetch}
                         />
                       </TableCell>
@@ -244,7 +184,7 @@ export default function CategoriesTable() {
       <div className="flex justify-end pt-2">
         <Pagination
           currentPage={page}
-          totalPages={effectiveTotalPages}
+          totalPages={totalPages}
           onPageChange={setPage}
         />
       </div>

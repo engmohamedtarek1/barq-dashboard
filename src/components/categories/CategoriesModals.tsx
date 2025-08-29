@@ -17,6 +17,7 @@ import {
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
+import { AxiosError } from "axios";
 
 export function AddCategoryModal({
   isOpen = false,
@@ -94,11 +95,21 @@ export function AddCategoryModal({
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
     } catch (err) {
-      setToast({
-        variant: "error",
-        title: "خطأ في إنشاء الفئة",
-        message: "فشل في إنشاء الفئة. يرجى المحاولة مرة أخرى",
-      });
+      if (err instanceof AxiosError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في إنشاء الفئة",
+          message:
+            err.response?.data?.message ||
+            "فشل في إنشاء الفئة. يرجى المحاولة مرة أخرى",
+        });
+      } else {
+        setToast({
+          variant: "error",
+          title: "خطأ غير متوقع",
+          message: "حدث خطأ غير معروف",
+        });
+      }
       setTimeout(() => setToast(null), 5000);
       console.error("Failed to add category:", err);
     } finally {
@@ -190,7 +201,7 @@ export function AddCategoryModal({
       </div>
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed end-4 bottom-4 max-w-sm">
+        <div className="fixed end-4 top-4 max-w-sm">
           <Alert {...toast} />
         </div>
       )}
@@ -295,11 +306,21 @@ export function EditCategoryModal({
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
     } catch (err) {
-      setToast({
-        variant: "error",
-        title: "خطأ في تحديث الفئة",
-        message: "فشل في تحديث الفئة. يرجى المحاولة مرة أخرى",
-      });
+      if (err instanceof AxiosError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في تحديث الفئة",
+          message:
+            err.response?.data?.message ||
+            "فشل في تحديث الفئة. يرجى المحاولة مرة أخرى",
+        });
+      } else {
+        setToast({
+          variant: "error",
+          title: "خطأ غير متوقع",
+          message: "حدث خطأ غير معروف",
+        });
+      }
       setTimeout(() => setToast(null), 5000);
       console.error("Failed to update category:", err);
     } finally {
@@ -399,7 +420,7 @@ export function EditCategoryModal({
       </div>
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+        <div className="fixed end-4 top-4 z-[9999] max-w-sm">
           <Alert {...toast} />
         </div>
       )}
@@ -459,11 +480,21 @@ export function DeleteCategoryModal({
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
     } catch (err) {
-      setToast({
-        variant: "error",
-        title: "خطأ في حذف الفئة",
-        message: "فشل في حذف الفئة. يرجى المحاولة مرة أخرى",
-      });
+      if (err instanceof AxiosError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في حذف الفئة",
+          message:
+            err.response?.data?.message ||
+            "فشل في حذف الفئة. يرجى المحاولة مرة أخرى",
+        });
+      } else {
+        setToast({
+          variant: "error",
+          title: "خطأ غير متوقع",
+          message: "حدث خطأ غير معروف",
+        });
+      }
 
       // Auto hide toast after 5 seconds
       setTimeout(() => setToast(null), 5000);
@@ -502,7 +533,7 @@ export function DeleteCategoryModal({
       </div>
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+        <div className="fixed end-4 top-4 z-[9999] max-w-sm">
           <Alert {...toast} />
         </div>
       )}

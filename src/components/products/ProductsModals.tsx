@@ -24,6 +24,7 @@ import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 import { fetchVendors } from "@/lib/api/vendors";
 import { Vendor } from "@/types/vendor";
 import { fetchCategoryshopsByVendor } from "@/lib/api/categoryshop";
+import { AxiosError } from "axios";
 
 export function AddProductModal({
   isOpen = false,
@@ -205,11 +206,21 @@ export function AddProductModal({
         image: new File([], ""),
       });
     } catch (err) {
-      setToast({
-        variant: "error",
-        title: "خطأ في إنشاء المنتج",
-        message: "فشل في إنشاء المنتج. يرجى المحاولة مرة أخرى",
-      });
+      if (err instanceof AxiosError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في إنشاء المنتج",
+          message:
+            err.response?.data?.message ||
+            "فشل في إنشاء المنتج. يرجى المحاولة مرة أخرى",
+        });
+      } else {
+        setToast({
+          variant: "error",
+          title: "خطأ غير متوقع",
+          message: "حدث خطأ غير معروف",
+        });
+      }
       setTimeout(() => setToast(null), 5000);
       console.error("Failed to add product:", err);
     } finally {
@@ -407,7 +418,7 @@ export function AddProductModal({
         </form>
       </div>
       {toast && (
-        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+        <div className="fixed end-4 top-4 z-[9999] max-w-sm">
           <Alert {...toast} />
         </div>
       )}
@@ -589,11 +600,21 @@ export function EditProductModal({
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
     } catch (err) {
-      setToast({
-        variant: "error",
-        title: "خطأ في تحديث المنتج",
-        message: "فشل في تحديث المنتج. يرجى المحاولة مرة أخرى",
-      });
+      if (err instanceof AxiosError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في تحديث المنتج",
+          message:
+            err.response?.data?.message ||
+            "فشل في تحديث المنتج. يرجى المحاولة مرة أخرى",
+        });
+      } else {
+        setToast({
+          variant: "error",
+          title: "خطأ غير متوقع",
+          message: "حدث خطأ غير معروف",
+        });
+      }
       setTimeout(() => setToast(null), 5000);
       console.error("Failed to update product:", err);
     } finally {
@@ -817,7 +838,7 @@ export function EditProductModal({
         </form>
       </div>
       {toast && (
-        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+        <div className="fixed end-4 top-4 z-[9999] max-w-sm">
           <Alert {...toast} />
         </div>
       )}
@@ -876,11 +897,21 @@ export function DeleteProductModal({
       onSuccess?.();
       closeModal();
     } catch (err) {
-      setToast({
-        variant: "error",
-        title: "خطأ في حذف المنتج",
-        message: "فشل في حذف المنتج. يرجى المحاولة مرة أخرى",
-      });
+      if (err instanceof AxiosError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في حذف المنتج",
+          message:
+            err.response?.data?.message ||
+            "فشل في حذف المنتج. يرجى المحاولة مرة أخرى",
+        });
+      } else {
+        setToast({
+          variant: "error",
+          title: "خطأ غير متوقع",
+          message: "حدث خطأ غير معروف",
+        });
+      }
       setTimeout(() => setToast(null), 5000);
       console.error("Failed to delete product:", err);
     }
@@ -915,7 +946,7 @@ export function DeleteProductModal({
         </form>
       </div>
       {toast && (
-        <div className="fixed end-4 bottom-4 z-[9999] max-w-sm">
+        <div className="fixed end-4 top-4 z-[9999] max-w-sm">
           <Alert {...toast} />
         </div>
       )}

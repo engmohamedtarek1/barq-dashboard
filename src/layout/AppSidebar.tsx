@@ -53,6 +53,11 @@ const navItems: NavItem[] = [
     name: "الفئات الفرعية",
     path: "/subcategories",
   },
+  {
+    icon: <UserCircleIcon />,
+    name: "المشرفون",
+    path: "/admins",
+  },
   // {
   //   name: "Forms",
   //   icon: <ListIcon />,
