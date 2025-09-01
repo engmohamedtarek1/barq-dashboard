@@ -81,3 +81,13 @@ export const fetchVendorsByKeyword = async (
     pages: response.data?.metadata?.pages ?? 1,
   };
 };
+
+export const fetchVendorsBasic = async (): Promise<{
+  data: Vendor[];
+}> => {
+  const response = await axios.get(`${BASE_URL}/public/all-vendors`);
+
+  return {
+    data: response.data.data,
+  };
+};

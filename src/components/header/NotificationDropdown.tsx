@@ -126,13 +126,6 @@ export default function NotificationDropdown() {
                     alt={item.userName}
                     className="w-full overflow-hidden rounded-full"
                   />
-                  <span
-                    className={`${
-                      item.status === "online"
-                        ? "bg-success-500"
-                        : "bg-error-500"
-                    } absolute end-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900`}
-                  ></span>
                 </span>
 
                 <span className="block">

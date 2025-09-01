@@ -21,7 +21,7 @@ import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Image from "next/image";
 import { fetchCategories } from "@/lib/api/categories";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
-import { fetchVendors } from "@/lib/api/vendors";
+import { fetchVendorsBasic } from "@/lib/api/vendors";
 import { Vendor } from "@/types/vendor";
 import { fetchCategoryshopsByVendor } from "@/lib/api/categoryshop";
 import { AxiosError } from "axios";
@@ -66,7 +66,8 @@ export function AddProductModal({
         const { data: baseCategories } = await fetchCategories();
         setCategories(baseCategories);
         // Always fetch vendors so we have label even if locked
-        const { data: vendorsList } = await fetchVendors(1, 1000);
+        const { data: vendorsList } = await fetchVendorsBasic();
+
         setVendors(vendorsList);
         // Preselect vendor if provided
         if (vendorId) {
@@ -502,8 +503,7 @@ export function EditProductModal({
     const fetchData = async () => {
       try {
         // Load vendors list for selector
-        const { data: vendors } = await fetchVendors();
-        setVendors(vendors);
+        const { data: vendors } = await fetchVendorsBasic();
         setVendors(vendors);
         setCategoriesLoaded(true);
       } catch (err) {
@@ -721,6 +721,7 @@ export function EditProductModal({
                         value: vendor._id,
                         label: vendor.name,
                       }))}
+                      defaultValue={formData.shopId}
                       placeholder="اختر متجراً"
                       onChange={(val) => handleChange("shopId", val)}
                       className="dark:bg-dark-900"
