@@ -31,4 +31,6 @@ export interface Product {
   image: string;
   soldTimes: number;
   reviewCount: number;
+  cartQuantity?: number;
+  isInWishlist?: boolean;
 }

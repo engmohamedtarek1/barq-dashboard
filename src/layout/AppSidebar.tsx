@@ -54,6 +54,11 @@ const navItems: NavItem[] = [
     path: "/subcategories",
   },
   {
+    icon: <ListIcon />,
+    name: "العروض",
+    path: "/offers",
+  },
+  {
     icon: <UserCircleIcon />,
     name: "المشرفون",
     path: "/admins",
