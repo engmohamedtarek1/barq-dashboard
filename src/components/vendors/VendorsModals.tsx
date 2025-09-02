@@ -104,7 +104,7 @@ export function AddVendorModal({
 
     try {
       // Validation for required fields
-      if (!formData.name || typeof formData.name !== "string") {
+      if (!formData.name) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -113,7 +113,7 @@ export function AddVendorModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.mobile || typeof formData.mobile !== "string") {
+      if (!formData.mobile) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -122,7 +122,7 @@ export function AddVendorModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.location || typeof formData.location !== "string") {
+      if (!formData.location) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -146,7 +146,7 @@ export function AddVendorModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.category || typeof formData.category !== "string") {
+      if (!formData.category) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",

@@ -42,7 +42,7 @@ export function AddAdminModal({
 
     try {
       // Validation for required fields
-      if (!formData.name || typeof formData.name !== "string") {
+      if (!formData.name) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -51,7 +51,7 @@ export function AddAdminModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.email || typeof formData.email !== "string") {
+      if (!formData.email) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -60,7 +60,7 @@ export function AddAdminModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.password || typeof formData.password !== "string") {
+      if (!formData.password) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",

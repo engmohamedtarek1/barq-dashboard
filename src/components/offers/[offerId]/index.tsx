@@ -12,6 +12,7 @@ import {
   EditOfferButton,
   DeleteOfferButton,
 } from "@/components/offers/OffersModals";
+import InfoCard from "@/components/shared/InfoCard";
 
 export default function OfferDetailsComponent() {
   const { offerId } = useParams<{ offerId: string }>();
@@ -90,7 +91,7 @@ export default function OfferDetailsComponent() {
 
   const formatDate = (d: unknown) => {
     if (!d) return "-";
-    const dt = new Date();
+    const dt = new Date(d as string | number | Date);
     if (isNaN(dt.getTime())) return "-";
     return dt.toLocaleDateString("ar-EG", {
       year: "numeric",
@@ -204,13 +205,11 @@ export default function OfferDetailsComponent() {
                   </p>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <InfoCard label="نسبة الخصم" value={`${discount}%`} />
-                    <InfoCard label="السعر قبل" value={`${productPrice} ر.س`} />
-                    <InfoCard
-                      label="السعر بعد"
-                      value={`${discountedPrice} ر.س`}
-                      highlight={discount > 0}
+                    <PriceCard
+                      original={productPrice}
+                      discounted={discountedPrice}
+                      hasDiscount={discount > 0}
                     />
-                    <InfoCard label="المعرف" value={offer._id} mono />
                   </div>
                 </section>
 
@@ -230,7 +229,7 @@ export default function OfferDetailsComponent() {
                     />
                     <InfoCard
                       label="السعر الأساسي"
-                      value={`${offer.product?.price ?? 0} ر.س`}
+                      value={`${offer.product?.price ?? 0} ج.م`}
                     />
                     <InfoCard
                       label="التقييم"
@@ -248,11 +247,6 @@ export default function OfferDetailsComponent() {
                     <InfoCard
                       label="اسم المتجر"
                       value={offer.shopId?.name || "—"}
-                    />
-                    <InfoCard
-                      label="معرف المتجر"
-                      value={offer.shopId?._id || "—"}
-                      mono
                     />
                   </div>
                 </section>
@@ -311,40 +305,52 @@ export default function OfferDetailsComponent() {
   );
 }
 // Small helper components
-function InfoCard({
-  label,
-  value,
-  mono,
-  highlight,
-}: {
-  label: string;
-  value: string | number;
-  mono?: boolean;
-  highlight?: boolean;
-}) {
+
+
+function InfoRow({ label, value }: { label: string; value: string | number }) {
   return (
-    <div
-      className={`rounded-md border px-3 py-2 text-sm dark:border-white/10 ${highlight ? "border-brand-500 bg-brand-500/5 dark:border-brand-400" : "border-gray-200"}`}
-    >
-      <span className="block text-[11px] font-medium tracking-wide text-gray-500 dark:text-gray-400">
-        {label}
-      </span>
-      <span
-        className={`mt-0.5 block font-medium text-gray-800 dark:text-white/90 ${mono ? "font-mono text-[12px]" : ""}`}
-      >
+    <div className="hover:border-brand-500 hover:bg-brand-500/5 hover:dark:border-brand-400 flex items-center justify-between gap-4 rounded-md bg-white/60 px-3 py-2 text-xs transition-all dark:bg-white/10">
+      <span className="text-gray-500 dark:text-gray-400">{label}</span>
+      <span className="font-medium text-gray-800 dark:text-white/90">
         {value}
       </span>
     </div>
   );
 }
 
-function InfoRow({ label, value }: { label: string; value: string | number }) {
+function PriceCard({
+  original,
+  discounted,
+  hasDiscount,
+}: {
+  original: number;
+  discounted: number;
+  hasDiscount: boolean;
+}) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-md bg-white/60 px-3 py-2 text-xs dark:bg-white/10">
-      <span className="text-gray-500 dark:text-gray-400">{label}</span>
-      <span className="font-medium text-gray-800 dark:text-white/90">
-        {value}
+    <div
+      className={`hover:border-brand-500 hover:bg-brand-500/5 hover:dark:border-brand-400 rounded-md border border-gray-200 px-3 py-2 text-sm transition-all duration-200 dark:border-white/10`}
+    >
+      <span className="block text-[11px] font-medium tracking-wide text-gray-500 dark:text-gray-400">
+        السعر
       </span>
+      <div className="mt-0.5 flex items-baseline gap-3">
+        <span
+          className={`text-[13px] font-medium text-gray-500 line-through dark:text-gray-400 ${!hasDiscount ? "opacity-50" : ""}`}
+        >
+          {original} ج.م
+        </span>
+        {hasDiscount && (
+          <span className="text-brand-600 dark:text-brand-300 text-base font-semibold">
+            {discounted} ج.م
+          </span>
+        )}
+        {!hasDiscount && (
+          <span className="text-base font-semibold text-gray-800 dark:text-white/90">
+            {original} ج.م
+          </span>
+        )}
+      </div>
     </div>
   );
 }

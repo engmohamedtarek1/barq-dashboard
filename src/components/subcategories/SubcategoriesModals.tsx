@@ -71,7 +71,7 @@ export function AddSubcategoryModal({
 
     try {
       // Validation for required fields
-      if (!formData.nameAr || typeof formData.nameAr !== "string") {
+      if (!formData.nameAr) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -80,7 +80,7 @@ export function AddSubcategoryModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.category || typeof formData.category !== "string") {
+      if (!formData.category) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",

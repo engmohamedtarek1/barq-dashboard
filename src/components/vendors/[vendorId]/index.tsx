@@ -14,6 +14,7 @@ import {
 } from "@/components/vendors/VendorsModals";
 import CategoryShopCRUD from "./CategoryShopCRUD";
 import { AddProductButton } from "@/components/products/ProductsModals";
+import InfoCard from "@/components/shared/InfoCard";
 
 export default function VendorDetailsComponent() {
   const { vendorId } = useParams<{ vendorId: string }>();
@@ -92,7 +93,7 @@ export default function VendorDetailsComponent() {
                   height={140}
                   src={vendor.profileImage || "/images/logo/barq-logo.png"}
                   alt={vendor.name}
-                  className="h-36 w-36 rounded-full object-cover ring-4 ring-gray-100 dark:ring-white/10"
+                  className="h-36 w-36 rounded-full object-contain ring-4 ring-gray-100 dark:ring-white/10"
                 />
                 <Badge
                   size="sm"
@@ -110,13 +111,13 @@ export default function VendorDetailsComponent() {
                     معلومات عامة
                   </h2>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <InfoItem label="الاسم" value={vendor.name} />
-                    <InfoItem label="الهاتف" value={vendor.mobile} />
-                    <InfoItem
+                    <InfoCard label="الاسم" value={vendor.name} />
+                    <InfoCard label="الهاتف" value={vendor.mobile} />
+                    <InfoCard
                       label="الموقع"
                       value={vendor.location ? vendor.location : "غير محدد"}
                     />
-                    <InfoItem
+                    <InfoCard
                       label="ساعات العمل"
                       value={
                         Array.isArray(vendor.workingHours)
@@ -124,8 +125,8 @@ export default function VendorDetailsComponent() {
                           : (vendor.workingHours ?? "غير محدد")
                       }
                     />
-                    <InfoItem label="التقييم" value={`${vendor.rating} ⭐`} />
-                    <InfoItem
+                    <InfoCard label="التقييم" value={`${vendor.rating} ⭐`} />
+                    <InfoCard
                       label="عدد المراجعات"
                       value={`${vendor.reviewCount ?? 0}`}
                     />
@@ -223,18 +224,5 @@ export default function VendorDetailsComponent() {
         </div>
       </div>
     </ProtectedRoute>
-  );
-}
-
-function InfoItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-md border border-gray-200 px-3 py-2 text-sm dark:border-white/10">
-      <span className="block text-[11px] font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
-        {label}
-      </span>
-      <span className="mt-0.5 block font-medium text-gray-800 dark:text-white/90">
-        {value}
-      </span>
-    </div>
   );
 }

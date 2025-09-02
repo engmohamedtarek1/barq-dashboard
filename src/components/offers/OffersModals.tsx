@@ -21,6 +21,7 @@ import { Product } from "@/types/product";
 import { Vendor } from "@/types/vendor";
 import { fetchVendorsBasic } from "@/lib/api/vendors";
 import { fetchProducts } from "@/lib/api/products";
+import DatePicker from "../form/date-picker";
 
 export function AddOfferModal({
   isOpen = false,
@@ -74,6 +75,7 @@ export function AddOfferModal({
     value: string | string[] | File | undefined,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    console.log(field, value);
   };
 
   const handleSave = async () => {
@@ -81,7 +83,7 @@ export function AddOfferModal({
 
     try {
       // Validation for required fields
-      if (!formData.name || typeof formData.name !== "string") {
+      if (!formData.name) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -90,7 +92,7 @@ export function AddOfferModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.product || typeof formData.product !== "string") {
+      if (!formData.product) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -99,16 +101,16 @@ export function AddOfferModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.image || !(formData.image instanceof File)) {
+      if (!formData.shopId) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
-          message: "صورة العرض مطلوبة.",
+          message: "اسم المتجر مطلوب.",
         });
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.description || typeof formData.description !== "string") {
+      if (!formData.description) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -117,7 +119,7 @@ export function AddOfferModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.discount || typeof formData.discount !== "number") {
+      if (!formData.discount) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -126,7 +128,7 @@ export function AddOfferModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.startDate || typeof formData.startDate !== "string") {
+      if (!formData.startDate) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -135,20 +137,11 @@ export function AddOfferModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.endDate || typeof formData.endDate !== "string") {
+      if (!formData.endDate) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
           message: "تاريخ الانتهاء مطلوب.",
-        });
-        setTimeout(() => setToast(null), 5000);
-        return;
-      }
-      if (!formData.shopId || typeof formData.shopId !== "string") {
-        setToast({
-          variant: "error",
-          title: "حقل مطلوب",
-          message: "اسم المتجر مطلوب.",
         });
         setTimeout(() => setToast(null), 5000);
         return;
@@ -322,6 +315,49 @@ export function AddOfferModal({
                     placeholder="10"
                     defaultValue={formData.discount}
                     onChange={(e) => handleChange("discount", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <DatePicker
+                    id="date-picker"
+                    label="Date Picker Input"
+                    placeholder="Select a date"
+                    onChange={(dates, currentDateString) => {
+                      // Handle your logic
+                      console.log({ currentDateString });
+                    }}
+                  />
+                </div>
+
+                {/* Start Date */}
+                <div>
+                  <Label>
+                    تاريخ البدء <span className="text-error-500">*</span>
+                  </Label>
+                  <Input
+                    type="date"
+                    placeholder="تاريخ البدء"
+                    defaultValue={
+                      formData.startDate.toISOString().split("T")[0]
+                    }
+                    onChange={(e) => handleChange("startDate", e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* End Date */}
+                <div>
+                  <Label>
+                    تاريخ الانتهاء <span className="text-error-500">*</span>
+                  </Label>
+                  <Input
+                    type="date"
+                    placeholder="تاريخ الانتهاء"
+                    defaultValue={formData.endDate.toISOString().split("T")[0]}
+                    onChange={(e) => handleChange("endDate", e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -566,15 +602,12 @@ export function EditOfferModal({
                     placeholder="اسم العرض"
                     defaultValue={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
-                    required
                   />
                 </div>
 
                 {/* Product */}
                 <div>
-                  <Label>
-                    المنتج <span className="text-error-500">*</span>
-                  </Label>
+                  <Label>المنتج</Label>
                   <div className="relative">
                     <Select
                       options={products.map((prod) => ({
@@ -584,7 +617,6 @@ export function EditOfferModal({
                       defaultValue={formData.product}
                       placeholder="اختر المنتج"
                       onChange={(val) => handleChange("product", val)}
-                      required
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
@@ -594,9 +626,7 @@ export function EditOfferModal({
 
                 {/* Shop */}
                 <div>
-                  <Label>
-                    المتجر <span className="text-error-500">*</span>
-                  </Label>
+                  <Label>المتجر</Label>
                   <div className="relative">
                     <Select
                       options={vendors.map((vendor) => ({
@@ -606,7 +636,6 @@ export function EditOfferModal({
                       defaultValue={formData.shopId}
                       placeholder="اختر المتجر"
                       onChange={(val) => handleChange("shopId", val)}
-                      required
                     />
                     <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                       <ChevronDownIcon />
@@ -616,9 +645,7 @@ export function EditOfferModal({
 
                 {/* Description */}
                 <div>
-                  <Label>
-                    الوصف <span className="text-error-500">*</span>
-                  </Label>
+                  <Label>الوصف</Label>
                   <Input
                     type="text"
                     placeholder="وصف العرض"
@@ -626,15 +653,12 @@ export function EditOfferModal({
                       handleChange("description", e.target.value)
                     }
                     defaultValue={formData.description}
-                    required
                   />
                 </div>
 
                 {/* Discount */}
                 <div>
-                  <Label>
-                    الخصم <span className="text-error-500">*</span>
-                  </Label>
+                  <Label>الخصم</Label>
                   <Input
                     type="number"
                     placeholder="10"

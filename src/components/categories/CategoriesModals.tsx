@@ -48,7 +48,7 @@ export function AddCategoryModal({
 
     try {
       // Validation for required fields
-      if (!formData.nameAr || typeof formData.nameAr !== "string") {
+      if (!formData.nameAr) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",

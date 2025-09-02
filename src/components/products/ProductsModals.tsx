@@ -116,7 +116,7 @@ export function AddProductModal({
 
     try {
       // Validation for required fields
-      if (!formData.nameAr || typeof formData.nameAr !== "string") {
+      if (!formData.nameAr) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -134,7 +134,7 @@ export function AddProductModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.description || typeof formData.description !== "string") {
+      if (!formData.description) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -143,7 +143,7 @@ export function AddProductModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.shopId || typeof formData.shopId !== "string") {
+      if (!formData.shopId) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
@@ -152,7 +152,7 @@ export function AddProductModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (!formData.category || typeof formData.category !== "string") {
+      if (!formData.category) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
