@@ -13,6 +13,7 @@ type PropsType = {
   defaultDate?: DateOption;
   label?: string;
   placeholder?: string;
+  required?: boolean;
 };
 
 export default function DatePicker({
@@ -22,6 +23,7 @@ export default function DatePicker({
   label,
   defaultDate,
   placeholder,
+  required,
 }: PropsType) {
   useEffect(() => {
     const flatPickr = flatpickr(`#${id}`, {
@@ -48,6 +50,7 @@ export default function DatePicker({
         <input
           id={id}
           placeholder={placeholder}
+          required={required}
           className="shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/20 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
         />
 

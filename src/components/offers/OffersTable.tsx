@@ -165,7 +165,7 @@ export default function OffersTable() {
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
-                    الخصم
+                    السعر / الخصم
                   </TableCell>
                   <TableCell
                     isHeader
@@ -214,7 +214,7 @@ export default function OffersTable() {
                         </div>
                       </TableCell>
 
-                      {Array.from({ length: 4 }).map((_, cellIdx) => (
+                      {Array.from({ length: 5 }).map((_, cellIdx) => (
                         <TableCell
                           key={cellIdx}
                           className="px-4 py-6 text-center text-gray-500"
@@ -302,11 +302,35 @@ export default function OffersTable() {
                         <TableCell className="px-4 py-3 text-start text-gray-600 dark:text-gray-400">
                           {offer.shopId?.name || "—"}
                         </TableCell>
-                        {/* Discount */}
+                        {/* Price & Discount */}
                         <TableCell className="px-4 py-3 text-start text-gray-700 dark:text-gray-300">
-                          <Badge size="sm" color="info" variant="light">
-                            {offer.discount}%
-                          </Badge>
+                          {offer.product?.price != null ? (
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className={`${offer.discount > 0 ? "text-[11px] text-gray-400 line-through dark:text-gray-500" : "text-sm text-gray-800 dark:text-gray-200"}`}
+                                >
+                                  {offer.product.price} ج.م
+                                </span>
+                                {offer.discount > 0 && (
+                                  <span className="text-brand-600 dark:text-brand-300 text-sm font-semibold">
+                                    {Math.max(
+                                      0,
+                                      offer.product.price -
+                                        (offer.product.price * offer.discount) /
+                                          100,
+                                    )}{" "}
+                                    ج.م
+                                  </span>
+                                )}
+                              </div>
+                              <Badge size="sm" color="info" variant="light">
+                                {offer.discount}%
+                              </Badge>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-gray-400">—</span>
+                          )}
                         </TableCell>
                         {/* Duration */}
                         <TableCell className="px-4 py-3 text-start text-xs text-gray-600 dark:text-gray-400">

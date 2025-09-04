@@ -353,7 +353,7 @@
 }
 .flatpickr-current-month .cur-month,
 .flatpickr-current-month input.cur-year {
-  @apply !h-auto !pt-0 !text-lg !font-medium !text-gray-800 dark:!text-white/90;
+  @apply !h-auto !pt-2 !text-lg !font-medium !text-gray-800 dark:!text-white/90;
 }
 
 .flatpickr-prev-month,
@@ -362,7 +362,7 @@
 }
 
 .flatpickr-weekdays {
-  @apply mt-6 mb-4 h-auto !bg-transparent;
+  @apply my-3 h-auto !bg-transparent;
 }
 
 .flatpickr-weekday {
@@ -394,7 +394,7 @@
 }
 .flatpickr-months .flatpickr-prev-month,
 .flatpickr-months .flatpickr-next-month {
-  @apply !top-7 !bg-transparent dark:!fill-white dark:!text-white;
+  @apply !top-3 !bg-transparent dark:!fill-white dark:!text-white;
 }
 .flatpickr-months .flatpickr-prev-month.flatpickr-prev-month,
 .flatpickr-months .flatpickr-next-month.flatpickr-prev-month {
@@ -482,7 +482,7 @@ span.flatpickr-weekday,
 }
 
 .flatpickr-calendar.static {
-  @apply end-0;
+  @apply lg:-end-8;
 }
 
 .fc .fc-view-harness {
@@ -502,10 +502,10 @@ span.flatpickr-weekday,
   @apply flex-col gap-4 px-6 pt-6 sm:flex-row;
 }
 .fc-button-group {
-  @apply gap-2;
+  @apply gap-0;
 }
 .fc-button-group .fc-button {
-  @apply flex h-10 w-10 items-center justify-center !rounded-lg border border-gray-500 bg-transparent hover:border-gray-500 hover:bg-gray-50 focus:shadow-none active:!border-gray-500 active:!bg-transparent active:!shadow-none dark:border-gray-800 dark:hover:border-gray-800 dark:hover:bg-gray-900 dark:active:border-gray-800!;
+  @apply flex h-8 w-8 items-center justify-center !rounded-lg border border-gray-500 bg-transparent hover:border-gray-500 hover:bg-gray-50 focus:shadow-none active:!border-gray-500 active:!bg-transparent active:!shadow-none dark:border-gray-800 dark:hover:border-gray-800 dark:hover:bg-gray-900 dark:active:border-gray-800!;
 }
 
 .fc-button-group .fc-button.fc-prev-button:before {

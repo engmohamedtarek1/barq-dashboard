@@ -319,30 +319,17 @@ export function AddOfferModal({
                   />
                 </div>
 
-                <div>
-                  <DatePicker
-                    id="date-picker"
-                    label="Date Picker Input"
-                    placeholder="Select a date"
-                    onChange={(dates, currentDateString) => {
-                      // Handle your logic
-                      console.log({ currentDateString });
-                    }}
-                  />
-                </div>
-
                 {/* Start Date */}
                 <div>
                   <Label>
                     تاريخ البدء <span className="text-error-500">*</span>
                   </Label>
-                  <Input
-                    type="date"
+                  <DatePicker
+                    id="date-picker"
                     placeholder="تاريخ البدء"
-                    defaultValue={
-                      formData.startDate.toISOString().split("T")[0]
-                    }
-                    onChange={(e) => handleChange("startDate", e.target.value)}
+                    onChange={(dates, currentDateString) => {
+                      handleChange("startDate", currentDateString);
+                    }}
                     required
                   />
                 </div>
@@ -352,11 +339,12 @@ export function AddOfferModal({
                   <Label>
                     تاريخ الانتهاء <span className="text-error-500">*</span>
                   </Label>
-                  <Input
-                    type="date"
+                  <DatePicker
+                    id="date-picker"
                     placeholder="تاريخ الانتهاء"
-                    defaultValue={formData.endDate.toISOString().split("T")[0]}
-                    onChange={(e) => handleChange("endDate", e.target.value)}
+                    onChange={(dates, currentDateString) => {
+                      handleChange("endDate", currentDateString);
+                    }}
                     required
                   />
                 </div>
@@ -664,6 +652,34 @@ export function EditOfferModal({
                     placeholder="10"
                     defaultValue={formData.discount}
                     onChange={(e) => handleChange("discount", e.target.value)}
+                  />
+                </div>
+
+                {/* Start Date */}
+                <div>
+                  <Label>
+                    تاريخ البدء <span className="text-error-500">*</span>
+                  </Label>
+                  <DatePicker
+                    id="date-picker"
+                    placeholder="تاريخ البدء"
+                    onChange={(dates, currentDateString) => {
+                      handleChange("startDate", currentDateString);
+                    }}
+                  />
+                </div>
+
+                {/* End Date */}
+                <div>
+                  <Label>
+                    تاريخ الانتهاء <span className="text-error-500">*</span>
+                  </Label>
+                  <DatePicker
+                    id="date-picker"
+                    placeholder="تاريخ الانتهاء"
+                    onChange={(dates, currentDateString) => {
+                      handleChange("endDate", currentDateString);
+                    }}
                   />
                 </div>
               </div>
