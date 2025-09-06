@@ -276,7 +276,6 @@ export default function OffersTable() {
                               height={40}
                               src={
                                 offer.image ||
-                                offer.product?.image ||
                                 "/images/logo/barq-logo.png"
                               }
                               alt={offer.name}

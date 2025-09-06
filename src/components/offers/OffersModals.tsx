@@ -18,8 +18,7 @@ import Image from "next/image";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 import { AxiosError } from "axios";
 import { Product } from "@/types/product";
-import { Vendor } from "@/types/vendor";
-import { fetchVendorsBasic } from "@/lib/api/vendors";
+// Removed vendor imports for Edit modal auto-fill logic
 import { fetchProducts } from "@/lib/api/products";
 import DatePicker from "../form/date-picker";
 
@@ -30,7 +29,7 @@ export function AddOfferModal({
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
-  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [vendor, setVendor] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<{
     name: string;
@@ -57,9 +56,6 @@ export function AddOfferModal({
 
     const fetchData = async () => {
       try {
-        const { data: vendors } = await fetchVendorsBasic();
-        setVendors(vendors);
-
         const { data: products } = await fetchProducts(1, 1000);
         setProducts(products);
       } catch (err) {
@@ -69,6 +65,25 @@ export function AddOfferModal({
 
     fetchData();
   }, [isOpen]);
+
+  // Fetch shop when product changes
+  useEffect(() => {
+    if (!formData.product) {
+      setVendor("");
+      setFormData((prev) => ({ ...prev, shopId: "" }));
+      return;
+    }
+    const prod = products.find((p) => p._id === formData.product);
+    if (prod) {
+      const shopName = prod.shopId?.name || "";
+      const shopId = prod.shopId?._id || "";
+      setVendor(shopName);
+      setFormData((prev) => ({ ...prev, shopId }));
+    } else {
+      setVendor("");
+      setFormData((prev) => ({ ...prev, shopId: "" }));
+    }
+  }, [formData.product, formData.shopId, products]);
 
   const handleChange = (
     field: string,
@@ -269,25 +284,18 @@ export function AddOfferModal({
                   </div>
                 </div>
 
-                {/* Shop */}
+                {/* Vendor (auto-filled) */}
                 <div>
                   <Label>
                     المتجر <span className="text-error-500">*</span>
                   </Label>
-                  <div className="relative">
-                    <Select
-                      options={vendors.map((vendor) => ({
-                        value: vendor._id,
-                        label: vendor.name,
-                      }))}
-                      placeholder="اختر المتجر"
-                      onChange={(val) => handleChange("shopId", val)}
-                      required
-                    />
-                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                      <ChevronDownIcon />
-                    </span>
-                  </div>
+                  <Input
+                    type="text"
+                    value={vendor}
+                    placeholder={!vendor ? "يرجى اختيار منتج أولاً" : ""}
+                    disabled
+                    required
+                  />
                 </div>
 
                 {/* Description */}
@@ -422,64 +430,83 @@ export function EditOfferModal({
   onSuccess = () => {},
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [vendors, setVendors] = useState<Vendor[]>([]);
+  // const [products, setProducts] = useState<Product[]>([]);
+  // const [vendorName, setVendorName] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState<{
     name: string;
-    product: string;
+    // product: string;
     image: string | File;
     description: string;
     discount: number;
     startDate: Date;
     endDate: Date;
-    shopId: string;
+    // shopId: string;
   }>({
     name: "",
-    product: "",
+    // product: "",
     image: "",
     description: "",
     discount: 0,
     startDate: new Date(),
     endDate: new Date(),
-    shopId: "",
+    // shopId: "",
   });
 
-  useEffect(() => {
-    if (!isOpen) return;
+  // useEffect(() => {
+  //   if (!isOpen) return;
 
-    const fetchData = async () => {
-      try {
-        const { data: vendors } = await fetchVendorsBasic();
-        setVendors(vendors);
+  //   const fetchData = async () => {
+  //     try {
+  //       const { data: products } = await fetchProducts(1, 1000);
+  //       setProducts(products);
+  //     } catch (err) {
+  //       console.error("Failed to fetch data:", err);
+  //     }
+  //   };
 
-        const { data: products } = await fetchProducts(1, 1000);
-        setProducts(products);
-      } catch (err) {
-        console.error("Failed to fetch data:", err);
-      }
-    };
-
-    fetchData();
-  }, [isOpen]);
+  //   fetchData();
+  // }, [isOpen]);
 
   // Fill formData with offer data when modal opens or offer changes
   useEffect(() => {
     if (offer && isOpen) {
       setFormData({
         name: offer.name || "",
-        product: offer.product._id || "",
-        image: offer.image || new File([], ""), // Initialize with an empty file
+        // product: offer.product._id || "",
+        image: offer.image, // Initialize with an empty file
         description: offer.description || "",
         discount: offer.discount || 0,
         startDate: offer.startDate || new Date(),
         endDate: offer.endDate || new Date(),
-        shopId: offer.shopId._id || "",
+        // shopId: offer.shopId._id || "",
       });
+      // setVendorName(offer.shopId?.name || "");
     }
   }, [offer, isOpen]);
+
+  // Derive vendor/shop automatically when product changes (and when products list arrives)
+  // useEffect(() => {
+  //   if (!formData.product) {
+  //     setVendorName("");
+  //     setFormData((prev) => ({ ...prev, shopId: "" }));
+  //     return;
+  //   }
+  //   const prod = products.find((p) => p._id === formData.product);
+  //   if (prod) {
+  //     const name = prod.shopId?.name || "";
+  //     const id = prod.shopId?._id || "";
+  //     setVendorName(name);
+  //     if (id && id !== formData.shopId) {
+  //       setFormData((prev) => ({ ...prev, shopId: id }));
+  //     }
+  //   } else {
+  //     setVendorName("");
+  //     setFormData((prev) => ({ ...prev, shopId: "" }));
+  //   }
+  // }, [formData.product, formData.shopId, products]);
 
   const handleChange = (
     field: string,
@@ -503,13 +530,13 @@ export function EditOfferModal({
 
       const payloadRaw: Partial<CreateOfferPayload> = {
         name: formData.name,
-        product: formData.product,
+        // product: formData.product,
         image: imageUrl,
         description: formData.description,
         discount: formData.discount,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        shopId: formData.shopId,
+        // shopId: formData.shopId,
       };
       // Remove empty-string fields
       const payload = Object.fromEntries(
@@ -594,7 +621,7 @@ export function EditOfferModal({
                 </div>
 
                 {/* Product */}
-                <div>
+                {/* <div>
                   <Label>المنتج</Label>
                   <div className="relative">
                     <Select
@@ -610,26 +637,18 @@ export function EditOfferModal({
                       <ChevronDownIcon />
                     </span>
                   </div>
-                </div>
+                </div> */}
 
-                {/* Shop */}
-                <div>
+                {/* Shop (auto-filled) */}
+                {/* <div>
                   <Label>المتجر</Label>
-                  <div className="relative">
-                    <Select
-                      options={vendors.map((vendor) => ({
-                        value: vendor._id,
-                        label: vendor.name,
-                      }))}
-                      defaultValue={formData.shopId}
-                      placeholder="اختر المتجر"
-                      onChange={(val) => handleChange("shopId", val)}
-                    />
-                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                      <ChevronDownIcon />
-                    </span>
-                  </div>
-                </div>
+                  <Input
+                    type="text"
+                    value={vendorName}
+                    placeholder={!vendorName ? "يرجى اختيار منتج أولاً" : ""}
+                    disabled
+                  />
+                </div> */}
 
                 {/* Description */}
                 <div>
@@ -657,12 +676,11 @@ export function EditOfferModal({
 
                 {/* Start Date */}
                 <div>
-                  <Label>
-                    تاريخ البدء <span className="text-error-500">*</span>
-                  </Label>
+                  <Label>تاريخ البدء</Label>
                   <DatePicker
                     id="date-picker"
                     placeholder="تاريخ البدء"
+                    defaultDate={formData.startDate}
                     onChange={(dates, currentDateString) => {
                       handleChange("startDate", currentDateString);
                     }}
@@ -671,12 +689,11 @@ export function EditOfferModal({
 
                 {/* End Date */}
                 <div>
-                  <Label>
-                    تاريخ الانتهاء <span className="text-error-500">*</span>
-                  </Label>
+                  <Label>تاريخ الانتهاء</Label>
                   <DatePicker
-                    id="date-picker"
+                    id="date-picker1"
                     placeholder="تاريخ الانتهاء"
+                    defaultDate={formData.endDate}
                     onChange={(dates, currentDateString) => {
                       handleChange("endDate", currentDateString);
                     }}
