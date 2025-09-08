@@ -39,6 +39,11 @@ const navItems: NavItem[] = [
     path: "/vendors",
   },
   {
+    icon: <UserCircleIcon />,
+    name: "عمال التوصيل",
+    path: "/agents",
+  },
+  {
     icon: <BoxCubeIcon />,
     name: "المنتجات",
     path: "/products",
