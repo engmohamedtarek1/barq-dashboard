@@ -141,42 +141,24 @@ export default function VendorsTable() {
         <div className="max-w-full overflow-x-auto">
           <div>
             <Table>
-              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     البائع
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الفئة
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     العنوان
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الحالة
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     التقييم
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الإجراءات
                   </TableCell>
                 </TableRow>
@@ -232,10 +214,7 @@ export default function VendorsTable() {
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                   {filteredVendors.map((vendor) => (
-                    <TableRow
-                      key={vendor._id}
-                      className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
-                    >
+                    <TableRow key={vendor._id}>
                       <TableCell className="text-start">
                         <Link
                           href={`/vendors/${vendor._id}`}
@@ -261,13 +240,9 @@ export default function VendorsTable() {
                           </div>
                         </Link>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {vendor.category?.nameEn}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {vendor.location}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
+                      <TableCell>{vendor.category?.nameEn}</TableCell>
+                      <TableCell>{vendor.location}</TableCell>
+                      <TableCell>
                         <Badge
                           size="sm"
                           color={vendor.isActive ? "success" : "error"}
@@ -276,9 +251,7 @@ export default function VendorsTable() {
                           {vendor.isActive ? "Active" : "Inactive"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                        ⭐ {vendor.rating}
-                      </TableCell>
+                      <TableCell>⭐ {vendor.rating}</TableCell>
                       <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
                         <Link
                           href={`/vendors/${vendor._id}`}

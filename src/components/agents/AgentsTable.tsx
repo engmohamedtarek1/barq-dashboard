@@ -17,9 +17,7 @@ import {
   DeleteAgentButton,
   EditAgentButton,
 } from "./AgentsModals";
-import { FaEye } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
-import Link from "next/link";
 import { fetchAgentsByKeyword } from "@/lib/api/agents";
 
 const limits = [5, 10, 20, 50];
@@ -140,42 +138,24 @@ export default function AgentsTable() {
         <div className="max-w-full overflow-x-auto">
           <div>
             <Table>
-              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableHeader className="">
                 <TableRow>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     عامل التوصيل
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الحالة
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     التقييم
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     عدد المراجعات
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     معدل العمولة
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الإجراءات
                   </TableCell>
                 </TableRow>
@@ -215,26 +195,14 @@ export default function AgentsTable() {
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                   {filteredAgents.map((agent) => (
-                    <TableRow
-                      key={agent._id}
-                      className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
-                    >
-                      <TableCell className="text-start">
-                        <Link
-                          href={`/agents/${agent._id}`}
-                          className="hover:bg-brand-gray/20 dark:hover:bg-brand-gray/15 flex items-center gap-3 px-5 py-4 sm:px-6"
-                        >
-                          <div>
-                            <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {agent.name}
-                            </span>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                              {agent.mobile}
-                            </span>
-                          </div>
-                        </Link>
+                    <TableRow key={agent._id}>
+                      <TableCell>
+                        <span className="block font-medium text-gray-800 dark:text-white/90">
+                          {agent.name}
+                        </span>
+                        <span className="text-sm">{agent.mobile}</span>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
+                      <TableCell>
                         <Badge
                           size="sm"
                           color={agent.isActive ? "success" : "error"}
@@ -243,23 +211,10 @@ export default function AgentsTable() {
                           {agent.isActive ? "Active" : "Inactive"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                        ⭐ {agent.rating}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                        {agent.reviewCount}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                        {agent.commissionRate}
-                      </TableCell>
-                      <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
-                        <Link
-                          href={`/agents/${agent._id}`}
-                          className="text-sm text-indigo-600 dark:text-indigo-400"
-                          title="عرض عامل التوصيل"
-                        >
-                          <FaEye />
-                        </Link>
+                      <TableCell>⭐ {agent.rating}</TableCell>
+                      <TableCell>{agent.reviewCount}</TableCell>
+                      <TableCell>{agent.commissionRate}</TableCell>
+                      <TableCell className="flex h-20 items-center gap-3">
                         <EditAgentButton agent={agent} onSuccess={refetch} />
                         <DeleteAgentButton
                           agentId={agent._id}

@@ -143,24 +143,15 @@ export default function SubcategoriesTable() {
           <div className="">
             <Table>
               {/* Table Header */}
-              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الفئة الفرعية
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الفئة
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الإجراءات
                   </TableCell>
                 </TableRow>
@@ -219,10 +210,7 @@ export default function SubcategoriesTable() {
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                   {filteredSubcategories.map((subcategory) => (
-                    <TableRow
-                      key={subcategory._id}
-                      className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
-                    >
+                    <TableRow key={subcategory._id}>
                       <TableCell className="px-5 py-4 text-start sm:px-6">
                         <div className="flex items-center gap-3">
                           <div>
@@ -257,7 +245,7 @@ export default function SubcategoriesTable() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="space-x-4 px-4 py-3 text-gray-500 dark:text-gray-400">
+                      <TableCell className="space-x-4">
                         <EditSubcategoryButton
                           subcategory={subcategory}
                           onSuccess={refetch}

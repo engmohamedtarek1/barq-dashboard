@@ -140,54 +140,30 @@ export default function ProductsTable() {
           <div>
             <Table>
               {/* Table Header */}
-              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     المنتج
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الفئة
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     البائع
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     مرات البيع
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     عدد المراجعات
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     التقييم
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الوصف
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الإجراءات
                   </TableCell>
                 </TableRow>
@@ -242,10 +218,7 @@ export default function ProductsTable() {
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                   {filteredProducts.map((product) => (
-                    <TableRow
-                      key={product._id}
-                      className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
-                    >
+                    <TableRow key={product._id}>
                       <TableCell className="px-5 py-4 text-start sm:px-6">
                         <div className="flex items-center gap-3">
                           <Image
@@ -259,31 +232,19 @@ export default function ProductsTable() {
                             <span className="block font-medium text-gray-800 dark:text-white/90">
                               {product.nameEn} | {product.nameAr}
                             </span>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                              ${product.price}
-                            </span>
+                            <span className="text-sm">${product.price}</span>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {product.category?.nameAr}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {product.shopId?.name}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {product.soldTimes}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {product.reviewCount}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                        ⭐ {product.rating}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                      <TableCell>{product.category?.nameAr}</TableCell>
+                      <TableCell>{product.shopId?.name}</TableCell>
+                      <TableCell>{product.soldTimes}</TableCell>
+                      <TableCell>{product.reviewCount}</TableCell>
+                      <TableCell>⭐ {product.rating}</TableCell>
+                      <TableCell>
                         {product.description.slice(0, 50)}...
                       </TableCell>
-                      <TableCell className="space-x-4 px-4 py-3 text-gray-500 dark:text-gray-400">
+                      <TableCell className="space-x-4">
                         <EditProductButton
                           product={product}
                           onSuccess={refetch}

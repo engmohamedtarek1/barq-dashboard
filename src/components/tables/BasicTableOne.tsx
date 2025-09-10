@@ -118,7 +118,7 @@ export default function BasicTableOne() {
         <div>
           <Table>
             {/* Table Header */}
-            <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+            <TableHeader>
               <TableRow>
                 <TableCell
                   isHeader
@@ -212,7 +212,7 @@ export default function BasicTableOne() {
                       {order.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-theme-sm px-4 py-3 text-gray-500 dark:text-gray-400">
+                  <TableCell className="text-theme-sm">
                     {order.budget}
                   </TableCell>
                 </TableRow>

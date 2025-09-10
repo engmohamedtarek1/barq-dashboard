@@ -143,18 +143,12 @@ export default function CategoriesTable() {
           <div className="">
             <Table>
               {/* Table Header */}
-              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الفئة
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الإجراءات
                   </TableCell>
                 </TableRow>
@@ -201,10 +195,7 @@ export default function CategoriesTable() {
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                   {filteredCategories.map((category) => (
-                    <TableRow
-                      key={category._id}
-                      className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
-                    >
+                    <TableRow key={category._id}>
                       <TableCell className="px-5 py-4 text-start sm:px-6">
                         <div className="flex items-center gap-3">
                           <Image
@@ -221,7 +212,7 @@ export default function CategoriesTable() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="space-x-4 px-4 py-3 text-gray-500 dark:text-gray-400">
+                      <TableCell className="space-x-4">
                         <EditCategoryButton
                           category={category}
                           onSuccess={refetch}

@@ -141,48 +141,27 @@ export default function OffersTable() {
         <div className="max-w-full overflow-x-auto">
           <div>
             <Table>
-              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     العرض
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     المنتج
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     البائع
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     السعر / الخصم
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     المدة
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الحالة
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الإجراءات
                   </TableCell>
                 </TableRow>
@@ -261,10 +240,7 @@ export default function OffersTable() {
                       return new Date(t).toISOString().slice(0, 10);
                     };
                     return (
-                      <TableRow
-                        key={offer._id}
-                        className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
-                      >
+                      <TableRow key={offer._id}>
                         {/* Offer (image + name + description) */}
                         <TableCell className="text-start">
                           <Link
@@ -274,10 +250,7 @@ export default function OffersTable() {
                             <Image
                               width={40}
                               height={40}
-                              src={
-                                offer.image ||
-                                "/images/logo/barq-logo.png"
-                              }
+                              src={offer.image || "/images/logo/barq-logo.png"}
                               alt={offer.name}
                               className="size-10 rounded-full object-cover"
                             />

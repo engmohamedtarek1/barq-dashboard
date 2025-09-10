@@ -99,24 +99,15 @@ export default function AdminsTable() {
         <div className="max-w-full overflow-x-auto">
           <div>
             <Table>
-              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     اسم المشرف
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     البريد الإلكتروني
                   </TableCell>
-                  <TableCell
-                    isHeader
-                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
-                  >
+                  <TableCell isHeader className="text-start font-medium">
                     الإجراءات
                   </TableCell>
                 </TableRow>
@@ -154,16 +145,9 @@ export default function AdminsTable() {
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                   {filteredAdmins.map((admin) => (
-                    <TableRow
-                      key={admin._id}
-                      className="hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10"
-                    >
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {admin.name}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                        {admin.email}
-                      </TableCell>
+                    <TableRow key={admin._id}>
+                      <TableCell>{admin.name}</TableCell>
+                      <TableCell>{admin.email}</TableCell>
                       <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
                         <EditAdminButton admin={admin} onSuccess={refetch} />
                         <DeleteAdminButton

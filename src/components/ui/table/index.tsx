@@ -42,7 +42,13 @@ const Table: React.FC<TableProps> = ({ children, className }) => {
 
 // TableHeader Component
 const TableHeader: React.FC<TableHeaderProps> = ({ children, className }) => {
-  return <thead className={className}>{children}</thead>;
+  return (
+    <thead
+      className={`border-b border-gray-100 dark:border-white/[0.05] ${className}`}
+    >
+      {children}
+    </thead>
+  );
 };
 
 // TableBody Component
@@ -60,7 +66,7 @@ const TableRow: React.FC<TableRowProps> = ({
 }) => {
   return (
     <tr
-      className={className}
+      className={`hover:bg-brand-gray/15 dark:hover:bg-brand-gray/10 ${className}`}
       onClick={onClick}
       role={role || (onClick ? "button" : undefined)}
       tabIndex={tabIndex !== undefined ? tabIndex : onClick ? 0 : undefined}
@@ -77,7 +83,13 @@ const TableCell: React.FC<TableCellProps> = ({
   className,
 }) => {
   const CellTag = isHeader ? "th" : "td";
-  return <CellTag className={` ${className}`}>{children}</CellTag>;
+  return (
+    <CellTag
+      className={`px-4 py-3 text-gray-500 dark:text-gray-400 ${className}`}
+    >
+      {children}
+    </CellTag>
+  );
 };
 
 export { Table, TableHeader, TableBody, TableRow, TableCell };
