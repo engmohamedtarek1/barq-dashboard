@@ -164,6 +164,18 @@ export default function AgentsTable() {
                     isHeader
                     className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
                   >
+                    عدد المراجعات
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
+                  >
+                    معدل العمولة
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
+                  >
                     الإجراءات
                   </TableCell>
                 </TableRow>
@@ -174,28 +186,12 @@ export default function AgentsTable() {
                 <TableBody>
                   {Array.from({ length: 6 }).map((_, rowIdx) => (
                     <TableRow key={rowIdx}>
-                      <TableCell className="flex w-fit gap-3 px-4 py-6 text-center text-gray-500">
-                        <Skeleton
-                          baseColor="#ecebeb"
-                          width={40}
-                          height={40}
-                          circle
-                        />
-                        <div>
-                          <Skeleton
-                            baseColor="#ecebeb"
-                            width={120}
-                            height={18}
-                          />
-                          <Skeleton
-                            baseColor="#ecebeb"
-                            width={120}
-                            height={18}
-                          />
-                        </div>
+                      <TableCell className="w-fit py-6 text-center text-gray-500">
+                        <Skeleton baseColor="#ecebeb" width={120} height={18} />
+                        <Skeleton baseColor="#ecebeb" width={120} height={18} />
                       </TableCell>
 
-                      {Array.from({ length: 4 }).map((_, cellIdx) => (
+                      {Array.from({ length: 5 }).map((_, cellIdx) => (
                         <TableCell
                           key={cellIdx}
                           className="px-4 py-6 text-center text-gray-500"
@@ -249,6 +245,12 @@ export default function AgentsTable() {
                       </TableCell>
                       <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
                         ⭐ {agent.rating}
+                      </TableCell>
+                      <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                        {agent.reviewCount}
+                      </TableCell>
+                      <TableCell className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                        {agent.commissionRate}
                       </TableCell>
                       <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
                         <Link

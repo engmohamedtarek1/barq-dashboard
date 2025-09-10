@@ -12,6 +12,7 @@ import { CreateAgentPayload, Agent } from "@/types/agent";
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 import { AxiosError } from "axios";
+import Switch from "../form/switch/Switch";
 
 export function AddAgentModal({
   isOpen = false,
@@ -260,7 +261,7 @@ export function EditAgentModal({
 
   const handleChange = (
     field: string,
-    value: string | string[] | File | undefined,
+    value: string | string[] | File | boolean | undefined,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -349,6 +350,53 @@ export function EditAgentModal({
                     defaultValue={formData.mobile}
                     onChange={(e) => handleChange("mobile", e.target.value)}
                     required
+                  />
+                </div>
+                <div>
+                  <Label>التقييم</Label>
+                  <Input
+                    type="number"
+                    placeholder="4.5"
+                    defaultValue={formData.rating}
+                    onChange={(e) => handleChange("rating", e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label>عدد المراجعات</Label>
+                  <Input
+                    type="number"
+                    placeholder="5"
+                    defaultValue={formData.reviewCount}
+                    onChange={(e) =>
+                      handleChange("reviewCount", e.target.value)
+                    }
+                    required
+                  />
+                </div>
+                <div>
+                  <Label>معدل العمولة</Label>
+                  <Input
+                    type="number"
+                    placeholder="5"
+                    defaultValue={formData.commissionRate}
+                    onChange={(e) =>
+                      handleChange("commissionRate", e.target.value)
+                    }
+                    required
+                  />
+                </div>
+                {/* Active */}
+                <div>
+                  <Label>
+                    نشط <span className="text-error-500">*</span>
+                  </Label>
+                  <Switch
+                    label=""
+                    defaultChecked={agent.isActive}
+                    onChange={() =>
+                      handleChange("isActive", !agent.isActive)
+                    }
                   />
                 </div>
               </div>
