@@ -1,0 +1,11 @@
+// import OrderDetailsComponent from "@/components/orders/[orderId]";
+// import { Metadata } from "next";
+
+// export const metadata: Metadata = {
+//   title: "تفاصيل البائع | برق",
+//   description: "هذه هي صفحة تفاصيل البائع حيث يمكنك إدارة بيانات البائع.",
+// };
+
+// export default function OrderDetailsPage() {
+//   return <OrderDetailsComponent />;
+// }

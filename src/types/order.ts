@@ -60,4 +60,6 @@ export interface Order {
   deliveryAddress: DeliveryAddress;
   commisionAmount: number;
   deliveryAgent: DeliveryAgent;
+  createdAt?: string;
+  updatedAt?: string;
 }

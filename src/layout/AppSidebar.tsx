@@ -60,6 +60,11 @@ const navItems: NavItem[] = [
   },
   {
     icon: <ListIcon />,
+    name: "الطلبات",
+    path: "/orders",
+  },
+  {
+    icon: <ListIcon />,
     name: "العروض",
     path: "/offers",
   },
