@@ -1,6 +1,6 @@
 // lib/api/agents.ts
 import axios from "axios";
-import { Agent, CreateAgentPayload } from "@/types/agent";
+import { Agent, CreateAgentPayload, Setting } from "@/types/agent";
 import { BASE_URL } from "../config";
 
 // Reuse token from localStorage
@@ -79,5 +79,16 @@ export const fetchAgentsByKeyword = async (
   return {
     data: response.data.data ?? [],
     pages: response.data?.metadata?.pages ?? 1,
+  };
+};
+
+export const fetchSettings = async (): Promise<{ data: Setting }> => {
+  const response = await axios.get(`${BASE_URL}/settings`, {
+    headers: {
+      ...authHeaders(),
+    },
+  });
+  return {
+    data: response.data.data,
   };
 };

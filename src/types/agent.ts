@@ -19,3 +19,10 @@ export interface Agent {
   reviewCount?: number;
   commissionRate: number;
 }
+
+export interface Setting {
+  _id: string;
+  agentCommissionRate: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
