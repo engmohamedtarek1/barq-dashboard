@@ -1,228 +1,277 @@
-// "use client";
+"use client";
 
-// import { useEffect, useState } from "react";
-// import Image from "next/image";
-// import { useParams, useRouter } from "next/navigation";
-// import { getSingleOrder } from "@/lib/api/orders";
-// import { Order } from "@/types/order";
-// import ProtectedRoute from "@/components/auth/ProtectedRoute";
-// import Button from "@/components/ui/button/Button";
-// import Badge from "@/components/ui/badge/Badge";
-// import {
-//   EditOrderButton,
-//   DeleteOrderButton,
-// } from "@/components/orders/OrdersModals";
-// import CategoryShopCRUD from "./CategoryShopCRUD";
-// import { AddProductButton } from "@/components/products/ProductsModals";
-// import InfoCard from "@/components/shared/InfoCard";
+import Button from "@/components/ui/button/Button";
+import { useOrder } from "@/hooks/useOrders";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 
-// export default function OrderDetailsComponent() {
-//   const { orderId } = useParams<{ orderId: string }>();
-//   const router = useRouter();
-//   const [order, setOrder] = useState<Order | null>(null);
+export default function OrderDetailsComponent() {
+  const { orderId } = useParams<{ orderId: string }>();
+  const router = useRouter();
+  const { order, loading, error } = useOrder(orderId);
 
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
+  if (loading) {
+    return (
+      <div className="flex h-[60vh] items-center justify-center">
+        <div className="text-center">
+          <div className="border-brand-500 mx-auto h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">
+            جاري التحميل...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-//   useEffect(() => {
-//     if (!orderId) return;
-//     const fetchOrder = async () => {
-//       try {
-//         const data = await getSingleOrder(orderId);
-//         setOrder(data);
-//       } catch {
-//         setError("فشل تحميل بيانات البائع");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchOrder();
-//   }, [orderId]);
+  if (error || !order) {
+    return (
+      <div className="flex h-[60vh] flex-col items-center justify-center gap-4">
+        <p className="text-gray-600 dark:text-gray-400">
+          {error ? "فشل تحميل الطلب" : "لم يتم العثور على الطلب"}
+        </p>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => router.push("/orders")}
+        >
+          العودة
+        </Button>
+      </div>
+    );
+  }
 
-//   if (loading) {
-//     return (
-//       <div className="flex h-[60vh] items-center justify-center">
-//         <div className="text-center">
-//           <div className="border-brand-500 mx-auto h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
-//           <p className="mt-4 text-gray-600 dark:text-gray-400">
-//             جاري التحميل...
-//           </p>
-//         </div>
-//       </div>
-//     );
-//   }
+  // Layout
+  return (
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 xl:grid-cols-3">
+      {/* ملخص الطلب */}
+      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-6">
+        <div className="mb-2 flex justify-between gap-2 font-bold text-gray-800">
+          ملخص الطلب
+          <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-semibold text-yellow-700">
+            {order.orderStatus || "-"}
+          </span>
+        </div>
 
-//   if (error || !order) {
-//     return (
-//       <div className="flex h-[60vh] flex-col items-center justify-center gap-4">
-//         <p className="text-gray-600 dark:text-gray-400">
-//           {error || "لم يتم العثور على البائع"}
-//         </p>
-//         <Button
-//           size="sm"
-//           variant="outline"
-//           onClick={() => router.push("/orders")}
-//         >
-//           العودة
-//         </Button>
-//       </div>
-//     );
-//   }
+        <div className="flex flex-col gap-1 divide-y-2 text-sm">
+          <div className="flex justify-between py-2">
+            <span>رقم الطلب</span>
+            <span className="font-medium text-gray-700">
+              #{order.orderNumber || "-"}
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span>الإجمالي</span>
+            <span className="font-bold text-gray-800">
+              {order.sumAmount?.toLocaleString() || "-"} ج.م
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span>تاريخ الطلب</span>
+            <span className="font-medium text-gray-700">
+              {order.createdAt
+                ? new Date(order.createdAt).toLocaleDateString()
+                : "-"}
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span>طريقة الدفع</span>
+            <span className="font-medium text-gray-700">
+              {order.paymentMethod || "-"}
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span>حالة الدفع</span>
+            <span className="font-medium text-gray-700">
+              {order.paymentStatus || "-"}
+            </span>
+          </div>
+        </div>
+      </div>
 
-//   return (
-//     <ProtectedRoute>
-//       <div className="space-y-8">
-//         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-//           <div>
-//             <h1 className="text-2xl font-semibold text-gray-800 dark:text-white/90">
-//               {order.name}
-//             </h1>
-//           </div>
-//           <Button size="sm" onClick={() => router.push("/orders")}>
-//             رجوع
-//           </Button>
-//         </div>
+      {/* معلومات العميل */}
+      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-6">
+        <div className="mb-2 font-bold text-gray-800">معلومات العميل</div>
+        <div className="mb-2">
+          <div className="flex h-20 w-full items-center justify-center rounded-lg bg-gray-100">
+            <span className="flex items-center gap-1 text-xs text-gray-500">
+              عرض على الخريطة
+              <svg
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="inline-block"
+              >
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="7"
+                  stroke="#aaa"
+                  strokeWidth="2"
+                  fill="none"
+                />
+                <path
+                  d="M8 4v4l3 2"
+                  stroke="#aaa"
+                  strokeWidth="2"
+                  fill="none"
+                />
+              </svg>
+            </span>
+          </div>
+        </div>
 
-//         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-//           {/* Left column: Main info */}
-//           <div className="rounded-xl border border-gray-200 bg-white p-6 lg:col-span-2 dark:border-white/10 dark:bg-white/[0.05]">
-//             <div className="flex flex-col gap-6 sm:flex-row">
-//               <div className="flex flex-col items-center gap-4">
-//                 <Image
-//                   width={140}
-//                   height={140}
-//                   src={order.profileImage || "/images/logo/barq-logo.png"}
-//                   alt={order.name}
-//                   className="h-36 w-36 rounded-full object-contain ring-4 ring-gray-100 dark:ring-white/10"
-//                 />
-//                 <Badge
-//                   size="sm"
-//                   color={order.isActive ? "success" : "error"}
-//                   variant="light"
-//                 >
-//                   {order.isActive ? "نشط" : "غير نشط"}
-//                 </Badge>
-//               </div>
+        <div className="flex flex-col gap-1 text-sm">
+          <div className="flex justify-between py-2">
+            <span>اسم العميل</span>
+            <span className="font-medium text-gray-700">
+              {order.userId?.mobile ?? "-"}
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span>رقم الهاتف</span>
+            <span className="font-medium text-gray-700">
+              {order.userId?.mobile ?? "-"}
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span>عنوان العميل</span>
+            <span className="font-medium text-gray-700">
+              {order.deliveryAddress?.fullAddress ?? "-"}
+            </span>
+          </div>
+        </div>
+      </div>
 
-//               <div className="flex-1 space-y-6">
-//                 {/* Name, Phone Number, Location, Working Hours, Rating, Review Count */}
-//                 <div>
-//                   <h2 className="mb-1 text-lg font-medium text-gray-800 dark:text-white/90">
-//                     معلومات عامة
-//                   </h2>
-//                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-//                     <InfoCard label="الاسم" value={order.name} />
-//                     <InfoCard label="الهاتف" value={order.mobile} />
-//                     <InfoCard
-//                       label="الموقع"
-//                       value={order.location ? order.location : "غير محدد"}
-//                     />
-//                     <InfoCard
-//                       label="ساعات العمل"
-//                       value={
-//                         Array.isArray(order.workingHours)
-//                           ? order.workingHours.join(" - ")
-//                           : (order.workingHours ?? "غير محدد")
-//                       }
-//                     />
-//                     <InfoCard label="التقييم" value={`${order.rating} ⭐`} />
-//                     <InfoCard
-//                       label="عدد المراجعات"
-//                       value={`${order.reviewCount ?? 0}`}
-//                     />
-//                   </div>
-//                 </div>
+      {/* تفاصيل المتجر */}
+      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-6">
+        <div className="mb-2 font-bold text-gray-800">تفاصيل المتجر</div>
+        <div className="mb-2 flex items-center gap-2">
+          <span className="font-medium text-gray-700">
+            {order.shopId?.name ?? "-"}
+          </span>
+          <Image
+            src={order.shopId?.profileImage || "/images/logo/barq-logo.png"}
+            alt="اسم المتجر"
+            width={32}
+            height={32}
+            className="rounded-full"
+          />
+        </div>
+        <div className="flex flex-col gap-1 text-sm">
+          <div className="flex justify-between py-2">
+            <span>أرقام التواصل</span>
+            <span className="font-medium text-gray-700">
+              {order.shopId?.mobile ?? "-"}
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span>عنوان المتجر</span>
+            <span className="font-medium text-gray-700">
+              {order.shopId?.location ?? "-"}
+            </span>
+          </div>
+        </div>
+      </div>
 
-//                 {/* Category */}
-//                 <div>
-//                   <h2 className="mb-1 text-lg font-medium text-gray-800 dark:text-white/90">
-//                     الفئة
-//                   </h2>
-//                   <div className="rounded-lg bg-gray-50 p-3 text-sm dark:bg-white/5">
-//                     <p className="text-gray-700 dark:text-gray-300">
-//                       {order.category
-//                         ? `${order.category?.nameAr} / ${order.category?.nameEn}`
-//                         : "غير محدد"}
-//                     </p>
-//                   </div>
-//                 </div>
+      {/* تفاصيل التوصيل */}
+      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-6">
+        <div className="mb-2 font-bold text-gray-800">تفاصيل التوصيل</div>
+        <div className="flex flex-col gap-1 text-sm">
+          <div className="flex justify-between py-2">
+            <span>اسم المنسوب</span>
+            <span className="font-medium text-gray-700">
+              {order.deliveryAgent?.name ?? "-"}
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span>رقم المنسوب</span>
+            <span className="font-medium text-gray-700">
+              {order.deliveryAgent?.mobile ?? "-"}
+            </span>
+          </div>
+        </div>
+      </div>
 
-//                 {/* Subcategories */}
-//                 <div>
-//                   <h2 className="mb-1 text-lg font-medium text-gray-800 dark:text-white/90">
-//                     الفئات الفرعية
-//                   </h2>
-//                   <div className="flex flex-wrap gap-2">
-//                     {order.subcategories?.length ? (
-//                       order.subcategories.map((sc) => (
-//                         <span
-//                           key={sc._id}
-//                           className="bg-brand-500/10 text-brand-600 dark:text-brand-300 rounded-full px-3 py-1 text-xs"
-//                         >
-//                           {sc.nameAr} / {sc.nameEn}
-//                         </span>
-//                       ))
-//                     ) : (
-//                       <span className="text-sm text-gray-500 dark:text-gray-400">
-//                         لا يوجد
-//                       </span>
-//                     )}
-//                   </div>
-//                 </div>
+      {/* تفاصيل التوصيل breakdown */}
+      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-6">
+        <div className="mb-2 font-bold text-gray-800">تفاصيل التوصيل</div>
+        <div className="mb-2 flex justify-between text-xs text-gray-500">
+          <span>عدد المنتجات</span>
+          <span>{order.items?.length ?? 0}</span>
+        </div>
+        <div className="flex flex-col gap-1 text-sm">
+          <div className="flex justify-between py-2">
+            <span>السعر</span>
+            <span className="font-bold">
+              {order.totalAmount?.toLocaleString()} ج.م
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span>رسوم التوصيل</span>
+            <span className="font-bold">
+              {order.deliveryFee?.toLocaleString()} ج.م
+            </span>
+          </div>
+          <div className="flex justify-between py-2">
+            <span>الخصم</span>
+            <span className="font-bold text-red-600">
+              {order.totalDiscount?.toLocaleString()} ج.م
+            </span>
+          </div>
+          <div className="flex justify-between py-2 font-bold">
+            <span>الإجمالي</span>
+            <span className="font-bold">
+              {order.sumAmount?.toLocaleString()} ج.م
+            </span>
+          </div>
+        </div>
+      </div>
 
-//                 {/* Shop Categories */}
-//                 {order && <CategoryShopCRUD orderId={order._id} />}
-//               </div>
-//             </div>
-//           </div>
+      {/* تفاصيل الطلب */}
+      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-6">
+        <div className="mb-2 font-bold text-gray-800">تفاصيل الطلب</div>
+        <div className="flex flex-col gap-2">
+          {order.items?.length ? (
+            order.items.map((item, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-3 border-b pb-2 last:border-b-0"
+              >
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={item.itemId?.image || "/images/logo/barq-logo.png"}
+                    alt={item.itemId?.nameAr || "منتج"}
+                    width={40}
+                    height={40}
+                    className="rounded"
+                  />
+                  <div>
+                    <div className="text-sm font-medium">
+                      {item.itemId?.nameAr ?? "اسم المنتج"}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      الكمية: {item.quantity ?? 1}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-sm font-bold">
+                  {item.price?.toLocaleString()} ج.م
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-xs text-gray-500">لا توجد منتجات</div>
+          )}
+        </div>
+      </div>
 
-//           {/* Right column: Metadata */}
-//           <div className="space-y-6">
-//             <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-white/[0.05]">
-//               <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400">
-//                 الوضع
-//               </h3>
-//               <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-//                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
-//                 {order.isActive ? "الحساب فعال" : "الحساب غير فعال"}
-//               </div>
-//             </div>
-//             <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-white/[0.05]">
-//               <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400">
-//                 الإجراءات
-//               </h3>
-//               <div className="flex flex-wrap gap-4">
-//                 {order && (
-//                   <>
-//                     <EditOrderButton
-//                       order={order}
-//                       onSuccess={async () => {
-//                         try {
-//                           const data = await getSingleOrder(orderId);
-//                           setOrder(data);
-//                         } catch {
-//                           // ignore
-//                         }
-//                       }}
-//                     />
-//                     <DeleteOrderButton
-//                       orderId={order._id}
-//                       onSuccess={() => router.push("/orders")}
-//                     />
-//                     {/* Add Product for this order */}
-//                     <AddProductButton
-//                       orderId={order._id}
-//                       onSuccess={() => {
-//                         /* refresh products section if added later */
-//                       }}
-//                     />
-//                   </>
-//                 )}
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </ProtectedRoute>
-//   );
-// }
+      {/* ملاحظات العميل */}
+      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-6">
+        <div className="mb-2 font-bold text-gray-800">ملاحظات العميل</div>
+        <div className="min-h-[48px] text-xs text-gray-500">
+          لا توجد أي ملاحظات
+        </div>
+      </div>
+    </div>
+  );
+}

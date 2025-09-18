@@ -87,8 +87,8 @@ export function useOrder(orderId?: string) {
     setError(null);
     try {
       const res = await getOrderById(orderId);
-      setOrder(res);
-    } catch (err) {
+      setOrder(res.data);
+        } catch (err) {
       setError(err);
     } finally {
       setLoading(false);

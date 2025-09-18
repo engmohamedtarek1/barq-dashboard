@@ -47,6 +47,7 @@ export interface OrderItem {
 }
 
 export interface Order {
+  data: SetStateAction<Order | null>;
   _id: string;
   userId: OrderUserRef;
   shopId: Vendor;
@@ -62,4 +63,17 @@ export interface Order {
   deliveryAgent: DeliveryAgent;
   createdAt?: string;
   updatedAt?: string;
+  orderNumber?: string;
+  sumAmount?: number;
+  deliveryFee?: number;
+  agentCommissionRate: number;
+  vendorCommissionRate: number;
+  agentCommissionAmount: number;
+  vendorCommissionAmount: number;
+  agentEarn: number;
+  vendorEarn: number;
+  gainedPoints: number;
+  redeemedPoints: number;
+  isDeleted: boolean;
+  pointsDiscount: number;
 }
