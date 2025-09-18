@@ -1,5 +1,6 @@
 import { Vendor } from "./vendor";
 import { Product } from "./product";
+import { SetStateAction } from "react";
 
 export type Coordinates = [number, number];
 
