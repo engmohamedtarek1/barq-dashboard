@@ -61,8 +61,8 @@ export default function OrderDetailsComponent() {
       </div>
 
       {/* ملخص الطلب */}
-      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
-        <div className="mb-2 flex justify-between gap-2 font-bold text-gray-800">
+      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 dark:border-gray-600 bg-white p-4 dark:bg-slate-800">
+        <div className="mb-2 flex justify-between gap-2 font-bold text-gray-800 dark:text-white">
           ملخص الطلب
           <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-semibold text-yellow-700">
             {order.orderStatus || "-"}
@@ -72,7 +72,7 @@ export default function OrderDetailsComponent() {
         <div className="flex flex-col gap-1 divide-y-2 text-sm">
           <div className="flex justify-between py-2">
             <span>رقم الطلب</span>
-            <span className="font-medium text-gray-700">
+            <span className="font-medium text-gray-700 dark:text-white/80">
               #{order.orderNumber || "-"}
             </span>
           </div>
@@ -106,8 +106,10 @@ export default function OrderDetailsComponent() {
       </div>
 
       {/* تفاصيل المتجر */}
-      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
-        <div className="mb-2 font-bold text-gray-800">تفاصيل المتجر</div>
+      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 dark:border-gray-600 bg-white p-4 dark:bg-slate-800">
+        <div className="mb-2 font-bold text-gray-800 dark:text-white">
+          تفاصيل المتجر
+        </div>
         <div className="mb-2 flex items-center gap-2">
           <Image
             src={order.shopId?.profileImage || "/images/logo/barq-logo.png"}
@@ -125,22 +127,28 @@ export default function OrderDetailsComponent() {
             <span>رقم الهاتف</span>
             <span className="flex items-center gap-2 font-medium text-gray-700">
               <CiPhone className="text-xl text-blue-600" />
-              {order.shopId?.mobile ?? "-"}
+              <span className="dark:text-white/80">
+                {order.shopId?.mobile ?? "-"}
+              </span>
             </span>
           </div>
           <div className="flex flex-col justify-between gap-2 py-2">
             <span>عنوان المتجر</span>
             <span className="flex gap-2 font-medium text-gray-700">
               <CiLocationOn className="flex-shrink-0 text-xl text-blue-600" />
-              {order.shopId?.location ?? "-"}
+              <span className="dark:text-white/80">
+                {order.shopId?.location ?? "-"}
+              </span>
             </span>
           </div>
         </div>
       </div>
 
       {/* معلومات العميل */}
-      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
-        <div className="mb-2 font-bold text-gray-800">معلومات العميل</div>
+      <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 dark:border-gray-600 bg-white p-4 dark:bg-slate-800">
+        <div className="mb-2 font-bold text-gray-800 dark:text-white">
+          معلومات العميل
+        </div>
         <div className="mb-2">
           <div className="flex h-16 w-full items-center justify-center rounded-lg bg-[url('/images/country/map-placeholder.png')]">
             <Link
@@ -166,22 +174,28 @@ export default function OrderDetailsComponent() {
             <span>رقم الهاتف</span>
             <span className="flex items-center gap-2 font-medium text-gray-700">
               <CiPhone className="text-xl text-blue-600" />
-              {order.userId?.mobile ?? "-"}
+              <span className="dark:text-white/80">
+                {order.userId?.mobile ?? "-"}
+              </span>
             </span>
           </div>
           <div className="flex flex-col justify-between gap-2 py-2">
             <span>عنوان العميل</span>
             <span className="flex gap-2 font-medium text-gray-700">
               <CiLocationOn className="flex-shrink-0 text-xl text-blue-600" />
-              {order.deliveryAddress?.fullAddress ?? "-"}
+              <span className="dark:text-white/80">
+                {order.deliveryAddress?.fullAddress ?? "-"}
+              </span>
             </span>
           </div>
         </div>
       </div>
 
       {/* تفاصيل الطلب */}
-      <div className="rounded-2xl border border-gray-100 bg-white p-4 lg:col-span-2">
-        <div className="mb-4 font-bold text-gray-800">تفاصيل الطلب</div>
+      <div className="rounded-2xl border border-gray-100 dark:border-gray-600 bg-white p-4 lg:col-span-2 dark:bg-slate-800">
+        <div className="mb-4 font-bold text-gray-800 dark:text-white">
+          تفاصيل الطلب
+        </div>
         <div className="flex flex-col gap-4 lg:flex-row">
           <div className="flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-2">
@@ -200,16 +214,18 @@ export default function OrderDetailsComponent() {
                         className="rounded"
                       />
                       <div>
-                        <div className="text-sm font-medium">
+                        <div className="text-sm font-medium dark:text-white/80">
                           {item.itemId?.nameAr ?? "اسم المنتج"}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-500 dark:text-gray-300">
                           الكمية: {item.quantity ?? 1}
                         </div>
                       </div>
                     </div>
                     <div className="text-brand-blue text-sm font-bold">
-                      {item.price?.toLocaleString()} ج.م
+                      <span className="dark:text-white/80">
+                        {item.price?.toLocaleString()} ج.م
+                      </span>
                     </div>
                   </div>
                 ))
@@ -220,37 +236,49 @@ export default function OrderDetailsComponent() {
           </div>
 
           {/* تفاصيل التوصيل breakdown */}
-          <div className="flex flex-1 flex-col gap-2 rounded-2xl bg-gray-100 p-4">
-            <div className="mb-2 font-bold text-gray-800">تفاصيل التوصيل</div>
+          <div className="flex flex-1 flex-col gap-2 rounded-2xl bg-gray-100 p-4 dark:bg-slate-800">
+            <div className="mb-2 font-bold text-gray-800 dark:text-white">
+              تفاصيل التوصيل
+            </div>
             <div className="flex flex-col gap-1 divide-y-2 text-sm">
               <div className="flex justify-between py-2">
                 <span>عدد المنتجات</span>
                 <span className="font-bold">
-                  {order.items?.length ?? 0} منتجات
+                  <span className="dark:text-white/80">
+                    {order.items?.length ?? 0} منتجات
+                  </span>
                 </span>
               </div>
               <div className="flex justify-between py-2">
                 <span>السعر</span>
                 <span className="font-bold">
-                  {order.totalAmount?.toLocaleString()} ج.م
+                  <span className="dark:text-white/80">
+                    {order.totalAmount?.toLocaleString()} ج.م
+                  </span>
                 </span>
               </div>
               <div className="flex justify-between py-2">
                 <span>رسوم التوصيل</span>
                 <span className="font-bold">
-                  {order.deliveryFee?.toLocaleString()} ج.م
+                  <span className="dark:text-white/80">
+                    {order.deliveryFee?.toLocaleString()} ج.م
+                  </span>
                 </span>
               </div>
               <div className="flex justify-between py-2">
                 <span>الخصم</span>
                 <span className="font-bold text-red-600">
-                  {order.totalDiscount?.toLocaleString()} ج.م
+                  <span className="dark:text-red-400">
+                    {order.totalDiscount?.toLocaleString()} ج.م
+                  </span>
                 </span>
               </div>
               <div className="flex justify-between py-2 font-bold">
                 <span>الإجمالي</span>
                 <span className="font-bold">
-                  {order.sumAmount?.toLocaleString()} ج.م
+                  <span className="dark:text-white/80">
+                    {order.sumAmount?.toLocaleString()} ج.م
+                  </span>
                 </span>
               </div>
             </div>
@@ -259,27 +287,33 @@ export default function OrderDetailsComponent() {
       </div>
 
       {/* تفاصيل التوصيل */}
-      <div className="flex h-fit flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
-        <div className="mb-2 font-bold text-gray-800">تفاصيل التوصيل</div>
+      <div className="flex h-fit flex-col gap-2 rounded-2xl border border-gray-100 dark:border-gray-600 bg-white p-4 dark:bg-slate-800">
+        <div className="mb-2 font-bold text-gray-800 dark:text-white">
+          تفاصيل التوصيل
+        </div>
         <div className="flex flex-col gap-1 divide-y-2 text-sm">
           <div className="flex flex-col justify-between gap-2 py-2">
             <span>اسم المنسوب</span>
             <span className="font-medium text-gray-700">
-              {order.deliveryAgent?.name ?? "-"}
+              <span className="dark:text-white/80">
+                {order.deliveryAgent?.name ?? "-"}
+              </span>
             </span>
           </div>
           <div className="flex flex-col justify-between gap-2 py-2">
             <span>رقم المنسوب</span>
             <span className="flex items-center gap-2 font-medium text-gray-700">
               <CiPhone className="text-xl text-blue-600" />
-              {order.deliveryAgent?.mobile ?? "-"}
+              <span className="dark:text-white/80">
+                {order.deliveryAgent?.mobile ?? "-"}
+              </span>
             </span>
           </div>
         </div>
       </div>
 
       {/* ملاحظات العميل */}
-      {/* <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
+      {/* <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 dark:border-gray-600 bg-white p-4 ">
         <div className="mb-2 font-bold text-gray-800">ملاحظات العميل</div>
         <div className="min-h-[48px] text-xs text-gray-500">
           لا توجد أي ملاحظات
