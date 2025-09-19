@@ -2,15 +2,32 @@
 
 import Button from "@/components/ui/button/Button";
 import { useOrder } from "@/hooks/useOrders";
+import { useEffect } from "react";
+import io from "socket.io-client";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { CiLocationOn, CiPhone } from "react-icons/ci";
+import { BASE_URL } from "@/lib/config";
 
 export default function OrderDetailsComponent() {
   const { orderId } = useParams<{ orderId: string }>();
   const router = useRouter();
-  const { order, loading, error } = useOrder(orderId);
+  const { order, loading, error, refetch } = useOrder(orderId);
+
+  useEffect(() => {
+    const socket = io(
+      BASE_URL || "https://barq-backend.vercel.app/api/v1",
+    );
+    socket.on("update:order", (updatedOrder) => {
+      if (updatedOrder._id === orderId) {
+        refetch();
+      }
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, [orderId, refetch]);
   const coords = order?.deliveryAddress?.location;
   const mapUrl = coords
     ? `https://www.google.com/maps?q=${coords[0]},${coords[1]}`
@@ -335,7 +352,9 @@ export default function OrderDetailsComponent() {
               رقم المنسوب
             </span>
             <span className="flex items-center gap-2 font-medium text-gray-700 dark:text-white/90">
-              <CiPhone className="text-xl text-blue-600" />
+              {order.deliveryAgent?.mobile && (
+                <CiPhone className="text-xl text-blue-600" />
+              )}
               <span className="dark:text-white/90">
                 {order.deliveryAgent?.mobile ?? "-"}
               </span>

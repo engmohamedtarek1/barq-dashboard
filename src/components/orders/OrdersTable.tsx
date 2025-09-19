@@ -16,6 +16,9 @@ import { FaEye } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import Link from "next/link";
 import { useOrders } from "@/hooks/useOrders";
+import { useEffect } from "react";
+import io from "socket.io-client";
+import { BASE_URL } from "@/lib/config";
 
 const limits = [5, 10, 20, 50];
 
@@ -31,7 +34,23 @@ export default function OrdersTable() {
     setPage,
     limit,
     setLimit,
+    refetch,
   } = useOrders({ initialPage: 1, initialLimit: 10 });
+
+  useEffect(() => {
+    const socket = io(
+      BASE_URL || "https://barq-backend.vercel.app/api/v1",
+    );
+    socket.on("new:order", () => {
+      refetch();
+    });
+    socket.on("update:order", () => {
+      refetch();
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, [refetch]);
 
   const filteredOrders = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
