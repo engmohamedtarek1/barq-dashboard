@@ -16,9 +16,7 @@ export default function OrderDetailsComponent() {
   const { order, loading, error, refetch } = useOrder(orderId);
 
   useEffect(() => {
-    const socket = io(
-      BASE_URL || "https://barq-backend.vercel.app/api/v1",
-    );
+    const socket = io(BASE_URL);
     socket.on("update:order", (updatedOrder) => {
       if (updatedOrder._id === orderId) {
         refetch();

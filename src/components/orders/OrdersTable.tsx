@@ -38,9 +38,7 @@ export default function OrdersTable() {
   } = useOrders({ initialPage: 1, initialLimit: 10 });
 
   useEffect(() => {
-    const socket = io(
-      BASE_URL || "https://barq-backend.vercel.app/api/v1",
-    );
+    const socket = io(BASE_URL);
     socket.on("new:order", () => {
       refetch();
     });
