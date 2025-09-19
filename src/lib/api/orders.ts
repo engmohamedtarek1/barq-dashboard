@@ -56,11 +56,11 @@ export async function getOrderById(orderId: string): Promise<Order> {
 
 // GET /orders/recent?limit=15
 export async function getRecentOrders(limit = 10): Promise<Order[]> {
-  const res = await axios.get<Order[]>(`${BASE_URL}/orders/recent`, {
+  const res = await axios.get<{ data: Order[] }>(`${BASE_URL}/orders/recent`, {
     params: { limit },
     headers: { ...authHeaders() },
   });
-  return res.data;
+  return res.data.data;
 }
 
 // GET /orders/stats/summary?shopId=&userId=
