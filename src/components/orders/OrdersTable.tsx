@@ -19,6 +19,7 @@ import { useOrders } from "@/hooks/useOrders";
 import { useEffect } from "react";
 import io from "socket.io-client";
 import { BASE_URL } from "@/lib/config";
+import { getAuthToken } from "@/lib/api/auth";
 
 const limits = [5, 10, 20, 50];
 
@@ -38,7 +39,15 @@ export default function OrdersTable() {
   } = useOrders({ initialPage: 1, initialLimit: 10 });
 
   useEffect(() => {
-    const socket = io(BASE_URL);
+    const token = getAuthToken();
+    console.log(getAuthToken());
+
+    const socket = io(BASE_URL, {
+      auth: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     socket.on("new:order", () => {
       refetch();
     });

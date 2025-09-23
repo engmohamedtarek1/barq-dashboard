@@ -18,8 +18,8 @@ const metricsConfig = [
     ),
   },
   {
-    key: "totalOrders",
-    label: "الطلبات",
+    key: "totalVendors",
+    label: "البائعون",
     icon: <BoxIconLine className="text-gray-800 dark:text-white/90" />,
     badge: (
       <Badge color="error">
@@ -29,8 +29,8 @@ const metricsConfig = [
     ),
   },
   {
-    key: "totalRevenue",
-    label: "إجمالي الإيرادات",
+    key: "totalAgents",
+    label: "إجمالي الوكلاء",
     icon: <BoxIconLine className="text-gray-800 dark:text-white/90" />,
     badge: (
       <Badge color="success">
@@ -50,7 +50,7 @@ type Metrics = {
   [key: string]: number | undefined;
 };
 
-export const EcommerceMetrics = () => {
+export const MetricsCards = () => {
   const [metrics, setMetrics] = useState<Metrics>({});
   const [loading, setLoading] = useState(true);
 

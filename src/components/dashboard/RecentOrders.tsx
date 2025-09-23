@@ -11,10 +11,13 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getRecentOrders } from "@/lib/api/orders";
 import { Order } from "@/types/order";
+import Button from "../ui/button/Button";
+import { useRouter } from "next/navigation";
 
 export default function RecentOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     getRecentOrders(5).then((data) => {
@@ -28,22 +31,18 @@ export default function RecentOrders() {
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pt-4 pb-3 sm:px-6 dark:border-gray-800 dark:bg-white/[0.03]">
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            الطلبات الحديثة
-          </h3>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button className="text-theme-sm shadow-theme-xs inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-            {/* ...filter icon... */}
-            تصفية
-          </button>
-          <button className="text-theme-sm shadow-theme-xs inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-            عرض الكل
-          </button>
-        </div>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          الطلبات الحديثة
+        </h3>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => router.push("/orders")}
+        >
+          عرض الكل
+        </Button>
       </div>
+
       <div className="max-w-full overflow-x-auto">
         <Table>
           <TableHeader className="border-y border-gray-100 dark:border-gray-800">

@@ -1,5 +1,6 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getDashboardVendorsPerformance } from "@/lib/api/dashboard";
 // import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
@@ -9,7 +10,26 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export default function StatisticsChart() {
+export default function VendorsPerformanceChart() {
+  interface Vendor {
+    vendorName: string;
+    totalOrders: number;
+    completedOrders: number;
+    totalRevenue: number;
+    completionRate: number;
+  }
+
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    getDashboardVendorsPerformance().then((data) => {
+      setVendors(data || []);
+      setLoading(false);
+    });
+  }, []);
+
   const options: ApexOptions = {
     legend: {
       show: false, // Hide legend
@@ -67,30 +87,11 @@ export default function StatisticsChart() {
       },
     },
     xaxis: {
-      type: "category", // Category-based x-axis
-      categories: [
-        "يناير",
-        "فبراير",
-        "مارس",
-        "أبريل",
-        "مايو",
-        "يونيو",
-        "يوليو",
-        "أغسطس",
-        "سبتمبر",
-        "أكتوبر",
-        "نوفمبر",
-        "ديسمبر",
-      ],
-      axisBorder: {
-        show: false, // Hide x-axis border
-      },
-      axisTicks: {
-        show: false, // Hide x-axis ticks
-      },
-      tooltip: {
-        enabled: false, // Disable tooltip for x-axis points
-      },
+      type: "category",
+      categories: vendors.map((v) => v.vendorName),
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+      tooltip: { enabled: false },
     },
     yaxis: {
       labels: {
@@ -110,12 +111,20 @@ export default function StatisticsChart() {
 
   const series = [
     {
-      name: "المبيعات",
-      data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
+      name: "عدد الطلبات",
+      data: vendors.map((v) => v.totalOrders),
+    },
+    {
+      name: "الطلبات المكتملة",
+      data: vendors.map((v) => v.completedOrders),
     },
     {
       name: "الإيرادات",
-      data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
+      data: vendors.map((v) => v.totalRevenue),
+    },
+    {
+      name: "معدل الإكمال %",
+      data: vendors.map((v) => v.completionRate),
     },
   ];
   return (
@@ -123,25 +132,28 @@ export default function StatisticsChart() {
       <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            الاحصائيات
+            أداء البائعين
           </h3>
           <p className="text-theme-sm mt-1 text-gray-500 dark:text-gray-400">
-            الهدف الذي وضعته كل شهر
+            إحصائيات أداء البائعين حسب الطلبات والإيرادات
           </p>
         </div>
-        {/* <div className="flex w-full items-start gap-3 sm:justify-end">
-          <ChartTab />
-        </div> */}
       </div>
 
       <div className="custom-scrollbar max-w-full overflow-x-auto">
         <div className="min-w-[1000px] xl:min-w-full">
-          <ReactApexChart
-            options={options}
-            series={series}
-            type="area"
-            height={310}
-          />
+          {loading ? (
+            <div className="py-12 text-center text-gray-400">
+              جاري التحميل...
+            </div>
+          ) : (
+            <ReactApexChart
+              options={options}
+              series={series}
+              type="area"
+              height={310}
+            />
+          )}
         </div>
       </div>
     </div>
