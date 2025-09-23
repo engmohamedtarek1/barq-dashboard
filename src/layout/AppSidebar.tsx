@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
   BoxCubeIcon,
+  ChatIcon,
   ChevronDownIcon,
   GridIcon,
   ListIcon,
@@ -72,6 +73,11 @@ const navItems: NavItem[] = [
     icon: <UserCircleIcon />,
     name: "المشرفون",
     path: "/admins",
+  },
+  {
+    icon: <ChatIcon />,
+    name: "خدمة العملاء",
+    path: "/customer-service",
   },
   // {
   //   name: "Forms",
