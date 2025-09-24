@@ -102,11 +102,11 @@ const navItems: NavItem[] = [
   //     { name: "خطأ 404", path: "/error-404", pro: false },
   //   ],
   // },
-  {
-    icon: <UserCircleIcon />,
-    name: "الملف الشخصي",
-    path: "/profile",
-  },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "الملف الشخصي",
+  //   path: "/profile",
+  // },
 ];
 
 const othersItems: NavItem[] = [
