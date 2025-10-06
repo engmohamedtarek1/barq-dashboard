@@ -18,7 +18,6 @@ import Link from "next/link";
 import { useOrders } from "@/hooks/useOrders";
 import { useEffect } from "react";
 import io from "socket.io-client";
-import { BASE_URL } from "@/lib/config";
 import { getAuthToken } from "@/lib/api/auth";
 
 const limits = [5, 10, 20, 50];
@@ -40,23 +39,25 @@ export default function OrdersTable() {
 
   useEffect(() => {
     const token = getAuthToken();
-    console.log(getAuthToken());
-
-    const socket = io(BASE_URL, {
-      auth: {
-        Authorization: `Bearer ${token}`,
+    const socket = io("72.60.91.121:4000", {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       },
+      withCredentials: true,
+      transports: ["polling", "websocket"], // polling first for handshake
     });
 
     socket.on("new:order", () => {
       refetch();
     });
+
     socket.on("update:order", () => {
       refetch();
     });
-    return () => {
-      socket.disconnect();
-    };
   }, [refetch]);
 
   const filteredOrders = useMemo(() => {

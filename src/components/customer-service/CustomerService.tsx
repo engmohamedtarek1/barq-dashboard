@@ -1,9 +1,8 @@
 // src/app/components/customer-service/page.tsx
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import io, { Socket } from "socket.io-client";
-import { BASE_URL } from "@/lib/config";
+import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
 import Pagination from "@/components/tables/Pagination";
 import {
   getAdminTickets,
@@ -11,9 +10,9 @@ import {
   createSupportReply,
 } from "@/lib/api/tickets";
 import { Chat, Message } from "@/types/customerservice";
+import { getAuthToken } from "@/lib/api/auth";
 
 export default function CustomerServiceComponent() {
-  const socketRef = useRef<Socket | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -34,20 +33,33 @@ export default function CustomerServiceComponent() {
   }, [currentPage]);
 
   useEffect(() => {
-    const socket = io(BASE_URL);
-    socketRef.current = socket;
+    const token = getAuthToken();
+    const socket = io("72.60.91.121:4000", {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
+      withCredentials: true,
+      transports: ["polling", "websocket"], // polling first for handshake
+    });
 
-    socket.on("support:chat:join", (chatId) => {
+    socket.on("support:chat:join", (data) => {
+      const chatId = data?.chat;
       if (selectedChat && chatId === selectedChat._id) {
         getSupportReplies(chatId).then((res) => setMessages(res.data));
       }
     });
-    socket.on("support:chat:message", (chatId) => {
+    socket.on("support:chat:message", (data) => {
+      const chatId = data?.chat;
       if (selectedChat && chatId === selectedChat._id) {
         getSupportReplies(chatId).then((res) => setMessages(res.data));
       }
     });
-    socket.on("support:chat:leave", (chatId) => {
+    socket.on("support:chat:leave", (data) => {
+      const chatId = data?.chat;
       if (selectedChat && chatId === selectedChat._id) {
         setSelectedChat(null);
         setMessages([]);
@@ -61,10 +73,35 @@ export default function CustomerServiceComponent() {
         setLoadingChats(false);
       });
     });
+  }, [selectedChat, currentPage]);
+
+  // Emit join/leave events to backend when chat changes
+  useEffect(() => {
+    const token = getAuthToken();
+    const socket = io("72.60.91.121:4000", {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
+      withCredentials: true,
+      transports: ["polling", "websocket"],
+    });
+
+    let prevChatId: string | null = null;
+    if (selectedChat) {
+      socket.emit("support:chat:join", { chat: selectedChat._id });
+      prevChatId = selectedChat._id;
+    }
     return () => {
+      if (prevChatId) {
+        socket.emit("support:chat:leave", { chat: prevChatId });
+      }
       socket.disconnect();
     };
-  }, [selectedChat, currentPage]);
+  }, [selectedChat]);
 
   useEffect(() => {
     if (selectedChat) {
