@@ -1,3 +1,3 @@
 // lib/config.ts
 
-export const BASE_URL = "http://barqshipping.com:4000/api/v1";
+export const BASE_URL = "https://barq-backend.vercel.app/api/v1";
