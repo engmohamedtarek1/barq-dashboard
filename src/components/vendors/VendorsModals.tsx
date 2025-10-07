@@ -108,7 +108,7 @@ export function AddVendorModal({
         setToast({
           variant: "error",
           title: "حقل مطلوب",
-          message: "اسم المتجر مطلوب.",
+          message: "اسم البائع مطلوب.",
         });
         setTimeout(() => setToast(null), 5000);
         return;
@@ -186,8 +186,8 @@ export function AddVendorModal({
       await createVendor(payload);
       setToast({
         variant: "success",
-        title: "نجح إنشاء المتجر",
-        message: "تم إنشاء المتجر بنجاح",
+        title: "نجح إنشاء البائع",
+        message: "تم إنشاء البائع بنجاح",
       });
       setTimeout(() => setToast(null), 5000);
       setFormData({
@@ -204,10 +204,10 @@ export function AddVendorModal({
       if (err instanceof AxiosError) {
         setToast({
           variant: "error",
-          title: "خطأ في إنشاء المتجر",
+          title: "خطأ في إنشاء البائع",
           message:
             err.response?.data?.message ||
-            "فشل في إنشاء المتجر. يرجى المحاولة مرة أخرى",
+            "فشل في إنشاء البائع. يرجى المحاولة مرة أخرى",
         });
       } else {
         setToast({
@@ -234,7 +234,7 @@ export function AddVendorModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                معلومات المتجر
+                معلومات البائع
               </h5>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 {/* Profile Image */}
@@ -255,7 +255,7 @@ export function AddVendorModal({
                   </Label>
                   <Input
                     type="text"
-                    placeholder="اسم المتجر"
+                    placeholder="اسم البائع"
                     onChange={(e) => handleChange("name", e.target.value)}
                     required
                   />
@@ -332,7 +332,7 @@ export function AddVendorModal({
 
             <div className="mt-7">
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                تفاصيل المتجر
+                تفاصيل متجر البائع
               </h5>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 {/* Category */}
@@ -431,7 +431,7 @@ export function AddVendorButton({ onSuccess }: { onSuccess?: () => void }) {
   return (
     <>
       <Button size="md" variant="primary" onClick={openModal}>
-        + إضافة متجر
+        + إضافة بائع
       </Button>
       <AddVendorModal
         isOpen={isOpen}
@@ -568,8 +568,8 @@ export function EditVendorModal({
       await updateVendor(vendor._id, payload);
       setToast({
         variant: "success",
-        title: "نجح تحديث المتجر",
-        message: "تم تحديث المتجر بنجاح",
+        title: "نجح تحديث البائع",
+        message: "تم تحديث البائع بنجاح",
       });
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
@@ -577,10 +577,10 @@ export function EditVendorModal({
       if (err instanceof AxiosError) {
         setToast({
           variant: "error",
-          title: "خطأ في تحديث المتجر",
+          title: "خطأ في تحديث البائع",
           message:
             err.response?.data?.message ||
-            "فشل في تحديث المتجر. يرجى المحاولة مرة أخرى",
+            "فشل في تحديث البائع. يرجى المحاولة مرة أخرى",
         });
       } else {
         setToast({
@@ -607,7 +607,7 @@ export function EditVendorModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                معلومات المتجر
+                معلومات البائع
               </h5>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 <div className="lg:col-span-2">
@@ -633,7 +633,7 @@ export function EditVendorModal({
                   <Label>الاسم</Label>
                   <Input
                     type="text"
-                    placeholder="اسم المتجر"
+                    placeholder="اسم البائع"
                     defaultValue={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
                     required
@@ -695,7 +695,7 @@ export function EditVendorModal({
 
             <div className="mt-7">
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                تفاصيل المتجر
+                تفاصيل متجر البائع
               </h5>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 <div>
@@ -818,8 +818,8 @@ export function DeleteVendorModal({
       await deleteVendor(vendorId);
       setToast({
         variant: "success",
-        title: "نجح حذف المتجر",
-        message: "تم حذف المتجر بنجاح",
+        title: "نجح حذف البائع",
+        message: "تم حذف البائع بنجاح",
       });
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
@@ -828,10 +828,10 @@ export function DeleteVendorModal({
       if (err instanceof AxiosError) {
         setToast({
           variant: "error",
-          title: "خطأ في حذف المتجر",
+          title: "خطأ في حذف البائع",
           message:
             err.response?.data?.message ||
-            "فشل في حذف المتجر. يرجى المحاولة مرة أخرى",
+            "فشل في حذف البائع. يرجى المحاولة مرة أخرى",
         });
       } else {
         setToast({
@@ -854,11 +854,11 @@ export function DeleteVendorModal({
       <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11 dark:bg-gray-900">
         <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-5 px-2 pb-3 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-            حذف المتجر
+            حذف البائع
           </h4>
 
           <p className="text-gray-800 dark:text-white/90">
-            هل أنت متأكد أنك تريد حذف هذا المتجر؟
+            هل أنت متأكد أنك تريد حذف هذا البائع؟
           </p>
 
           <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">

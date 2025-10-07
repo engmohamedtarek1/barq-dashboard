@@ -149,7 +149,7 @@ export default function ProductsTable() {
                     الفئة
                   </TableCell>
                   <TableCell isHeader className="text-start font-medium">
-                    المتجر
+                    البائع
                   </TableCell>
                   <TableCell isHeader className="text-start font-medium">
                     مرات البيع

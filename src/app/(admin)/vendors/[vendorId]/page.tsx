@@ -2,8 +2,8 @@ import VendorDetailsComponent from "@/components/vendors/[vendorId]";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "تفاصيل المتجر | برق",
-  description: "هذه هي صفحة تفاصيل المتجر حيث يمكنك إدارة بيانات المتجر.",
+  title: "تفاصيل البائع | برق",
+  description: "هذه هي صفحة تفاصيل البائع حيث يمكنك إدارة بيانات البائع.",
 };
 
 export default function VendorDetailsPage() {

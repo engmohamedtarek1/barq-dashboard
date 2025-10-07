@@ -56,7 +56,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
     setLoading(true);
     fetchCategoryshopsByVendor(vendorId)
       .then((res) => setCategoryshops(res.data))
-      .catch(() => setError("فشل تحميل الفئات لهذا المتجر"))
+      .catch(() => setError("فشل تحميل الفئات لهذا البائع"))
       .finally(() => setLoading(false));
   }, [vendorId]);
 
@@ -118,7 +118,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
       setToast({
         variant: "error",
         title: "خطأ في الإضافة",
-        message: "فشل إضافة الفئة للمتجر",
+        message: "فشل إضافة الفئة للبائع",
       });
       setTimeout(() => setToast(null), 5000);
     }
@@ -162,7 +162,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
       setToast({
         variant: "error",
         title: "خطأ في التعديل",
-        message: "فشل تعديل الفئة للمتجر",
+        message: "فشل تعديل الفئة للبائع",
       });
       setTimeout(() => setToast(null), 5000);
     }
@@ -185,7 +185,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
       setToast({
         variant: "error",
         title: "خطأ في الحذف",
-        message: "فشل حذف الفئة للمتجر",
+        message: "فشل حذف الفئة للبائع",
       });
       setTimeout(() => setToast(null), 5000);
     }
@@ -195,7 +195,7 @@ export default function CategoryShopCRUD({ vendorId }: { vendorId: string }) {
     <div className="space-y-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="mb-1 text-lg font-medium text-gray-800 dark:text-white/90">
-          فئات المتجر
+          فئات البائع
         </h2>
         <Button size="xs" variant="primary" onClick={openAddModal}>
           + أضف فئة متجر

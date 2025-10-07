@@ -12,7 +12,7 @@ import {
   EditOfferButton,
   DeleteOfferButton,
 } from "@/components/offers/OffersModals";
-import InfoCard from "@/components/common/InfoCard";
+import InfoCard from "@/components/shared/InfoCard";
 
 export default function OfferDetailsComponent() {
   const { offerId } = useParams<{ offerId: string }>();
@@ -305,6 +305,7 @@ export default function OfferDetailsComponent() {
   );
 }
 // Small helper components
+
 
 function InfoRow({ label, value }: { label: string; value: string | number }) {
   return (

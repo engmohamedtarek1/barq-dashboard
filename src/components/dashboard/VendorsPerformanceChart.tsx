@@ -132,10 +132,10 @@ export default function VendorsPerformanceChart() {
       <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            أداء المتجرين
+            أداء البائعين
           </h3>
           <p className="text-theme-sm mt-1 text-gray-500 dark:text-gray-400">
-            إحصائيات أداء المتجرين حسب الطلبات والإيرادات
+            إحصائيات أداء البائعين حسب الطلبات والإيرادات
           </p>
         </div>
       </div>
