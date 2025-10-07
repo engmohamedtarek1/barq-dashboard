@@ -102,7 +102,7 @@ export default function VendorsTable() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="البحث عن بائعين..."
+            placeholder="البحث عن متاجر..."
             className="h-11 w-full rounded-lg border border-gray-500 bg-transparent py-2.5 ps-12 pe-14 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-1 focus:outline-hidden dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30"
           />
         </div>
@@ -144,7 +144,7 @@ export default function VendorsTable() {
               <TableHeader>
                 <TableRow>
                   <TableCell isHeader className="text-start font-medium">
-                    البائع
+                    المتجر
                   </TableCell>
                   <TableCell isHeader className="text-start font-medium">
                     الفئة
@@ -256,7 +256,7 @@ export default function VendorsTable() {
                         <Link
                           href={`/vendors/${vendor._id}`}
                           className="text-sm text-indigo-600 dark:text-indigo-400"
-                          title="عرض البائع"
+                          title="عرض المتجر"
                         >
                           <FaEye />
                         </Link>

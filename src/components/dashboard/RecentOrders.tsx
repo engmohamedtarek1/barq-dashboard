@@ -103,7 +103,7 @@ export default function RecentOrders() {
                           height={50}
                           src={
                             order.items?.[0]?.itemId?.image ||
-                            "/images/product/product-01.jpg"
+                            "/images/logo/barq-logo.png"
                           }
                           className="h-[50px] w-[50px]"
                           alt={order.items?.[0]?.itemId?.nameAr || "منتج"}

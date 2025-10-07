@@ -14,7 +14,7 @@ import {
 } from "@/components/vendors/VendorsModals";
 import CategoryShopCRUD from "./CategoryShopCRUD";
 import { AddProductButton } from "@/components/products/ProductsModals";
-import InfoCard from "@/components/shared/InfoCard";
+import InfoCard from "@/components/common/InfoCard";
 
 export default function VendorDetailsComponent() {
   const { vendorId } = useParams<{ vendorId: string }>();
@@ -31,7 +31,7 @@ export default function VendorDetailsComponent() {
         const data = await getSingleVendor(vendorId);
         setVendor(data);
       } catch {
-        setError("فشل تحميل بيانات البائع");
+        setError("فشل تحميل بيانات المتجر");
       } finally {
         setLoading(false);
       }
@@ -56,7 +56,7 @@ export default function VendorDetailsComponent() {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center gap-4">
         <p className="text-gray-600 dark:text-gray-400">
-          {error || "لم يتم العثور على البائع"}
+          {error || "لم يتم العثور على المتجر"}
         </p>
         <Button
           size="sm"

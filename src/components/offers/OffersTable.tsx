@@ -150,7 +150,7 @@ export default function OffersTable() {
                     المنتج
                   </TableCell>
                   <TableCell isHeader className="text-start font-medium">
-                    البائع
+                    المتجر
                   </TableCell>
                   <TableCell isHeader className="text-start font-medium">
                     السعر / الخصم

@@ -27,16 +27,10 @@ const navItems: NavItem[] = [
     icon: <GridIcon />,
     name: "لوحة التحكم",
     path: "/",
-    // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/calendar",
-  // },
   {
     icon: <UserCircleIcon />,
-    name: "البائعون",
+    name: "المتاجر",
     path: "/vendors",
   },
   {
@@ -79,34 +73,6 @@ const navItems: NavItem[] = [
     name: "خدمة العملاء",
     path: "/customer-service",
   },
-  // {
-  //   name: "Forms",
-  //   icon: <ListIcon />,
-  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  // },
-  // {
-  //   name: "Tables",
-  //   icon: <TableIcon />,
-  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  // },
-  // {
-  //   name: "Basic Tables",
-  //   icon: <TableIcon />,
-  //   path: "/basic-tables",
-  // },
-  // {
-  //   name: "الصفحات",
-  //   icon: <PageIcon />,
-  //   subItems: [
-  //     { name: "تسجيل الدخول", path: "/signin", pro: false },
-  //     { name: "خطأ 404", path: "/error-404", pro: false },
-  //   ],
-  // },
-  // {
-  //   icon: <UserCircleIcon />,
-  //   name: "الملف الشخصي",
-  //   path: "/profile",
-  // },
 ];
 
 const othersItems: NavItem[] = [

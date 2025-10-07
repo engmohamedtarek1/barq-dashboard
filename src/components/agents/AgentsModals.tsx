@@ -206,7 +206,7 @@ export function AddAgentButton({ onSuccess }: { onSuccess?: () => void }) {
   return (
     <>
       <Button size="md" variant="primary" onClick={openModal}>
-        + إضافة بائع
+        + إضافة متجر
       </Button>
       <AddAgentModal
         isOpen={isOpen}
@@ -394,9 +394,7 @@ export function EditAgentModal({
                   <Switch
                     label=""
                     defaultChecked={agent.isActive}
-                    onChange={() =>
-                      handleChange("isActive", !agent.isActive)
-                    }
+                    onChange={() => handleChange("isActive", !agent.isActive)}
                   />
                 </div>
               </div>

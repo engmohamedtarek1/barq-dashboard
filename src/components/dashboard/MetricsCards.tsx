@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Badge from "../ui/badge/Badge";
-import { ArrowDownIcon, ArrowUpIcon, BoxIconLine, GroupIcon } from "@/icons";
+import { BoxIconLine, GroupIcon } from "@/icons";
 import { getDashboardOverview } from "@/lib/api/dashboard";
 
 const metricsConfig = [
@@ -10,34 +9,16 @@ const metricsConfig = [
     key: "totalCustomers",
     label: "العملاء",
     icon: <GroupIcon className="size-6 text-gray-800 dark:text-white/90" />,
-    badge: (
-      <Badge color="success">
-        <ArrowUpIcon />
-        +11%
-      </Badge>
-    ),
   },
   {
     key: "totalVendors",
-    label: "البائعون",
+    label: "المتاجر",
     icon: <BoxIconLine className="text-gray-800 dark:text-white/90" />,
-    badge: (
-      <Badge color="error">
-        <ArrowDownIcon />
-        -3%
-      </Badge>
-    ),
   },
   {
     key: "totalAgents",
     label: "إجمالي الوكلاء",
     icon: <BoxIconLine className="text-gray-800 dark:text-white/90" />,
-    badge: (
-      <Badge color="success">
-        <ArrowUpIcon />
-        +12%
-      </Badge>
-    ),
   },
 ];
 
@@ -84,7 +65,6 @@ export const MetricsCards = () => {
                 )}
               </h4>
             </div>
-            {/* {m.badge} */}
           </div>
         </div>
       ))}
