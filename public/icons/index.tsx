@@ -1,6 +1,5 @@
 import CloseIcon from "./close.svg";
 import GroupIcon from "./group.svg";
-import BoxIconLine from "./box-line.svg";
 import ChevronDownIcon from "./chevron-down.svg";
 import EnvelopeIcon from "./envelope.svg";
 import CalenderIcon from "./calender-line.svg";
@@ -14,7 +13,6 @@ export {
   MoreDotIcon,
   CloseIcon,
   GroupIcon,
-  BoxIconLine,
   ChevronDownIcon,
   EnvelopeIcon,
   CalenderIcon,
