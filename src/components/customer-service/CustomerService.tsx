@@ -12,7 +12,6 @@ import {
 } from "@/lib/api/tickets";
 import { Chat, Message } from "@/types/customerservice";
 import { getAuthToken } from "@/lib/api/auth";
-import { BASE_URL } from "@/lib/config";
 
 export default function CustomerServiceComponent() {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -62,15 +61,29 @@ export default function CustomerServiceComponent() {
   // Initialize socket connection once
   useEffect(() => {
     const token = getAuthToken();
-    // Use HTTP for local development, HTTPS for production
-    const isProduction = process.env.NODE_ENV === "production";
-    const protocol = isProduction ? "https://" : "http://";
-    const socketUrl =
-      BASE_URL.replace("/api/v1", "").replace("https://", protocol) + ":4000";
+
+    // Define multiple socket URL options for production
+    let socketUrl: string;
+    let fallbackUrls: string[] = [];
+
+    if (process.env.NODE_ENV === "production") {
+      // Primary: Same domain without port (most common for production)
+      socketUrl = "https://api.barqshipping.com";
+
+      // Fallback options if primary fails
+      fallbackUrls = [
+        "wss://api.barqshipping.com:4000", // WebSocket Secure
+        "http://api.barqshipping.com:4000", // HTTP fallback
+        "https://api.barqshipping.com:443", // Standard HTTPS port
+      ];
+    } else {
+      // Local development
+      socketUrl = "http://api.barqshipping.com:4000";
+    }
 
     console.log("Attempting to connect to socket:", socketUrl);
     console.log("Environment:", process.env.NODE_ENV);
-    console.log("Using protocol:", protocol);
+    console.log("Fallback URLs available:", fallbackUrls);
 
     const newSocket = io(socketUrl, {
       transportOptions: {
@@ -85,20 +98,37 @@ export default function CustomerServiceComponent() {
       timeout: 20000, // 20 seconds timeout
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 3, // Reduced attempts for faster fallback
       upgrade: true,
       rememberUpgrade: false,
+      forceNew: true, // Force new connection to avoid caching issues
     });
 
     setSocket(newSocket);
 
     // Connection event handlers
     newSocket.on("connect", () => {
-      console.log("Socket connected successfully");
+      console.log("Socket connected successfully to:", socketUrl);
     });
 
     newSocket.on("connect_error", (error) => {
       console.error("Socket connection error:", error);
+      console.error("Failed to connect to:", socketUrl);
+
+      // Try fallback URLs in production
+      if (process.env.NODE_ENV === "production" && fallbackUrls.length > 0) {
+        console.log("Trying fallback URLs...");
+        console.log(
+          "If connection continues to fail, try these URLs manually:",
+        );
+        fallbackUrls.forEach((url, index) => {
+          console.log(`Fallback option ${index + 1}: ${url}`);
+        });
+        console.log(
+          "You may need to contact your backend team to configure SSL for port 4000",
+        );
+        console.log("Or set up a reverse proxy to handle socket.io requests");
+      }
     });
 
     newSocket.on("disconnect", (reason) => {
