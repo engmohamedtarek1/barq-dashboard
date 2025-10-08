@@ -1,8 +1,9 @@
 // src/app/components/customer-service/page.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import io from "socket.io-client";
+import type { Socket } from "socket.io-client";
 import Pagination from "@/components/tables/Pagination";
 import {
   getAdminTickets,
@@ -22,7 +23,32 @@ export default function CustomerServiceComponent() {
   const [sending, setSending] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
+  // Helper function to refresh messages
+  const refreshMessages = useCallback((chatId: string) => {
+    getSupportReplies(chatId)
+      .then((res) => {
+        setMessages(res.data);
+      })
+      .catch((error) => {
+        console.error("Error refreshing messages:", error);
+      });
+  }, []);
+
+  // Helper function to refresh chat list
+  const refreshChatList = useCallback(() => {
+    getAdminTickets(currentPage)
+      .then((res) => {
+        setChats(res.data || res.data);
+        setTotalPages(res.metadata.pages || 1);
+      })
+      .catch((error) => {
+        console.error("Error refreshing chat list:", error);
+      });
+  }, [currentPage]);
+
+  // Load chats when page changes
   useEffect(() => {
     setLoadingChats(true);
     getAdminTickets(currentPage).then((res) => {
@@ -32,53 +58,10 @@ export default function CustomerServiceComponent() {
     });
   }, [currentPage]);
 
+  // Initialize socket connection once
   useEffect(() => {
     const token = getAuthToken();
-    const socket = io("72.60.91.121:4000", {
-      transportOptions: {
-        polling: {
-          extraHeaders: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      },
-      withCredentials: true,
-      transports: ["polling", "websocket"], // polling first for handshake
-    });
-
-    socket.on("support:chat:join", (data) => {
-      const chatId = data?.chat;
-      if (selectedChat && chatId === selectedChat._id) {
-        getSupportReplies(chatId).then((res) => setMessages(res.data));
-      }
-    });
-    socket.on("support:chat:message", (data) => {
-      const chatId = data?.chat;
-      if (selectedChat && chatId === selectedChat._id) {
-        getSupportReplies(chatId).then((res) => setMessages(res.data));
-      }
-    });
-    socket.on("support:chat:leave", (data) => {
-      const chatId = data?.chat;
-      if (selectedChat && chatId === selectedChat._id) {
-        setSelectedChat(null);
-        setMessages([]);
-      }
-    });
-    socket.on("new:chat", () => {
-      setLoadingChats(true);
-      getAdminTickets(currentPage).then((res) => {
-        setChats(res.data || res.data);
-        setTotalPages(res.metadata.pages || 1);
-        setLoadingChats(false);
-      });
-    });
-  }, [selectedChat, currentPage]);
-
-  // Emit join/leave events to backend when chat changes
-  useEffect(() => {
-    const token = getAuthToken();
-    const socket = io("72.60.91.121:4000", {
+    const newSocket = io("72.60.91.121:4000", {
       transportOptions: {
         polling: {
           extraHeaders: {
@@ -90,18 +73,69 @@ export default function CustomerServiceComponent() {
       transports: ["polling", "websocket"],
     });
 
-    let prevChatId: string | null = null;
-    if (selectedChat) {
-      socket.emit("support:chat:join", { chat: selectedChat._id });
-      prevChatId = selectedChat._id;
-    }
-    return () => {
-      if (prevChatId) {
-        socket.emit("support:chat:leave", { chat: prevChatId });
+    setSocket(newSocket);
+
+    // Socket event listeners
+    newSocket.on("support:chat:join", (data) => {
+      const chatId = data?.chat?._id || data?.chat;
+      if (selectedChat && chatId === selectedChat._id) {
+        refreshMessages(chatId);
       }
-      socket.disconnect();
+    });
+
+    newSocket.on("support:chat:message", (data) => {
+      // Extract chat ID properly - data.chat is an object with _id property
+      const chatId = data?.chat?._id;
+
+      if (selectedChat && chatId === selectedChat._id) {
+        // If the reply data is included in the event, add it immediately for better UX
+        if (data.reply) {
+          setMessages((prev) => [
+            ...prev,
+            {
+              _id: data.reply._id,
+              message: data.reply.message,
+              type: data.reply.type,
+              createdAt: data.reply.createdAt,
+              updatedAt: data.reply.updatedAt || data.reply.createdAt,
+            },
+          ]);
+        }
+
+        // Then refresh to ensure consistency with server after a short delay
+        setTimeout(() => refreshMessages(chatId), 300);
+      }
+      // Also refresh the chat list to update last message
+      refreshChatList();
+    });
+
+    newSocket.on("support:chat:leave", (data) => {
+      const chatId = data?.chat?._id || data?.chat;
+      if (selectedChat && chatId === selectedChat._id) {
+        setSelectedChat(null);
+        setMessages([]);
+      }
+    });
+
+    newSocket.on("new:chat", () => {
+      refreshChatList();
+    });
+
+    return () => {
+      newSocket.disconnect();
     };
-  }, [selectedChat]);
+  }, [selectedChat, refreshMessages, refreshChatList]);
+
+  // Handle chat selection and join/leave events
+  useEffect(() => {
+    if (socket && selectedChat) {
+      socket.emit("support:chat:join", { chat: selectedChat._id });
+
+      return () => {
+        socket.emit("support:chat:leave", { chat: selectedChat._id });
+      };
+    }
+  }, [socket, selectedChat]);
 
   useEffect(() => {
     if (selectedChat) {
@@ -117,12 +151,18 @@ export default function CustomerServiceComponent() {
     e.preventDefault();
     if (!newMessage.trim() || !selectedChat) return;
     setSending(true);
-    await createSupportReply(selectedChat._id, newMessage);
-    setNewMessage("");
-    getSupportReplies(selectedChat._id).then((res) => {
-      setMessages(res.data);
+    try {
+      await createSupportReply(selectedChat._id, newMessage);
+      setNewMessage("");
+      // Immediately refresh messages after sending
+      refreshMessages(selectedChat._id);
+      // Also refresh chat list to update last message
+      refreshChatList();
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
       setSending(false);
-    });
+    }
   };
 
   return (
