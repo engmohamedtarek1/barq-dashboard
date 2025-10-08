@@ -1,13 +1,12 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import Badge from "@/components/ui/badge/Badge";
-import { PlusIcon } from "@/icons";
+import { PlusIcon } from "../../../../../public/icons";
 import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
   title: "Next.js Badge | Dashboard ",
-  description:
-    "This is Next.js Badge page",
+  description: "This is Next.js Badge page",
   // other metadata
 };
 
@@ -22,7 +21,7 @@ export default function BadgePage() {
               With Light Background
             </h3>
           </div>
-          <div className="p-6 border-t border-gray-100 dark:border-gray-800 xl:p-10">
+          <div className="border-t border-gray-100 p-6 xl:p-10 dark:border-gray-800">
             <div className="flex flex-wrap gap-4 sm:items-center sm:justify-center">
               {/* Light Variant */}
               <Badge variant="light" color="primary">
@@ -56,7 +55,7 @@ export default function BadgePage() {
               With Solid Background
             </h3>
           </div>
-          <div className="p-6 border-t border-gray-100 dark:border-gray-800 xl:p-10">
+          <div className="border-t border-gray-100 p-6 xl:p-10 dark:border-gray-800">
             <div className="flex flex-wrap gap-4 sm:items-center sm:justify-center">
               {/* Light Variant */}
               <Badge variant="solid" color="primary">
@@ -90,7 +89,7 @@ export default function BadgePage() {
               Light Background with Left Icon
             </h3>
           </div>
-          <div className="p-6 border-t border-gray-100 dark:border-gray-800 xl:p-10">
+          <div className="border-t border-gray-100 p-6 xl:p-10 dark:border-gray-800">
             <div className="flex flex-wrap gap-4 sm:items-center sm:justify-center">
               <Badge variant="light" color="primary" startIcon={<PlusIcon />}>
                 Primary
@@ -123,7 +122,7 @@ export default function BadgePage() {
               Solid Background with Left Icon
             </h3>
           </div>
-          <div className="p-6 border-t border-gray-100 dark:border-gray-800 xl:p-10">
+          <div className="border-t border-gray-100 p-6 xl:p-10 dark:border-gray-800">
             <div className="flex flex-wrap gap-4 sm:items-center sm:justify-center">
               <Badge variant="solid" color="primary" startIcon={<PlusIcon />}>
                 Primary
@@ -156,7 +155,7 @@ export default function BadgePage() {
               Light Background with Right Icon
             </h3>
           </div>
-          <div className="p-6 border-t border-gray-100 dark:border-gray-800 xl:p-10">
+          <div className="border-t border-gray-100 p-6 xl:p-10 dark:border-gray-800">
             <div className="flex flex-wrap gap-4 sm:items-center sm:justify-center">
               <Badge variant="light" color="primary" endIcon={<PlusIcon />}>
                 Primary
@@ -189,7 +188,7 @@ export default function BadgePage() {
               Solid Background with Right Icon
             </h3>
           </div>
-          <div className="p-6 border-t border-gray-100 dark:border-gray-800 xl:p-10">
+          <div className="border-t border-gray-100 p-6 xl:p-10 dark:border-gray-800">
             <div className="flex flex-wrap gap-4 sm:items-center sm:justify-center">
               <Badge variant="solid" color="primary" endIcon={<PlusIcon />}>
                 Primary

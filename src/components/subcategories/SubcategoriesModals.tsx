@@ -21,7 +21,7 @@ import Alert, { AlertProps } from "@/components/ui/alert/Alert";
 import { fetchCategories } from "@/lib/api/categories";
 import { Category } from "@/types/category";
 import Select from "../form/Select";
-import { ChevronDownIcon } from "@/icons";
+import { ChevronDownIcon } from "../../../public/icons";
 import { AxiosError } from "axios";
 
 export function AddSubcategoryModal({

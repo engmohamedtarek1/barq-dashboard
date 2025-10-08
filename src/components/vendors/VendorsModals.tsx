@@ -8,7 +8,7 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Switch from "../form/switch/Switch";
 import FileInput from "../form/input/FileInput";
-import { ChevronDownIcon } from "@/icons";
+import { ChevronDownIcon } from "../../../public/icons";
 import Select from "../form/Select";
 import MultiSelect from "../form/MultiSelect";
 import { Category } from "@/types/category";

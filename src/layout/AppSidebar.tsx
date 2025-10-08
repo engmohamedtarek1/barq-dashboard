@@ -13,7 +13,7 @@ import {
   PieChartIcon,
   PlugInIcon,
   UserCircleIcon,
-} from "../icons/index";
+} from "../../public/icons/index";
 
 type NavItem = {
   name: string;

@@ -9,7 +9,7 @@ import {
   EyeCloseIcon,
   EyeIcon,
   TimeIcon,
-} from "../../../icons";
+} from "../../../../public/icons";
 import DatePicker from "@/components/form/date-picker";
 
 export default function DefaultInputs() {

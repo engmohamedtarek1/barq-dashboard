@@ -7,7 +7,7 @@ import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import FileInput from "../form/input/FileInput";
-import { ChevronDownIcon } from "@/icons";
+import { ChevronDownIcon } from "../../../public/icons";
 import Select from "../form/Select";
 import { useModal } from "@/hooks/useModal";
 import { createOffer, deleteOffer, updateOffer } from "@/lib/api/offers";
