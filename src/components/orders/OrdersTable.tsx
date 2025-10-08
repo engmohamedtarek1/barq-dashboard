@@ -39,7 +39,7 @@ export default function OrdersTable() {
 
   useEffect(() => {
     const token = getAuthToken();
-    const socket = io("localhost:4000", {
+    const socket = io("http://localhost:4000", {
       transportOptions: {
         polling: {
           extraHeaders: {
