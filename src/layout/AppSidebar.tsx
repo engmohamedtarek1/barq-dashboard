@@ -79,6 +79,11 @@ const navItems: NavItem[] = [
     name: "خدمة العملاء",
     path: "/customer-service",
   },
+  {
+    icon: <MdAdminPanelSettings />,
+    name: "الملف الشخصي",
+    path: "/profile",
+  },
 ];
 
 const othersItems: NavItem[] = [

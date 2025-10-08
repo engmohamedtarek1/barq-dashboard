@@ -1,18 +1,81 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useProfile } from "../../hooks/useProfile";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import Alert, { AlertProps } from "../ui/alert/Alert";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    closeModal();
+  const { profile, loading, updateProfile, error } = useProfile();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<AlertProps | null>(null);
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        name: profile.name || "",
+        email: profile.email || "",
+      });
+    }
+  }, [profile]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
+  const handleSave = async () => {
+    try {
+      setIsSubmitting(true);
+      await updateProfile(formData);
+
+      // Show success message
+      setSuccessMessage({
+        variant: "success",
+        title: "نجح التحديث",
+        message: "تم تحديث البيانات بنجاح",
+      });
+
+      // Auto hide success message after 3 seconds
+      setTimeout(() => setSuccessMessage(null), 3000);
+
+      closeModal();
+    } catch {
+      // Error is handled by the hook
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
+        <div className="flex h-20 items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
+      {/* Success Message */}
+      {successMessage && (
+        <div className="mb-4">
+          <Alert {...successMessage} />
+        </div>
+      )}
+
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h4 className="text-lg font-semibold text-gray-800 lg:mb-6 dark:text-white/90">
@@ -22,19 +85,19 @@ export default function UserInfoCard() {
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                الاسم الاول
+                الاسم
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Mohamed
+                {profile?.name || "-"}
               </p>
             </div>
 
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                الاسم الاخير
+                الدور
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Tarek
+                {profile?.role || "-"}
               </p>
             </div>
 
@@ -43,25 +106,18 @@ export default function UserInfoCard() {
                 البريد الالكتروني
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                eng.mohamedtarek0@gmail.com
+                {profile?.email || "-"}
               </p>
             </div>
 
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                الهاتف
+                تاريخ الإنشاء
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                +20 127 282 5897
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                نبذة
-              </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                مهندس برمجيات
+                {profile?.createdAt
+                  ? new Date(profile.createdAt).toLocaleDateString("ar-EG")
+                  : "-"}
               </p>
             </div>
           </div>
@@ -101,78 +157,39 @@ export default function UserInfoCard() {
             </p>
           </div>
           <form className="flex flex-col">
-            <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+            <div className="custom-scrollbar h-[350px] overflow-y-auto px-2 pb-3">
+              {error && (
+                <div className="mb-4 rounded-lg border border-red-400 bg-red-100 p-3 text-red-700">
+                  {error}
+                </div>
+              )}
+
               <div>
                 <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                  منصات التواصل الاجتماعي
+                  البيانات الأساسية
                 </h5>
 
-                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-x-6 gap-y-5">
                   <div>
-                    <Label>فيس بوك</Label>
+                    <Label>الاسم</Label>
                     <Input
                       type="text"
-                      defaultValue="https://www.facebook.com/engmohamedtarek1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label>اكس (تويتر)</Label>
-                    <Input
-                      type="text"
-                      defaultValue="https://x.com/engmohamedtarek1"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="أدخل الاسم"
                     />
                   </div>
 
                   <div>
-                    <Label>لنكدن ان</Label>
+                    <Label>البريد الالكتروني</Label>
                     <Input
-                      type="text"
-                      defaultValue="https://www.linkedin.com/in/engmohamedtarek1/"
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="أدخل البريد الالكتروني"
                     />
-                  </div>
-
-                  <div>
-                    <Label>انستجرام</Label>
-                    <Input
-                      type="text"
-                      defaultValue="https://instagram.com/engmohamedtarek1"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="mt-7">
-                <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                  البيانات الخاصة
-                </h5>
-
-                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>الاسم الاول</Label>
-                    <Input type="text" defaultValue="Mohamed" />
-                  </div>
-
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>الاسم الاخير</Label>
-                    <Input type="text" defaultValue="Tarek" />
-                  </div>
-
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>البريد الاكتروني</Label>
-                    <Input
-                      type="text"
-                      defaultValue="eng.mohamedtarek0@gmail.com"
-                    />
-                  </div>
-
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>الهاتف</Label>
-                    <Input type="text" defaultValue="+20 127 282 5897" />
-                  </div>
-
-                  <div className="col-span-2">
-                    <Label>نبذة</Label>
-                    <Input type="text" defaultValue="مهندس برمجيات" />
                   </div>
                 </div>
               </div>
@@ -181,8 +198,8 @@ export default function UserInfoCard() {
               <Button size="sm" variant="outline" onClick={closeModal}>
                 إغلاق
               </Button>
-              <Button size="sm" onClick={handleSave}>
-                حفظ التغييرات
+              <Button size="sm" onClick={handleSave} disabled={isSubmitting}>
+                {isSubmitting ? "جاري الحفظ..." : "حفظ التغييرات"}
               </Button>
             </div>
           </form>

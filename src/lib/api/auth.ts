@@ -58,6 +58,9 @@ export function removeAuthToken() {
 export function setAdminData(admin: Admin) {
   if (typeof window !== "undefined") {
     localStorage.setItem("adminData", JSON.stringify(admin));
+
+    // Dispatch custom event to notify components about admin data update
+    window.dispatchEvent(new CustomEvent("adminDataUpdated"));
   }
 }
 
