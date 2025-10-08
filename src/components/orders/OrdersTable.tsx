@@ -39,7 +39,7 @@ export default function OrdersTable() {
 
   useEffect(() => {
     const token = getAuthToken();
-    const socket = io("api.barqshipping.com", {
+    const socket = io("api.barqshipping.com:4000", {
       transportOptions: {
         polling: {
           extraHeaders: {

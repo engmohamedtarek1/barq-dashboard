@@ -61,7 +61,7 @@ export default function CustomerServiceComponent() {
   // Initialize socket connection once
   useEffect(() => {
     const token = getAuthToken();
-    const newSocket = io("api.barqshipping.com", {
+    const newSocket = io("api.barqshipping.com:4000", {
       transportOptions: {
         polling: {
           extraHeaders: {
