@@ -12,6 +12,7 @@ import {
 } from "@/lib/api/tickets";
 import { Chat, Message } from "@/types/customerservice";
 import { getAuthToken } from "@/lib/api/auth";
+import { BASE_URL } from "@/lib/config";
 
 export default function CustomerServiceComponent() {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -61,7 +62,17 @@ export default function CustomerServiceComponent() {
   // Initialize socket connection once
   useEffect(() => {
     const token = getAuthToken();
-    const newSocket = io("api.barqshipping.com", {
+    // Use HTTP for local development, HTTPS for production
+    const isProduction = process.env.NODE_ENV === "production";
+    const protocol = isProduction ? "https://" : "http://";
+    const socketUrl =
+      BASE_URL.replace("/api/v1", "").replace("https://", protocol) + ":4000";
+
+    console.log("Attempting to connect to socket:", socketUrl);
+    console.log("Environment:", process.env.NODE_ENV);
+    console.log("Using protocol:", protocol);
+
+    const newSocket = io(socketUrl, {
       transportOptions: {
         polling: {
           extraHeaders: {
@@ -71,9 +82,28 @@ export default function CustomerServiceComponent() {
       },
       withCredentials: true,
       transports: ["polling", "websocket"],
+      timeout: 20000, // 20 seconds timeout
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5,
+      upgrade: true,
+      rememberUpgrade: false,
     });
 
     setSocket(newSocket);
+
+    // Connection event handlers
+    newSocket.on("connect", () => {
+      console.log("Socket connected successfully");
+    });
+
+    newSocket.on("connect_error", (error) => {
+      console.error("Socket connection error:", error);
+    });
+
+    newSocket.on("disconnect", (reason) => {
+      console.log("Socket disconnected:", reason);
+    });
 
     // Socket event listeners
     newSocket.on("support:chat:join", (data) => {

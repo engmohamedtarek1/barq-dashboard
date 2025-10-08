@@ -19,6 +19,7 @@ import { useOrders } from "@/hooks/useOrders";
 import { useEffect } from "react";
 import io from "socket.io-client";
 import { getAuthToken } from "@/lib/api/auth";
+import { BASE_URL } from "@/lib/config";
 
 const limits = [5, 10, 20, 50];
 
@@ -39,7 +40,17 @@ export default function OrdersTable() {
 
   useEffect(() => {
     const token = getAuthToken();
-    const socket = io("api.barqshipping.com", {
+    // Use HTTP for local development, HTTPS for production
+    const isProduction = process.env.NODE_ENV === "production";
+    const protocol = isProduction ? "https://" : "http://";
+    const socketUrl =
+      BASE_URL.replace("/api/v1", "").replace("https://", protocol) + ":4000";
+
+    console.log("Attempting to connect to socket:", socketUrl);
+    console.log("Environment:", process.env.NODE_ENV);
+    console.log("Using protocol:", protocol);
+
+    const socket = io(socketUrl, {
       transportOptions: {
         polling: {
           extraHeaders: {
