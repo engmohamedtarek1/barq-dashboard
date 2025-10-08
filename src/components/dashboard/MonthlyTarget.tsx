@@ -87,13 +87,10 @@ export default function MonthlyTarget() {
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white px-5 pt-5 pb-11 sm:px-6 sm:pt-6 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div className="flex h-full flex-col justify-between rounded-2xl border border-gray-200 bg-white px-5 pt-5 pb-11 sm:px-6 sm:pt-6 dark:border-gray-800 dark:bg-white/[0.03]">
       <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-        الهدف الشهري
+        احصائية الطلبات والإيرادات
       </h3>
-      <p className="text-theme-sm mt-1 font-normal text-gray-500 dark:text-gray-400">
-        الهدف التي وضعته كل شهر
-      </p>
 
       <div className="relative">
         <div className="max-h-[330px]">
@@ -116,8 +113,8 @@ export default function MonthlyTarget() {
         </span>
       </div>
       {overview && (
-        <div className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
+        <div className="mx-auto w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
+          <p className="mx-auto w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
             إجمالي الإيرادات:{" "}
             <span className="text-success-600 dark:text-success-500 font-bold">
               {overview.totalRevenue} ج.م
