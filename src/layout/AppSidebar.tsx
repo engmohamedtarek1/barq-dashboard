@@ -4,16 +4,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
+import { ChevronDownIcon } from "../../public/icons/index";
 import {
-  BoxCubeIcon,
-  ChatIcon,
-  ChevronDownIcon,
-  GridIcon,
-  ListIcon,
-  PieChartIcon,
-  PlugInIcon,
-  UserCircleIcon,
-} from "../../public/icons/index";
+  MdDashboard,
+  MdStore,
+  MdDeliveryDining,
+  MdInventory,
+  MdCategory,
+  MdSubdirectoryArrowRight,
+  MdShoppingCart,
+  MdLocalOffer,
+  MdAdminPanelSettings,
+  MdSupportAgent,
+  MdBarChart,
+  MdWidgets,
+  MdSecurity,
+} from "react-icons/md";
 
 type NavItem = {
   name: string;
@@ -24,52 +30,52 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <GridIcon />,
+    icon: <MdDashboard />,
     name: "لوحة التحكم",
     path: "/",
   },
   {
-    icon: <UserCircleIcon />,
+    icon: <MdStore />,
     name: "المتاجر",
     path: "/vendors",
   },
   {
-    icon: <UserCircleIcon />,
+    icon: <MdDeliveryDining />,
     name: "عمال التوصيل",
     path: "/agents",
   },
   {
-    icon: <BoxCubeIcon />,
+    icon: <MdInventory />,
     name: "المنتجات",
     path: "/products",
   },
   {
-    icon: <ListIcon />,
+    icon: <MdCategory />,
     name: "الفئات",
     path: "/categories",
   },
   {
-    icon: <ListIcon />,
+    icon: <MdSubdirectoryArrowRight />,
     name: "الفئات الفرعية",
     path: "/subcategories",
   },
   {
-    icon: <ListIcon />,
+    icon: <MdShoppingCart />,
     name: "الطلبات",
     path: "/orders",
   },
   {
-    icon: <ListIcon />,
+    icon: <MdLocalOffer />,
     name: "العروض",
     path: "/offers",
   },
   {
-    icon: <UserCircleIcon />,
+    icon: <MdAdminPanelSettings />,
     name: "المشرفون",
     path: "/admins",
   },
   {
-    icon: <ChatIcon />,
+    icon: <MdSupportAgent />,
     name: "خدمة العملاء",
     path: "/customer-service",
   },
@@ -77,7 +83,7 @@ const navItems: NavItem[] = [
 
 const othersItems: NavItem[] = [
   {
-    icon: <PieChartIcon />,
+    icon: <MdBarChart />,
     name: "Charts",
     subItems: [
       { name: "Line Chart", path: "/line-chart", pro: false },
@@ -85,7 +91,7 @@ const othersItems: NavItem[] = [
     ],
   },
   {
-    icon: <BoxCubeIcon />,
+    icon: <MdWidgets />,
     name: "UI Elements",
     subItems: [
       { name: "Alerts", path: "/alerts", pro: false },
@@ -97,7 +103,7 @@ const othersItems: NavItem[] = [
     ],
   },
   {
-    icon: <PlugInIcon />,
+    icon: <MdSecurity />,
     name: "Authentication",
     subItems: [
       { name: "Sign In", path: "/signin", pro: false },
@@ -166,7 +172,7 @@ const AppSidebar: React.FC = () => {
                     isActive(nav.path)
                       ? "menu-item-icon-active"
                       : "menu-item-icon-inactive"
-                  }`}
+                  } text-lg`}
                 >
                   {nav.icon}
                 </span>
