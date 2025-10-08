@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { BoxIconLine, GroupIcon } from "../../../public/icons";
+import { GroupIcon } from "../../../public/icons";
 import { getDashboardOverview } from "@/lib/api/dashboard";
+import { MdDeliveryDining, MdStore } from "react-icons/md";
 
 const metricsConfig = [
   {
@@ -13,12 +14,14 @@ const metricsConfig = [
   {
     key: "totalVendors",
     label: "المتاجر",
-    icon: <BoxIconLine className="text-gray-800 dark:text-white/90" />,
+    icon: <MdStore className="size-6 text-gray-800 dark:text-white/90" />,
   },
   {
     key: "totalAgents",
-    label: "إجمالي الوكلاء",
-    icon: <BoxIconLine className="text-gray-800 dark:text-white/90" />,
+    label: "عملاء التوصيل",
+    icon: (
+      <MdDeliveryDining className="size-6 text-gray-800 dark:text-white/90" />
+    ),
   },
 ];
 
