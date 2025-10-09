@@ -2,9 +2,14 @@
 import axios from "axios";
 import { Subcategory, CreateSubcategoryPayload } from "@/types/subcategory";
 import { BASE_URL } from "../config";
+import { authHeaders } from "./auth";
 
 export async function createSubcategory(payload: CreateSubcategoryPayload) {
-  return axios.post(`${BASE_URL}/subcategory`, payload);
+  return axios.post(`${BASE_URL}/subcategory`, payload, {
+    headers: {
+      ...authHeaders(),
+    },
+  });
 }
 
 export async function updateSubcategory(
@@ -14,12 +19,21 @@ export async function updateSubcategory(
   const response = await axios.patch(
     `${BASE_URL}/subcategory/${category}`,
     data,
+    {
+      headers: {
+        ...authHeaders(),
+      },
+    },
   );
   return response.data;
 }
 
 export async function deleteSubcategory(category: string) {
-  return axios.delete(`${BASE_URL}/subcategory/${category}`);
+  return axios.delete(`${BASE_URL}/subcategory/${category}`, {
+    headers: {
+      ...authHeaders(),
+    },
+  });
 }
 
 export const fetchSubcategories = async (
@@ -28,6 +42,9 @@ export const fetchSubcategories = async (
 ): Promise<{ data: Subcategory[]; pages: number }> => {
   const response = await axios.get(`${BASE_URL}/subcategory`, {
     params: { page, limit },
+    headers: {
+      ...authHeaders(),
+    },
   });
 
   return {
@@ -41,6 +58,9 @@ export const fetchSubcategoriesByCategory = async (
 ): Promise<{ data: Subcategory[] }> => {
   const response = await axios.get(`${BASE_URL}/subcategory`, {
     params: { category: category },
+    headers: {
+      ...authHeaders(),
+    },
   });
 
   return {
@@ -55,6 +75,9 @@ export const fetchSubcategoriesByKeyword = async (
 ): Promise<{ data: Subcategory[]; pages: number }> => {
   const response = await axios.get(`${BASE_URL}/subcategory`, {
     params: { keyword, page, limit },
+    headers: {
+      ...authHeaders(),
+    },
   });
   return {
     data: response.data.data ?? [],

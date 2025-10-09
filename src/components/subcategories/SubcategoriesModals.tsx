@@ -6,12 +6,8 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
-import FileInput from "../form/input/FileInput";
-import { uploadImage } from "@/lib/api/uploadImage";
 import { CreateSubcategoryPayload, Subcategory } from "@/types/subcategory";
-
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
-import Image from "next/image";
 import {
   createSubcategory,
   deleteSubcategory,
@@ -36,12 +32,10 @@ export function AddSubcategoryModal({
     nameAr: string;
     nameEn: string;
     category: string;
-    image: File;
   }>({
     nameAr: "",
     nameEn: "",
     category: "",
-    image: new File([], ""),
   });
 
   useEffect(() => {
@@ -93,17 +87,10 @@ export function AddSubcategoryModal({
         ? formData.nameEn.trim()
         : formData.nameAr.trim();
 
-      let imageUrl = "";
-      if (formData.image instanceof File && formData.image.size > 0) {
-        const uploaded = await uploadImage(formData.image);
-        imageUrl = uploaded.data;
-      }
-
       const payloadRaw: CreateSubcategoryPayload = {
         nameAr: formData.nameAr,
         nameEn: effectiveNameEn,
         category: formData.category,
-        image: imageUrl,
       };
       // Remove empty-string fields
       const payload = Object.fromEntries(
@@ -123,7 +110,6 @@ export function AddSubcategoryModal({
         nameAr: "",
         nameEn: "",
         category: "",
-        image: new File([], ""),
       });
       setTimeout(() => setToast(null), 5000);
       onSuccess?.();
@@ -165,15 +151,6 @@ export function AddSubcategoryModal({
               </h5>
 
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                {/* Subcategory Image */}
-                <div className="lg:col-span-2">
-                  <Label>صورة الفئة</Label>
-                  <FileInput
-                    accept="image/*"
-                    onChange={(e) => handleChange("image", e.target.files?.[0])}
-                  />
-                </div>
-
                 {/* Name (in Arabic) */}
                 <div>
                   <Label>
@@ -301,12 +278,10 @@ export function EditSubcategoryModal({
     nameAr: string;
     nameEn: string;
     category: string;
-    image: string | File;
   }>({
     nameAr: "",
     nameEn: "",
     category: "",
-    image: new File([], ""),
   });
 
   useEffect(() => {
@@ -331,7 +306,6 @@ export function EditSubcategoryModal({
         nameAr: subcategory.nameAr || "",
         nameEn: subcategory.nameEn || "",
         category: subcategory.category._id || "",
-        image: "",
       });
     }
   }, [subcategory, isOpen]);
@@ -347,22 +321,12 @@ export function EditSubcategoryModal({
     setIsLoading(true);
 
     try {
-      let imageUrl = "";
-
-      if (formData.image instanceof File) {
-        const uploaded = await uploadImage(formData.image);
-        imageUrl = uploaded.data || uploaded.url;
-      } else if (typeof formData.image === "string") {
-        imageUrl = formData.image;
-      }
-
       const payloadRaw: Partial<CreateSubcategoryPayload> = {
         nameAr: formData.nameAr,
         nameEn: formData.nameEn?.trim()
           ? formData.nameEn.trim()
           : formData.nameAr.trim(),
         category: formData.category,
-        image: imageUrl,
       };
       // Remove empty-string fields
       const payload = Object.fromEntries(
@@ -418,24 +382,6 @@ export function EditSubcategoryModal({
               </h5>
 
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                {/* Subcategory Image */}
-                <div className="lg:col-span-2">
-                  <Label>صورة الفئة</Label>
-                  {typeof formData.image === "string" && formData.image && (
-                    <Image
-                      src={formData.image}
-                      width={160}
-                      height={160}
-                      alt="Current Profile"
-                      className="mb-4 justify-self-center"
-                    />
-                  )}
-                  <FileInput
-                    accept="image/*"
-                    onChange={(e) => handleChange("image", e.target.files?.[0])}
-                  />
-                </div>
-
                 {/* Name (in Arabic) */}
                 <div>
                   <Label>الاسم (بالعربية)</Label>

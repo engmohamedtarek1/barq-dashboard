@@ -12,6 +12,5 @@ export interface Subcategory {
 export interface CreateSubcategoryPayload {
   nameAr: string;
   nameEn: string;
-  image: string;
   category: string;
 }
