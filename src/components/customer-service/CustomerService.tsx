@@ -77,15 +77,33 @@ export default function CustomerServiceComponent() {
         "https://api.barqshipping.com:443", // Standard HTTPS port
       ];
     } else {
-      // Local development
-      socketUrl = "https://api.barqshipping.com";
+      // Local development - use HTTP
+      socketUrl = "http://api.barqshipping.com:4000";
     }
 
     console.log("Attempting to connect to socket:", socketUrl);
     console.log("Environment:", process.env.NODE_ENV);
+    console.log("User Agent:", navigator.userAgent);
+    console.log("Current Location:", window.location.href);
     console.log("Fallback URLs available:", fallbackUrls);
 
+    // Test if the endpoint is reachable
+    if (process.env.NODE_ENV === "production") {
+      fetch(`${socketUrl}/socket.io/`)
+        .then((response) => {
+          console.log(
+            "Socket.io endpoint test:",
+            response.status,
+            response.statusText,
+          );
+        })
+        .catch((fetchError) => {
+          console.error("Socket.io endpoint not reachable:", fetchError);
+        });
+    }
+
     const newSocket = io(socketUrl, {
+      path: "/socket.io/", // Explicitly set the socket.io path
       transportOptions: {
         polling: {
           extraHeaders: {
@@ -102,6 +120,7 @@ export default function CustomerServiceComponent() {
       upgrade: true,
       rememberUpgrade: false,
       forceNew: true, // Force new connection to avoid caching issues
+      autoConnect: true,
     });
 
     setSocket(newSocket);
@@ -114,6 +133,13 @@ export default function CustomerServiceComponent() {
     newSocket.on("connect_error", (error) => {
       console.error("Socket connection error:", error);
       console.error("Failed to connect to:", socketUrl);
+      console.error("Error details:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+        // Check for additional properties safely
+        toString: error.toString(),
+      });
 
       // Try fallback URLs in production
       if (process.env.NODE_ENV === "production" && fallbackUrls.length > 0) {
@@ -124,6 +150,11 @@ export default function CustomerServiceComponent() {
         fallbackUrls.forEach((url, index) => {
           console.log(`Fallback option ${index + 1}: ${url}`);
         });
+        console.log("Possible issues:");
+        console.log("1. Server doesn't support socket.io on the main domain");
+        console.log("2. CORS policy blocking the connection");
+        console.log("3. Reverse proxy not configured for socket.io");
+        console.log("4. Socket.io server not running on production");
         console.log(
           "You may need to contact your backend team to configure SSL for port 4000",
         );
