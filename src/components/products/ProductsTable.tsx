@@ -217,45 +217,78 @@ export default function ProductsTable() {
                 </TableBody>
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {filteredProducts.map((product) => (
-                    <TableRow key={product._id}>
-                      <TableCell className="px-5 py-4 text-start sm:px-6">
-                        <div className="flex items-center gap-3">
-                          <Image
-                            width={40}
-                            height={40}
-                            src={product.image || "/images/logo/barq-logo.png"}
-                            alt={product.nameEn}
-                            className="size-10 rounded-full object-cover"
-                          />
-                          <div>
-                            <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {product.nameEn} | {product.nameAr}
-                            </span>
-                            <span className="text-sm">${product.price}</span>
-                          </div>
+                  {filteredProducts.length === 0 ? (
+                    <TableRow>
+                      <td
+                        colSpan={8}
+                        className="px-4 py-12 text-center text-gray-500 dark:text-gray-400"
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <svg
+                            className="h-12 w-12 text-gray-300 dark:text-gray-600"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1}
+                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                            />
+                          </svg>
+                          <p className="text-sm font-medium">لا توجد منتجات</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
+                            {searchTerm.trim()
+                              ? "لم يتم العثور على نتائج للبحث"
+                              : "لم يتم إضافة أي منتجات بعد"}
+                          </p>
                         </div>
-                      </TableCell>
-                      <TableCell>{product.category?.nameAr}</TableCell>
-                      <TableCell>{product.shopId?.name}</TableCell>
-                      <TableCell>{product.soldTimes}</TableCell>
-                      <TableCell>{product.reviewCount}</TableCell>
-                      <TableCell>⭐ {product.rating}</TableCell>
-                      <TableCell>
-                        {product.description.slice(0, 50)}...
-                      </TableCell>
-                      <TableCell className="space-x-4">
-                        <EditProductButton
-                          product={product}
-                          onSuccess={refetch}
-                        />
-                        <DeleteProductButton
-                          productId={product._id}
-                          onSuccess={refetch}
-                        />
-                      </TableCell>
+                      </td>
                     </TableRow>
-                  ))}
+                  ) : (
+                    filteredProducts.map((product) => (
+                      <TableRow key={product._id}>
+                        <TableCell className="px-5 py-4 text-start sm:px-6">
+                          <div className="flex items-center gap-3">
+                            <Image
+                              width={40}
+                              height={40}
+                              src={
+                                product.image || "/images/logo/barq-logo.png"
+                              }
+                              alt={product.nameEn}
+                              className="size-10 rounded-full object-cover"
+                            />
+                            <div>
+                              <span className="block font-medium text-gray-800 dark:text-white/90">
+                                {product.nameEn} | {product.nameAr}
+                              </span>
+                              <span className="text-sm">${product.price}</span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{product.category?.nameAr}</TableCell>
+                        <TableCell>{product.shopId?.name}</TableCell>
+                        <TableCell>{product.soldTimes}</TableCell>
+                        <TableCell>{product.reviewCount}</TableCell>
+                        <TableCell>⭐ {product.rating}</TableCell>
+                        <TableCell>
+                          {product.description.slice(0, 50)}...
+                        </TableCell>
+                        <TableCell className="space-x-4">
+                          <EditProductButton
+                            product={product}
+                            onSuccess={refetch}
+                          />
+                          <DeleteProductButton
+                            productId={product._id}
+                            onSuccess={refetch}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               )}
             </Table>

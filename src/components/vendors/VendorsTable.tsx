@@ -213,61 +213,95 @@ export default function VendorsTable() {
                 </TableBody>
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {filteredVendors.map((vendor) => (
-                    <TableRow key={vendor._id}>
-                      <TableCell className="text-start">
-                        <Link
-                          href={`/vendors/${vendor._id}`}
-                          className="hover:bg-brand-gray/20 dark:hover:bg-brand-gray/15 flex items-center gap-3 px-5 py-4 sm:px-6"
-                        >
-                          <Image
-                            width={40}
-                            height={40}
-                            src={
-                              vendor.profileImage ||
-                              "/images/logo/barq-logo.png"
-                            }
-                            alt={vendor.name}
-                            className="size-10 rounded-full object-cover"
-                          />
-                          <div>
-                            <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {vendor.name}
-                            </span>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                              {vendor.mobile}
-                            </span>
-                          </div>
-                        </Link>
-                      </TableCell>
-                      <TableCell>{vendor.category?.nameEn}</TableCell>
-                      <TableCell>{vendor.location}</TableCell>
-                      <TableCell>
-                        <Badge
-                          size="sm"
-                          color={vendor.isActive ? "success" : "error"}
-                          variant="light"
-                        >
-                          {vendor.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>⭐ {vendor.rating}</TableCell>
-                      <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
-                        <Link
-                          href={`/vendors/${vendor._id}`}
-                          className="text-sm text-indigo-600 dark:text-indigo-400"
-                          title="عرض المتجر"
-                        >
-                          <FaEye />
-                        </Link>
-                        <EditVendorButton vendor={vendor} onSuccess={refetch} />
-                        <DeleteVendorButton
-                          vendorId={vendor._id}
-                          onSuccess={refetch}
-                        />
-                      </TableCell>
+                  {filteredVendors.length === 0 ? (
+                    <TableRow>
+                      <td
+                        colSpan={6}
+                        className="px-4 py-12 text-center text-gray-500 dark:text-gray-400"
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <svg
+                            className="h-12 w-12 text-gray-300 dark:text-gray-600"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1}
+                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                            />
+                          </svg>
+                          <p className="text-sm font-medium">لا توجد متاجر</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
+                            {searchTerm.trim()
+                              ? "لم يتم العثور على نتائج للبحث"
+                              : "لم يتم إضافة أي متاجر بعد"}
+                          </p>
+                        </div>
+                      </td>
                     </TableRow>
-                  ))}
+                  ) : (
+                    filteredVendors.map((vendor) => (
+                      <TableRow key={vendor._id}>
+                        <TableCell className="text-start">
+                          <Link
+                            href={`/vendors/${vendor._id}`}
+                            className="hover:bg-brand-gray/20 dark:hover:bg-brand-gray/15 flex items-center gap-3 px-5 py-4 sm:px-6"
+                          >
+                            <Image
+                              width={40}
+                              height={40}
+                              src={
+                                vendor.profileImage ||
+                                "/images/logo/barq-logo.png"
+                              }
+                              alt={vendor.name}
+                              className="size-10 rounded-full object-cover"
+                            />
+                            <div>
+                              <span className="block font-medium text-gray-800 dark:text-white/90">
+                                {vendor.name}
+                              </span>
+                              <span className="text-sm text-gray-500 dark:text-gray-400">
+                                {vendor.mobile}
+                              </span>
+                            </div>
+                          </Link>
+                        </TableCell>
+                        <TableCell>{vendor.category?.nameEn}</TableCell>
+                        <TableCell>{vendor.location}</TableCell>
+                        <TableCell>
+                          <Badge
+                            size="sm"
+                            color={vendor.isActive ? "success" : "error"}
+                            variant="light"
+                          >
+                            {vendor.isActive ? "Active" : "Inactive"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>⭐ {vendor.rating}</TableCell>
+                        <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
+                          <Link
+                            href={`/vendors/${vendor._id}`}
+                            className="text-sm text-indigo-600 dark:text-indigo-400"
+                            title="عرض المتجر"
+                          >
+                            <FaEye />
+                          </Link>
+                          <EditVendorButton
+                            vendor={vendor}
+                            onSuccess={refetch}
+                          />
+                          <DeleteVendorButton
+                            vendorId={vendor._id}
+                            onSuccess={refetch}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               )}
             </Table>

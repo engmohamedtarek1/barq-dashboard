@@ -194,36 +194,69 @@ export default function CategoriesTable() {
                 </TableBody>
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {filteredCategories.map((category) => (
-                    <TableRow key={category._id}>
-                      <TableCell className="px-5 py-4 text-start sm:px-6">
-                        <div className="flex items-center gap-3">
-                          <Image
-                            width={40}
-                            height={40}
-                            src={category.image || "/images/logo/barq-logo.png"}
-                            alt={category.nameEn}
-                            className="size-10 rounded-full object-cover"
-                          />
-                          <div>
-                            <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {category.nameEn} | {category.nameAr}
-                            </span>
-                          </div>
+                  {filteredCategories.length === 0 ? (
+                    <TableRow>
+                      <td
+                        colSpan={2}
+                        className="px-4 py-12 text-center text-gray-500 dark:text-gray-400"
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <svg
+                            className="h-12 w-12 text-gray-300 dark:text-gray-600"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1}
+                              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                            />
+                          </svg>
+                          <p className="text-sm font-medium">لا توجد فئات</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
+                            {searchTerm.trim()
+                              ? "لم يتم العثور على نتائج للبحث"
+                              : "لم يتم إضافة أي فئات بعد"}
+                          </p>
                         </div>
-                      </TableCell>
-                      <TableCell className="space-x-4">
-                        <EditCategoryButton
-                          category={category}
-                          onSuccess={refetch}
-                        />
-                        <DeleteCategoryButton
-                          category={category._id}
-                          onSuccess={refetch}
-                        />
-                      </TableCell>
+                      </td>
                     </TableRow>
-                  ))}
+                  ) : (
+                    filteredCategories.map((category) => (
+                      <TableRow key={category._id}>
+                        <TableCell className="px-5 py-4 text-start sm:px-6">
+                          <div className="flex items-center gap-3">
+                            <Image
+                              width={40}
+                              height={40}
+                              src={
+                                category.image || "/images/logo/barq-logo.png"
+                              }
+                              alt={category.nameEn}
+                              className="size-10 rounded-full object-cover"
+                            />
+                            <div>
+                              <span className="block font-medium text-gray-800 dark:text-white/90">
+                                {category.nameEn} | {category.nameAr}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="space-x-4">
+                          <EditCategoryButton
+                            category={category}
+                            onSuccess={refetch}
+                          />
+                          <DeleteCategoryButton
+                            category={category._id}
+                            onSuccess={refetch}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               )}
             </Table>

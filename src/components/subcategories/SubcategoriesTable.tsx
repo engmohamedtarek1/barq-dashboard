@@ -209,54 +209,87 @@ export default function SubcategoriesTable() {
                 </TableBody>
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {filteredSubcategories.map((subcategory) => (
-                    <TableRow key={subcategory._id}>
-                      <TableCell className="px-5 py-4 text-start sm:px-6">
-                        <div className="flex items-center gap-3">
-                          <div>
-                            <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {subcategory.nameAr}
-                            </span>
-                            <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {subcategory.nameEn}
-                            </span>
-                          </div>
+                  {filteredSubcategories.length === 0 ? (
+                    <TableRow>
+                      <td
+                        colSpan={3}
+                        className="px-4 py-12 text-center text-gray-500 dark:text-gray-400"
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <svg
+                            className="h-12 w-12 text-gray-300 dark:text-gray-600"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1}
+                              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                            />
+                          </svg>
+                          <p className="text-sm font-medium">
+                            لا توجد فئات فرعية
+                          </p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
+                            {searchTerm.trim()
+                              ? "لم يتم العثور على نتائج للبحث"
+                              : "لم يتم إضافة أي فئات فرعية بعد"}
+                          </p>
                         </div>
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start sm:px-6">
-                        <div className="flex items-center gap-3">
-                          <Image
-                            width={40}
-                            height={40}
-                            src={
-                              subcategory.category?.image ||
-                              "/images/logo/barq-logo.png"
-                            }
-                            alt={subcategory.category?.nameEn}
-                            className="size-10 rounded-full object-cover"
-                          />
-                          <div>
-                            <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {subcategory.category?.nameAr}
-                            </span>
-                            <span className="block font-medium text-gray-800 dark:text-white/90">
-                              {subcategory.category?.nameEn}
-                            </span>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="space-x-4">
-                        <EditSubcategoryButton
-                          subcategory={subcategory}
-                          onSuccess={refetch}
-                        />
-                        <DeleteSubcategoryButton
-                          category={subcategory._id}
-                          onSuccess={refetch}
-                        />
-                      </TableCell>
+                      </td>
                     </TableRow>
-                  ))}
+                  ) : (
+                    filteredSubcategories.map((subcategory) => (
+                      <TableRow key={subcategory._id}>
+                        <TableCell className="px-5 py-4 text-start sm:px-6">
+                          <div className="flex items-center gap-3">
+                            <div>
+                              <span className="block font-medium text-gray-800 dark:text-white/90">
+                                {subcategory.nameAr}
+                              </span>
+                              <span className="block font-medium text-gray-800 dark:text-white/90">
+                                {subcategory.nameEn}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-5 py-4 text-start sm:px-6">
+                          <div className="flex items-center gap-3">
+                            <Image
+                              width={40}
+                              height={40}
+                              src={
+                                subcategory.category?.image ||
+                                "/images/logo/barq-logo.png"
+                              }
+                              alt={subcategory.category?.nameEn}
+                              className="size-10 rounded-full object-cover"
+                            />
+                            <div>
+                              <span className="block font-medium text-gray-800 dark:text-white/90">
+                                {subcategory.category?.nameAr}
+                              </span>
+                              <span className="block font-medium text-gray-800 dark:text-white/90">
+                                {subcategory.category?.nameEn}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="space-x-4">
+                          <EditSubcategoryButton
+                            subcategory={subcategory}
+                            onSuccess={refetch}
+                          />
+                          <DeleteSubcategoryButton
+                            category={subcategory._id}
+                            onSuccess={refetch}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               )}
             </Table>

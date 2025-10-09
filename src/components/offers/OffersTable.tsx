@@ -216,127 +216,164 @@ export default function OffersTable() {
                 </TableBody>
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {filteredOffers.map((offer) => {
-                    const now = Date.now();
-                    const parseDate = (value: unknown): number => {
-                      if (value instanceof Date) return value.getTime();
-                      if (
-                        typeof value === "string" ||
-                        typeof value === "number"
-                      ) {
-                        const t = new Date(value).getTime();
-                        return isNaN(t) ? 0 : t;
-                      }
-                      return 0;
-                    };
-                    const start = parseDate(offer.startDate);
-                    const end = parseDate(offer.endDate);
-                    const activeDerived =
-                      offer.isActive ??
-                      (start && end ? now >= start && now <= end : false);
-                    const formatDate = (d: unknown) => {
-                      const t = parseDate(d);
-                      if (!t) return "-";
-                      return new Date(t).toISOString().slice(0, 10);
-                    };
-                    return (
-                      <TableRow key={offer._id}>
-                        {/* Offer (image + name + description) */}
-                        <TableCell className="text-start">
-                          <Link
-                            href={`/offers/${offer._id}`}
-                            className="hover:bg-brand-gray/20 dark:hover:bg-brand-gray/15 flex items-center gap-3 px-5 py-4 sm:px-6"
+                  {filteredOffers.length === 0 ? (
+                    <TableRow>
+                      <td
+                        colSpan={7}
+                        className="px-4 py-12 text-center text-gray-500 dark:text-gray-400"
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <svg
+                            className="h-12 w-12 text-gray-300 dark:text-gray-600"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
                           >
-                            <Image
-                              width={40}
-                              height={40}
-                              src={offer.image || "/images/logo/barq-logo.png"}
-                              alt={offer.name}
-                              className="size-10 rounded-full object-cover"
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1}
+                              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
                             />
-                            <div className="min-w-0">
-                              <span className="block truncate font-medium text-gray-800 dark:text-white/90">
-                                {offer.name}
-                              </span>
-                              <span className="block truncate text-xs text-gray-500 dark:text-gray-400">
-                                {offer.description || "—"}
-                              </span>
-                            </div>
-                          </Link>
-                        </TableCell>
-                        {/* Product */}
-                        <TableCell className="px-4 py-3 text-start text-gray-600 dark:text-gray-400">
-                          {offer.product?.nameAr ||
-                            offer.product?.nameEn ||
-                            "—"}
-                        </TableCell>
-                        {/* Vendor */}
-                        <TableCell className="px-4 py-3 text-start text-gray-600 dark:text-gray-400">
-                          {offer.shopId?.name || "—"}
-                        </TableCell>
-                        {/* Price & Discount */}
-                        <TableCell className="px-4 py-3 text-start text-gray-700 dark:text-gray-300">
-                          {offer.product?.price != null ? (
-                            <div className="flex flex-col gap-1">
-                              <div className="flex items-center gap-2">
-                                <span
-                                  className={`${offer.discount > 0 ? "text-[11px] text-gray-400 line-through dark:text-gray-500" : "text-sm text-gray-800 dark:text-gray-200"}`}
-                                >
-                                  {offer.product.price} ج.م
+                          </svg>
+                          <p className="text-sm font-medium">لا توجد عروض</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
+                            {searchTerm.trim()
+                              ? "لم يتم العثور على نتائج للبحث"
+                              : "لم يتم إضافة أي عروض بعد"}
+                          </p>
+                        </div>
+                      </td>
+                    </TableRow>
+                  ) : (
+                    filteredOffers.map((offer) => {
+                      const now = Date.now();
+                      const parseDate = (value: unknown): number => {
+                        if (value instanceof Date) return value.getTime();
+                        if (
+                          typeof value === "string" ||
+                          typeof value === "number"
+                        ) {
+                          const t = new Date(value).getTime();
+                          return isNaN(t) ? 0 : t;
+                        }
+                        return 0;
+                      };
+                      const start = parseDate(offer.startDate);
+                      const end = parseDate(offer.endDate);
+                      const activeDerived =
+                        offer.isActive ??
+                        (start && end ? now >= start && now <= end : false);
+                      const formatDate = (d: unknown) => {
+                        const t = parseDate(d);
+                        if (!t) return "-";
+                        return new Date(t).toISOString().slice(0, 10);
+                      };
+                      return (
+                        <TableRow key={offer._id}>
+                          {/* Offer (image + name + description) */}
+                          <TableCell className="text-start">
+                            <Link
+                              href={`/offers/${offer._id}`}
+                              className="hover:bg-brand-gray/20 dark:hover:bg-brand-gray/15 flex items-center gap-3 px-5 py-4 sm:px-6"
+                            >
+                              <Image
+                                width={40}
+                                height={40}
+                                src={
+                                  offer.image || "/images/logo/barq-logo.png"
+                                }
+                                alt={offer.name}
+                                className="size-10 rounded-full object-cover"
+                              />
+                              <div className="min-w-0">
+                                <span className="block truncate font-medium text-gray-800 dark:text-white/90">
+                                  {offer.name}
                                 </span>
-                                {offer.discount > 0 && (
-                                  <span className="text-brand-600 dark:text-brand-300 text-sm font-semibold">
-                                    {Math.max(
-                                      0,
-                                      offer.product.price -
-                                        (offer.product.price * offer.discount) /
-                                          100,
-                                    )}{" "}
-                                    ج.م
-                                  </span>
-                                )}
+                                <span className="block truncate text-xs text-gray-500 dark:text-gray-400">
+                                  {offer.description || "—"}
+                                </span>
                               </div>
-                              <Badge size="sm" color="info" variant="light">
-                                {offer.discount}%
-                              </Badge>
-                            </div>
-                          ) : (
-                            <span className="text-xs text-gray-400">—</span>
-                          )}
-                        </TableCell>
-                        {/* Duration */}
-                        <TableCell className="px-4 py-3 text-start text-xs text-gray-600 dark:text-gray-400">
-                          {formatDate(offer.startDate)} →{" "}
-                          {formatDate(offer.endDate)}
-                        </TableCell>
-                        {/* Status */}
-                        <TableCell className="px-4 py-3 text-start text-gray-600 dark:text-gray-400">
-                          <Badge
-                            size="sm"
-                            color={activeDerived ? "success" : "error"}
-                            variant="light"
-                          >
-                            {activeDerived ? "نشط" : "منتهي"}
-                          </Badge>
-                        </TableCell>
-                        {/* Actions */}
-                        <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
-                          <Link
-                            href={`/offers/${offer._id}`}
-                            className="text-sm text-indigo-600 dark:text-indigo-400"
-                            title="عرض العرض"
-                          >
-                            <FaEye />
-                          </Link>
-                          <EditOfferButton offer={offer} onSuccess={refetch} />
-                          <DeleteOfferButton
-                            offerId={offer._id}
-                            onSuccess={refetch}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                            </Link>
+                          </TableCell>
+                          {/* Product */}
+                          <TableCell className="px-4 py-3 text-start text-gray-600 dark:text-gray-400">
+                            {offer.product?.nameAr ||
+                              offer.product?.nameEn ||
+                              "—"}
+                          </TableCell>
+                          {/* Vendor */}
+                          <TableCell className="px-4 py-3 text-start text-gray-600 dark:text-gray-400">
+                            {offer.shopId?.name || "—"}
+                          </TableCell>
+                          {/* Price & Discount */}
+                          <TableCell className="px-4 py-3 text-start text-gray-700 dark:text-gray-300">
+                            {offer.product?.price != null ? (
+                              <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className={`${offer.discount > 0 ? "text-[11px] text-gray-400 line-through dark:text-gray-500" : "text-sm text-gray-800 dark:text-gray-200"}`}
+                                  >
+                                    {offer.product.price} ج.م
+                                  </span>
+                                  {offer.discount > 0 && (
+                                    <span className="text-brand-600 dark:text-brand-300 text-sm font-semibold">
+                                      {Math.max(
+                                        0,
+                                        offer.product.price -
+                                          (offer.product.price *
+                                            offer.discount) /
+                                            100,
+                                      )}{" "}
+                                      ج.م
+                                    </span>
+                                  )}
+                                </div>
+                                <Badge size="sm" color="info" variant="light">
+                                  {offer.discount}%
+                                </Badge>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-gray-400">—</span>
+                            )}
+                          </TableCell>
+                          {/* Duration */}
+                          <TableCell className="px-4 py-3 text-start text-xs text-gray-600 dark:text-gray-400">
+                            {formatDate(offer.startDate)} →{" "}
+                            {formatDate(offer.endDate)}
+                          </TableCell>
+                          {/* Status */}
+                          <TableCell className="px-4 py-3 text-start text-gray-600 dark:text-gray-400">
+                            <Badge
+                              size="sm"
+                              color={activeDerived ? "success" : "error"}
+                              variant="light"
+                            >
+                              {activeDerived ? "نشط" : "منتهي"}
+                            </Badge>
+                          </TableCell>
+                          {/* Actions */}
+                          <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
+                            <Link
+                              href={`/offers/${offer._id}`}
+                              className="text-sm text-indigo-600 dark:text-indigo-400"
+                              title="عرض العرض"
+                            >
+                              <FaEye />
+                            </Link>
+                            <EditOfferButton
+                              offer={offer}
+                              onSuccess={refetch}
+                            />
+                            <DeleteOfferButton
+                              offerId={offer._id}
+                              onSuccess={refetch}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  )}
                 </TableBody>
               )}
             </Table>

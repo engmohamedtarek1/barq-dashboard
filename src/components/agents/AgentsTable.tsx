@@ -194,35 +194,66 @@ export default function AgentsTable() {
                 </TableBody>
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {filteredAgents.map((agent) => (
-                    <TableRow key={agent._id}>
-                      <TableCell>
-                        <span className="block font-medium text-gray-800 dark:text-white/90">
-                          {agent.name}
-                        </span>
-                        <span className="text-sm">{agent.mobile}</span>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          size="sm"
-                          color={agent.isActive ? "success" : "error"}
-                          variant="light"
-                        >
-                          {agent.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>⭐ {agent.rating}</TableCell>
-                      <TableCell>{agent.reviewCount}</TableCell>
-                      <TableCell>{agent.commissionRate}</TableCell>
-                      <TableCell className="flex h-20 items-center gap-3">
-                        <EditAgentButton agent={agent} onSuccess={refetch} />
-                        <DeleteAgentButton
-                          agentId={agent._id}
-                          onSuccess={refetch}
-                        />
-                      </TableCell>
+                  {filteredAgents.length === 0 ? (
+                    <TableRow>
+                      <td
+                        colSpan={6}
+                        className="px-4 py-12 text-center text-gray-500 dark:text-gray-400"
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <svg
+                            className="h-12 w-12 text-gray-300 dark:text-gray-600"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1}
+                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                            />
+                          </svg>
+                          <p className="text-sm font-medium">لا يوجد عمال توصيل</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
+                            {searchTerm.trim()
+                              ? "لم يتم العثور على نتائج للبحث"
+                              : "لم يتم إضافة أي عمال توصيل بعد"}
+                          </p>
+                        </div>
+                      </td>
                     </TableRow>
-                  ))}
+                  ) : (
+                    filteredAgents.map((agent) => (
+                      <TableRow key={agent._id}>
+                        <TableCell>
+                          <span className="block font-medium text-gray-800 dark:text-white/90">
+                            {agent.name}
+                          </span>
+                          <span className="text-sm">{agent.mobile}</span>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            size="sm"
+                            color={agent.isActive ? "success" : "error"}
+                            variant="light"
+                          >
+                            {agent.isActive ? "Active" : "Inactive"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>⭐ {agent.rating}</TableCell>
+                        <TableCell>{agent.reviewCount}</TableCell>
+                        <TableCell>{agent.commissionRate}</TableCell>
+                        <TableCell className="flex h-20 items-center gap-3">
+                          <EditAgentButton agent={agent} onSuccess={refetch} />
+                          <DeleteAgentButton
+                            agentId={agent._id}
+                            onSuccess={refetch}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               )}
             </Table>

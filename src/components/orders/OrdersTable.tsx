@@ -211,75 +211,106 @@ export default function OrdersTable() {
                 </TableBody>
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {filteredOrders.map((o) => (
-                    <TableRow key={o._id}>
-                      <TableCell className="px-5 py-4 text-start">
-                        <Link
-                          href={`/orders/${o._id}`}
-                          className="text-blue-600 hover:underline"
-                        >
-                          {o._id.slice(-6)}
-                        </Link>
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start">
-                        {o.userId?.mobile}
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start">
-                        <div className="flex items-center gap-4">
-                          <div className="h-8 w-8 overflow-hidden rounded-full">
-                            <Image
-                              src={
-                                o.shopId?.profileImage ||
-                                "/images/logo/barq-logo.png"
-                              }
-                              alt={o.shopId?.name || "shop"}
-                              width={32}
-                              height={32}
-                              className="h-8 w-8 object-cover"
+                  {filteredOrders.length === 0 ? (
+                    <TableRow>
+                      <td
+                        colSpan={8}
+                        className="px-4 py-12 text-center text-gray-500 dark:text-gray-400"
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <svg
+                            className="h-12 w-12 text-gray-300 dark:text-gray-600"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1}
+                              d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
                             />
-                          </div>
-                          <div className="text-sm">
-                            <p>{o.shopId?.name}</p>
-                            <p>{o.shopId?.mobile}</p>
-                          </div>
+                          </svg>
+                          <p className="text-sm font-medium">لا توجد طلبات</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
+                            {searchTerm.trim()
+                              ? "لم يتم العثور على نتائج للبحث"
+                              : "لم يتم إنشاء أي طلبات بعد"}
+                          </p>
                         </div>
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start">
-                        {o.totalAmount?.toLocaleString()} ج.م
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start">
-                        {o.paymentMethod} / {o.paymentStatus}
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start">
-                        <Badge
-                          size="sm"
-                          color={
-                            o.orderStatus === "completed"
-                              ? "success"
-                              : o.orderStatus === "pending"
-                                ? "warning"
-                                : "info"
-                          }
-                        >
-                          {o.orderStatus}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start">
-                        {new Date(
-                          o.createdAt as unknown as string,
-                        ).toLocaleString()}
-                      </TableCell>
-                      <TableCell className="px-5 py-4 text-start">
-                        <Link
-                          href={`/orders/${o._id}`}
-                          className="text-sm text-indigo-600 dark:text-indigo-400"
-                          title="عرض الطلب"
-                        >
-                          <FaEye />
-                        </Link>
-                      </TableCell>
+                      </td>
                     </TableRow>
-                  ))}
+                  ) : (
+                    filteredOrders.map((o) => (
+                      <TableRow key={o._id}>
+                        <TableCell className="px-5 py-4 text-start">
+                          <Link
+                            href={`/orders/${o._id}`}
+                            className="text-blue-600 hover:underline"
+                          >
+                            {o._id.slice(-6)}
+                          </Link>
+                        </TableCell>
+                        <TableCell className="px-5 py-4 text-start">
+                          {o.userId?.mobile}
+                        </TableCell>
+                        <TableCell className="px-5 py-4 text-start">
+                          <div className="flex items-center gap-4">
+                            <div className="h-8 w-8 overflow-hidden rounded-full">
+                              <Image
+                                src={
+                                  o.shopId?.profileImage ||
+                                  "/images/logo/barq-logo.png"
+                                }
+                                alt={o.shopId?.name || "shop"}
+                                width={32}
+                                height={32}
+                                className="h-8 w-8 object-cover"
+                              />
+                            </div>
+                            <div className="text-sm">
+                              <p>{o.shopId?.name}</p>
+                              <p>{o.shopId?.mobile}</p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-5 py-4 text-start">
+                          {o.totalAmount?.toLocaleString()} ج.م
+                        </TableCell>
+                        <TableCell className="px-5 py-4 text-start">
+                          {o.paymentMethod} / {o.paymentStatus}
+                        </TableCell>
+                        <TableCell className="px-5 py-4 text-start">
+                          <Badge
+                            size="sm"
+                            color={
+                              o.orderStatus === "completed"
+                                ? "success"
+                                : o.orderStatus === "pending"
+                                  ? "warning"
+                                  : "info"
+                            }
+                          >
+                            {o.orderStatus}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="px-5 py-4 text-start">
+                          {new Date(
+                            o.createdAt as unknown as string,
+                          ).toLocaleString()}
+                        </TableCell>
+                        <TableCell className="px-5 py-4 text-start">
+                          <Link
+                            href={`/orders/${o._id}`}
+                            className="text-sm text-indigo-600 dark:text-indigo-400"
+                            title="عرض الطلب"
+                          >
+                            <FaEye />
+                          </Link>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               )}
             </Table>

@@ -144,19 +144,30 @@ export default function AdminsTable() {
                 </TableBody>
               ) : (
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {filteredAdmins.map((admin) => (
-                    <TableRow key={admin._id}>
-                      <TableCell>{admin.name}</TableCell>
-                      <TableCell>{admin.email}</TableCell>
-                      <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
-                        <EditAdminButton admin={admin} onSuccess={refetch} />
-                        <DeleteAdminButton
-                          adminId={admin._id}
-                          onSuccess={refetch}
-                        />
-                      </TableCell>
+                  {filteredAdmins.length === 0 ? (
+                    <TableRow>
+                      <td
+                        colSpan={3}
+                        className="py-6 text-center text-gray-400 dark:text-gray-500"
+                      >
+                        لا توجد مشرفين
+                      </td>
                     </TableRow>
-                  ))}
+                  ) : (
+                    filteredAdmins.map((admin) => (
+                      <TableRow key={admin._id}>
+                        <TableCell>{admin.name}</TableCell>
+                        <TableCell>{admin.email}</TableCell>
+                        <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
+                          <EditAdminButton admin={admin} onSuccess={refetch} />
+                          <DeleteAdminButton
+                            adminId={admin._id}
+                            onSuccess={refetch}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               )}
             </Table>

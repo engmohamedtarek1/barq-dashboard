@@ -71,6 +71,9 @@ export const fetchOffersByKeyword = async (
 ): Promise<{ data: Offer[]; pages: number }> => {
   const response = await axios.get(`${BASE_URL}/offers`, {
     params: { keyword, page, limit },
+    headers: {
+      ...authHeaders(),
+    },
   });
   return {
     data: response.data.data ?? [],
