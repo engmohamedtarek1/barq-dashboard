@@ -18,7 +18,7 @@ const metricsConfig = [
   },
   {
     key: "totalAgents",
-    label: "عملاء التوصيل",
+    label: "عمال التوصيل",
     icon: (
       <MdDeliveryDining className="size-6 text-gray-800 dark:text-white/90" />
     ),

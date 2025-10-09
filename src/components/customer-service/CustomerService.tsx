@@ -78,7 +78,7 @@ export default function CustomerServiceComponent() {
       ];
     } else {
       // Local development
-      socketUrl = "http://api.barqshipping.com:4000";
+      socketUrl = "https://api.barqshipping.com";
     }
 
     console.log("Attempting to connect to socket:", socketUrl);
