@@ -68,7 +68,7 @@ export default function CustomerServiceComponent() {
 
     if (process.env.NODE_ENV === "production") {
       // Primary: Same domain without port (most common for production)
-      socketUrl = "http://api.barqshipping.com";
+      socketUrl = "https://api.barqshipping.com";
 
       // Fallback options if primary fails
       fallbackUrls = [
