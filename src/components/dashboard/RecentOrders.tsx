@@ -82,15 +82,21 @@ export default function RecentOrders() {
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
             {loading ? (
               <TableRow>
-                <TableCell className="py-6 text-center text-gray-400 dark:text-gray-500">
+                <td
+                  colSpan={5}
+                  className="py-6 text-center text-gray-400 dark:text-gray-500"
+                >
                   جاري التحميل...
-                </TableCell>
+                </td>
               </TableRow>
             ) : orders.length === 0 ? (
               <TableRow>
-                <TableCell className="py-6 text-center text-gray-400 dark:text-gray-500">
+                <td
+                  colSpan={5}
+                  className="py-6 text-center text-gray-400 dark:text-gray-500"
+                >
                   لا توجد طلبات حديثة
-                </TableCell>
+                </td>
               </TableRow>
             ) : (
               orders.map((order) => (

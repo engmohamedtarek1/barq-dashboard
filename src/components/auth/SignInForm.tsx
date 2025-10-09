@@ -127,7 +127,7 @@ export default function SignInForm() {
               </Label>
               <Input
                 name="email"
-                placeholder="info@gmail.com"
+                placeholder="ادخل البريد الإلكتروني"
                 type="email"
                 value={formData.email}
                 onChange={handleInputChange}
@@ -148,7 +148,7 @@ export default function SignInForm() {
                 <Input
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="اكتب كلمة المرور"
+                  placeholder="ادخل كلمة المرور"
                   value={formData.password}
                   onChange={handleInputChange}
                   className={errors.password ? "border-red-500" : ""}
