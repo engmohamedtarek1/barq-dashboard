@@ -86,7 +86,7 @@ export default function OrdersTable() {
     });
   }, [orders, searchTerm]);
 
-  const effectiveTotalPages = metadata.totalPages || 1;
+  const effectiveTotalPages = metadata.totalPages;
 
   return (
     <div className="space-y-4">
@@ -319,13 +319,15 @@ export default function OrdersTable() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-end pt-2">
-        <Pagination
-          currentPage={page}
-          totalPages={effectiveTotalPages}
-          onPageChange={setPage}
-        />
-      </div>
+      {effectiveTotalPages && (
+        <div className="flex justify-end pt-2">
+          <Pagination
+            currentPage={page}
+            totalPages={effectiveTotalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -45,7 +45,7 @@ export function AddOfferModal({
     product: "",
     image: new File([], ""), // Initialize with an empty file
     description: "",
-    discount: 0,
+    discount: 1,
     startDate: new Date(),
     endDate: new Date(),
     shopId: "",
@@ -198,7 +198,7 @@ export function AddOfferModal({
         product: "",
         image: new File([], ""), // Initialize with an empty file
         description: "",
-        discount: 0,
+        discount: 1,
         startDate: new Date(),
         endDate: new Date(),
         shopId: "",
@@ -320,8 +320,10 @@ export function AddOfferModal({
                   </Label>
                   <Input
                     type="number"
-                    placeholder="10"
-                    defaultValue={formData.discount}
+                    placeholder="أدخل قيمة الخصم للعرض"
+                    min="1"
+                    max="100"
+                    // defaultValue={formData.discount}
                     onChange={(e) => handleChange("discount", e.target.value)}
                     required
                   />
@@ -670,7 +672,8 @@ export function EditOfferModal({
                   <Label>الخصم</Label>
                   <Input
                     type="number"
-                    placeholder="10"
+                    placeholder="أدخل قيمة الخصم للعرض"
+                    max="9999999"
                     defaultValue={formData.discount}
                     onChange={(e) => handleChange("discount", e.target.value)}
                   />

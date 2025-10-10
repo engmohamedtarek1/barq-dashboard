@@ -58,6 +58,7 @@ export default function VendorsTable() {
       } finally {
       }
     }, 350);
+
     return () => {
       cancelled = true;
       clearTimeout(t);
@@ -72,6 +73,7 @@ export default function VendorsTable() {
 
   const effectiveTotalPages = useMemo(() => {
     const trimmed = searchTerm.trim();
+
     return trimmed ? searchPages : totalPages;
   }, [searchTerm, searchPages, totalPages]);
 
@@ -110,7 +112,6 @@ export default function VendorsTable() {
         {/* Add Vendor Button */}
         <AddVendorButton onSuccess={refetch} />
       </div>
-
       {/* Limit Selector */}
       <div className="flex items-center justify-end gap-2">
         <label
@@ -135,7 +136,6 @@ export default function VendorsTable() {
           ))}
         </select>
       </div>
-
       {/* Table */}
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
@@ -285,7 +285,7 @@ export default function VendorsTable() {
                         <TableCell className="space-x-2">
                           <Link
                             href={`/vendors/${vendor._id}`}
-                            className="text-sm text-indigo-600 dark:text-indigo-400 inline-block"
+                            className="inline-block text-sm text-indigo-600 dark:text-indigo-400"
                             title="عرض المتجر"
                           >
                             <FaEye />
@@ -308,15 +308,17 @@ export default function VendorsTable() {
           </div>
         </div>
       </div>
-
+      
       {/* Pagination */}
-      <div className="flex justify-end pt-2">
-        <Pagination
-          currentPage={page}
-          totalPages={effectiveTotalPages}
-          onPageChange={setPage}
-        />
-      </div>
+      {effectiveTotalPages && (
+        <div className="flex justify-end pt-2">
+          <Pagination
+            currentPage={page}
+            totalPages={effectiveTotalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

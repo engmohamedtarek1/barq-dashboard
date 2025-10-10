@@ -356,7 +356,7 @@ export default function OffersTable() {
                           <TableCell className="space-x-2">
                             <Link
                               href={`/offers/${offer._id}`}
-                              className="text-sm text-indigo-600 dark:text-indigo-400 inline-block"
+                              className="inline-block text-sm text-indigo-600 dark:text-indigo-400"
                               title="عرض العرض"
                             >
                               <FaEye />
@@ -382,13 +382,15 @@ export default function OffersTable() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-end pt-2">
-        <Pagination
-          currentPage={page}
-          totalPages={effectiveTotalPages}
-          onPageChange={setPage}
-        />
-      </div>
+      {effectiveTotalPages && (
+        <div className="flex justify-end pt-2">
+          <Pagination
+            currentPage={page}
+            totalPages={effectiveTotalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 }
