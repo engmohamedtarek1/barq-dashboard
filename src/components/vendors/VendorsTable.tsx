@@ -282,10 +282,10 @@ export default function VendorsTable() {
                           </Badge>
                         </TableCell>
                         <TableCell>⭐ {vendor.rating}</TableCell>
-                        <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
+                        <TableCell className="space-x-2">
                           <Link
                             href={`/vendors/${vendor._id}`}
-                            className="text-sm text-indigo-600 dark:text-indigo-400"
+                            className="text-sm text-indigo-600 dark:text-indigo-400 inline-block"
                             title="عرض المتجر"
                           >
                             <FaEye />

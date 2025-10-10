@@ -353,10 +353,10 @@ export default function OffersTable() {
                             </Badge>
                           </TableCell>
                           {/* Actions */}
-                          <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
+                          <TableCell className="space-x-2">
                             <Link
                               href={`/offers/${offer._id}`}
-                              className="text-sm text-indigo-600 dark:text-indigo-400"
+                              className="text-sm text-indigo-600 dark:text-indigo-400 inline-block"
                               title="عرض العرض"
                             >
                               <FaEye />

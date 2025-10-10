@@ -158,7 +158,7 @@ export default function AdminsTable() {
                       <TableRow key={admin._id}>
                         <TableCell>{admin.name}</TableCell>
                         <TableCell>{admin.email}</TableCell>
-                        <TableCell className="flex h-20 items-center gap-3 px-4 py-3">
+                        <TableCell className="space-x-2">
                           <EditAdminButton admin={admin} onSuccess={refetch} />
                           <DeleteAdminButton
                             adminId={admin._id}
