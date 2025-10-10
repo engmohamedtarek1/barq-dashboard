@@ -264,7 +264,7 @@ export default function ProductsTable() {
                               <span className="block font-medium text-gray-800 dark:text-white/90">
                                 {product.nameEn} | {product.nameAr}
                               </span>
-                              <span className="text-sm">${product.price}</span>
+                              <span className="text-sm">{product.price} ج.م</span>
                             </div>
                           </div>
                         </TableCell>

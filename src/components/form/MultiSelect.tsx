@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 interface Option {
   value: string;
@@ -28,6 +28,28 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const [selectedOptions, setSelectedOptions] =
     useState<string[]>(defaultSelected);
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const toggleDropdown = () => {
     if (disabled) return;
@@ -60,7 +82,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
         {required && <span className="text-error-500 ms-1">*</span>}
       </label>
 
-      <div className="relative z-20 inline-block w-full">
+      <div className="relative z-20 inline-block w-full" ref={dropdownRef}>
         <div className="relative flex flex-col items-center">
           <div onClick={toggleDropdown} className="w-full">
             <div className="shadow-theme-xs focus:border-brand-300 focus:shadow-focus-ring dark:focus:border-brand-300 mb-2 flex rounded-lg border border-gray-300 py-1.5 ps-3 pe-3 outline-hidden transition dark:border-gray-700 dark:bg-gray-900">
@@ -134,7 +156,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
           {isOpen && (
             <div
-              className="max-h-select absolute start-0 top-8 z-40 w-full overflow-y-auto rounded-lg bg-white shadow-sm dark:bg-gray-900"
+              className="max-h-select absolute start-0 top-10 z-40 w-full overflow-y-auto rounded-lg bg-white shadow-sm dark:bg-gray-900"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex flex-col">
