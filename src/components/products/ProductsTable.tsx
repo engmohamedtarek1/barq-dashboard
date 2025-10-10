@@ -264,7 +264,9 @@ export default function ProductsTable() {
                               <span className="block font-medium text-gray-800 dark:text-white/90">
                                 {product.nameEn} | {product.nameAr}
                               </span>
-                              <span className="text-sm">{product.price} ج.م</span>
+                              <span className="text-sm">
+                                {product.price} ج.م
+                              </span>
                             </div>
                           </div>
                         </TableCell>
@@ -297,13 +299,15 @@ export default function ProductsTable() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-end pt-2">
-        <Pagination
-          currentPage={page}
-          totalPages={effectiveTotalPages}
-          onPageChange={setPage}
-        />
-      </div>
+      {effectiveTotalPages !== 0 && (
+        <div className="flex justify-end pt-2">
+          <Pagination
+            currentPage={page}
+            totalPages={effectiveTotalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

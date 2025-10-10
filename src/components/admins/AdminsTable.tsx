@@ -176,13 +176,15 @@ export default function AdminsTable() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-end pt-2">
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={setPage}
-        />
-      </div>
+      {totalPages !== 0 && (
+        <div className="flex justify-end pt-2">
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

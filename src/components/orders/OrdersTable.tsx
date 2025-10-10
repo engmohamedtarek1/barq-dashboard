@@ -319,7 +319,7 @@ export default function OrdersTable() {
       </div>
 
       {/* Pagination */}
-      {effectiveTotalPages && (
+      {effectiveTotalPages !== 0 && (
         <div className="flex justify-end pt-2">
           <Pagination
             currentPage={page}

@@ -72,6 +72,8 @@ export default function AgentsTable() {
     return trimmed ? searchPages : totalPages;
   }, [searchTerm, searchPages, totalPages]);
 
+  console.log(effectiveTotalPages);
+
   return (
     <div className="space-y-4">
       {/* Card Header */}
@@ -214,7 +216,9 @@ export default function AgentsTable() {
                               d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                             />
                           </svg>
-                          <p className="text-sm font-medium">لا يوجد عمال توصيل</p>
+                          <p className="text-sm font-medium">
+                            لا يوجد عمال توصيل
+                          </p>
                           <p className="text-xs text-gray-400 dark:text-gray-500">
                             {searchTerm.trim()
                               ? "لم يتم العثور على نتائج للبحث"
@@ -262,13 +266,15 @@ export default function AgentsTable() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-end pt-2">
-        <Pagination
-          currentPage={page}
-          totalPages={effectiveTotalPages}
-          onPageChange={setPage}
-        />
-      </div>
+      {effectiveTotalPages !== 0 && (
+        <div className="flex justify-end pt-2">
+          <Pagination
+            currentPage={page}
+            totalPages={effectiveTotalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

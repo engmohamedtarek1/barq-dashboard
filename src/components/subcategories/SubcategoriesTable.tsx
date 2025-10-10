@@ -298,13 +298,15 @@ export default function SubcategoriesTable() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-end pt-2">
-        <Pagination
-          currentPage={page}
-          totalPages={effectiveTotalPages}
-          onPageChange={setPage}
-        />
-      </div>
+      {effectiveTotalPages !== 0 && (
+        <div className="flex justify-end pt-2">
+          <Pagination
+            currentPage={page}
+            totalPages={effectiveTotalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 }
