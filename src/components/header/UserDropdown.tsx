@@ -122,7 +122,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              تعديل الملف الشخصي
+              الملف الشخصي
             </DropdownItem>
           </li>
 

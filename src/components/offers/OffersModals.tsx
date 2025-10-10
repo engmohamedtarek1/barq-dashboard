@@ -333,8 +333,9 @@ export function AddOfferModal({
                     تاريخ البدء <span className="text-error-500">*</span>
                   </Label>
                   <DatePicker
-                    id="date-picker"
+                    id="start-date-picker"
                     placeholder="تاريخ البدء"
+                    minDate="now"
                     onChange={(dates, currentDateString) => {
                       handleChange("startDate", currentDateString);
                     }}
@@ -348,8 +349,9 @@ export function AddOfferModal({
                     تاريخ الانتهاء <span className="text-error-500">*</span>
                   </Label>
                   <DatePicker
-                    id="date-picker"
+                    id="end-date-picker"
                     placeholder="تاريخ الانتهاء"
+                    minDate={formData.startDate || "now"}
                     onChange={(dates, currentDateString) => {
                       handleChange("endDate", currentDateString);
                     }}
@@ -678,9 +680,10 @@ export function EditOfferModal({
                 <div>
                   <Label>تاريخ البدء</Label>
                   <DatePicker
-                    id="date-picker"
+                    id="edit-start-date-picker"
                     placeholder="تاريخ البدء"
                     defaultDate={formData.startDate}
+                    minDate="now"
                     onChange={(dates, currentDateString) => {
                       handleChange("startDate", currentDateString);
                     }}
@@ -691,9 +694,10 @@ export function EditOfferModal({
                 <div>
                   <Label>تاريخ الانتهاء</Label>
                   <DatePicker
-                    id="date-picker1"
+                    id="edit-end-date-picker"
                     placeholder="تاريخ الانتهاء"
                     defaultDate={formData.endDate}
+                    minDate={formData.startDate || "now"}
                     onChange={(dates, currentDateString) => {
                       handleChange("endDate", currentDateString);
                     }}

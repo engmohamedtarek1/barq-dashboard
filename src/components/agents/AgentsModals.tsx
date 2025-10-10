@@ -241,7 +241,7 @@ export function EditAgentModal({
     reviewCount: 0,
     role: "delivery-agent",
     isActive: true,
-    commissionRate: 5,
+    commissionRate: 0,
   });
 
   // Fill formData with agent data when modal opens or agent changes

@@ -14,6 +14,7 @@ type PropsType = {
   label?: string;
   placeholder?: string;
   required?: boolean;
+  minDate?: "now" | "startDate" | DateOption;
 };
 
 export default function DatePicker({
@@ -24,8 +25,20 @@ export default function DatePicker({
   defaultDate,
   placeholder,
   required,
+  minDate,
 }: PropsType) {
   useEffect(() => {
+    // Calculate minDate value
+    let minDateValue: DateOption | undefined;
+    if (minDate === "now") {
+      minDateValue = "today";
+    } else if (minDate === "startDate") {
+      // This will be handled by the parent component passing the actual start date
+      minDateValue = undefined;
+    } else if (minDate) {
+      minDateValue = minDate;
+    }
+
     const flatPickr = flatpickr(`#${id}`, {
       mode: mode || "single",
       static: true,
@@ -33,6 +46,7 @@ export default function DatePicker({
       dateFormat: "Y-m-d",
       defaultDate,
       onChange,
+      minDate: minDateValue,
     });
 
     return () => {
@@ -40,7 +54,7 @@ export default function DatePicker({
         flatPickr.destroy();
       }
     };
-  }, [mode, onChange, id, defaultDate]);
+  }, [mode, onChange, id, defaultDate, minDate]);
 
   return (
     <div>

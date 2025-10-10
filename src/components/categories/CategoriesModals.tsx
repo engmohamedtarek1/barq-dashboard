@@ -242,11 +242,11 @@ export function EditCategoryModal({
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
-    image: string | File;
+    image: File | string;
   }>({
     nameAr: "",
     nameEn: "",
-    image: new File([], ""),
+    image: "",
   });
 
   // Fill formData with category data when modal opens or category changes
@@ -255,7 +255,7 @@ export function EditCategoryModal({
       setFormData({
         nameAr: category.nameAr || "",
         nameEn: category.nameEn || "",
-        image: "",
+        image: category.image || "",
       });
     }
   }, [category, isOpen]);

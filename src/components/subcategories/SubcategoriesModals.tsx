@@ -150,7 +150,28 @@ export function AddSubcategoryModal({
                 تفاصيل الفئة
               </h5>
 
-              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+              {/* Category */}
+              <div>
+                <Label>
+                  الفئة <span className="text-error-500">*</span>
+                </Label>
+                <div className="relative">
+                  <Select
+                    options={categories.map((cat) => ({
+                      value: cat._id,
+                      label: cat.nameAr,
+                    }))}
+                    placeholder="اختر فئة"
+                    onChange={(val) => handleChange("category", val)}
+                    required
+                  />
+                  <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                    <ChevronDownIcon />
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 {/* Name (in Arabic) */}
                 <div>
                   <Label>
@@ -172,27 +193,6 @@ export function AddSubcategoryModal({
                     placeholder="Sea Food"
                     onChange={(e) => handleChange("nameEn", e.target.value)}
                   />
-                </div>
-
-                {/* Category */}
-                <div>
-                  <Label>
-                    الفئة <span className="text-error-500">*</span>
-                  </Label>
-                  <div className="relative">
-                    <Select
-                      options={categories.map((cat) => ({
-                        value: cat._id,
-                        label: cat.nameAr,
-                      }))}
-                      placeholder="اختر فئة"
-                      onChange={(val) => handleChange("category", val)}
-                      required
-                    />
-                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                      <ChevronDownIcon />
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -381,7 +381,25 @@ export function EditSubcategoryModal({
                 تفاصيل الفئة
               </h5>
 
-              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+              {/* Category */}
+              <div>
+                <Label>الفئة</Label>
+                <div className="relative">
+                  <Select
+                    options={categories.map((cat) => ({
+                      value: cat._id,
+                      label: cat.nameAr,
+                    }))}
+                    placeholder="اختر فئة"
+                    onChange={(val) => handleChange("category", val)}
+                  />
+                  <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                    <ChevronDownIcon />
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 mt-5 gap-x-6 gap-y-5 lg:grid-cols-2">
                 {/* Name (in Arabic) */}
                 <div>
                   <Label>الاسم (بالعربية)</Label>
@@ -402,24 +420,6 @@ export function EditSubcategoryModal({
                     defaultValue={formData.nameEn}
                     onChange={(e) => handleChange("nameEn", e.target.value)}
                   />
-                </div>
-
-                {/* Category */}
-                <div>
-                  <Label>الفئة</Label>
-                  <div className="relative">
-                    <Select
-                      options={categories.map((cat) => ({
-                        value: cat._id,
-                        label: cat.nameAr,
-                      }))}
-                      placeholder="اختر فئة"
-                      onChange={(val) => handleChange("category", val)}
-                    />
-                    <span className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                      <ChevronDownIcon />
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
