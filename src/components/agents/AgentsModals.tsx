@@ -21,6 +21,8 @@ export function AddAgentModal({
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameError, setNameError] = useState<string>("");
+  const [mobileError, setMobileError] = useState<string>("");
   const [formData, setFormData] = useState<{
     name: string;
     mobile: string;
@@ -31,11 +33,110 @@ export function AddAgentModal({
     commissionRate: 0,
   });
 
+  // Name validation function
+  const validateName = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow Arabic, English letters and spaces)
+    const validPattern = /^[\u0600-\u06FFa-zA-Z\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  // Mobile validation function
+  const validateMobile = (mobile: string): string => {
+    // Check if empty
+    if (!mobile || mobile.trim() === "") {
+      return "";
+    }
+
+    // Check if only numbers
+    const numbersOnly = /^[0-9]+$/;
+    if (!numbersOnly.test(mobile)) {
+      return "رقم الهاتف يقبل الأرقام فقط";
+    }
+
+    // Check minimum length (11 digits)
+    if (mobile.length < 11) {
+      return "يرجى ادخال رقم الهاتف الصحيح";
+    }
+
+    // Check Egyptian phone format
+    // Egyptian mobile numbers start with: 010, 011, 012, 015
+    const egyptianMobilePattern = /^(010|011|012|015)[0-9]{8}$/;
+    if (!egyptianMobilePattern.test(mobile)) {
+      return "يرجى ادخال رقم الهاتف الصحيح";
+    }
+
+    return "";
+  };
+
+  const handleNameChange = (value: string) => {
+    // Limit to 30 characters
+    const limitedValue = value.slice(0, 30);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, name: processedValue }));
+
+    // Validate and set error
+    const error = validateName(processedValue);
+    setNameError(error);
+  };
+
+  const handleMobileChange = (value: string) => {
+    // Only allow numbers, limit to 11 digits
+    const numbersOnly = value.replace(/[^0-9]/g, "");
+    const limitedValue = numbersOnly.slice(0, 11);
+
+    setFormData((prev) => ({ ...prev, mobile: limitedValue }));
+
+    // Validate and set error
+    const error = validateMobile(limitedValue);
+    setMobileError(error);
+  };
+
   const handleChange = (
     field: string,
     value: string | string[] | File | undefined,
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "name" && typeof value === "string") {
+      handleNameChange(value);
+    } else if (field === "mobile" && typeof value === "string") {
+      handleMobileChange(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSave = async () => {
@@ -52,6 +153,19 @@ export function AddAgentModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
+
+      // Check for name validation errors
+      const nameValidationError = validateName(formData.name);
+      if (nameValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في الاسم",
+          message: nameValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
       if (!formData.mobile) {
         setToast({
           variant: "error",
@@ -62,9 +176,22 @@ export function AddAgentModal({
         return;
       }
 
+      // Check for mobile validation errors
+      const mobileValidationError = validateMobile(formData.mobile);
+      if (mobileValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في رقم الهاتف",
+          message: mobileValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
       const payloadRaw: CreateAgentPayload = {
         name: formData.name,
         mobile: formData.mobile,
+        commissionRate: formData.commissionRate,
         role: "delivery-agent",
       };
       // Remove empty-string fields
@@ -132,8 +259,11 @@ export function AddAgentModal({
                   </Label>
                   <Input
                     type="text"
-                    placeholder="اسم عامل التوصيل"
+                    placeholder="ادخل اسم عامل التوصيل"
+                    value={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
+                    error={!!nameError}
+                    hint={nameError || `${formData.name.length}/30`}
                     required
                   />
                 </div>
@@ -145,8 +275,25 @@ export function AddAgentModal({
                   </Label>
                   <Input
                     type="text"
-                    placeholder="01234567890"
+                    placeholder="ادخل رقم هاتف عامل التوصيل"
+                    value={formData.mobile}
                     onChange={(e) => handleChange("mobile", e.target.value)}
+                    error={!!mobileError}
+                    hint={mobileError || `${formData.mobile.length}/11`}
+                    required
+                  />
+                </div>
+
+                {/* Comission Rate */}
+                <div>
+                  <Label>معدل العمولة</Label>
+                  <Input
+                    type="number"
+                    placeholder="ادخل معدل العمولة"
+                    defaultValue={formData.commissionRate}
+                    onChange={(e) =>
+                      handleChange("commissionRate", e.target.value)
+                    }
                     required
                   />
                 </div>
@@ -225,20 +372,18 @@ export function EditAgentModal({
 }) {
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameError, setNameError] = useState<string>("");
+  const [mobileError, setMobileError] = useState<string>("");
 
   const [formData, setFormData] = useState<{
     name: string;
     mobile: string;
-    rating: number;
-    reviewCount: number;
     role: "delivery-agent";
     isActive: boolean;
     commissionRate: number;
   }>({
     name: "",
     mobile: "",
-    rating: 0,
-    reviewCount: 0,
     role: "delivery-agent",
     isActive: true,
     commissionRate: 0,
@@ -250,8 +395,6 @@ export function EditAgentModal({
       setFormData({
         name: agent.name || "",
         mobile: agent.mobile || "",
-        rating: agent.rating || 0,
-        reviewCount: agent.reviewCount || 0,
         isActive: agent.isActive || true,
         role: "delivery-agent",
         commissionRate: agent.commissionRate || 0,
@@ -259,22 +402,149 @@ export function EditAgentModal({
     }
   }, [agent, isOpen]);
 
+  // Name validation function
+  const validateName = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow Arabic, English letters and spaces)
+    const validPattern = /^[\u0600-\u06FFa-zA-Z\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  // Mobile validation function
+  const validateMobile = (mobile: string): string => {
+    // Check if empty
+    if (!mobile || mobile.trim() === "") {
+      return "";
+    }
+
+    // Check if only numbers
+    const numbersOnly = /^[0-9]+$/;
+    if (!numbersOnly.test(mobile)) {
+      return "رقم الهاتف يقبل الأرقام فقط";
+    }
+
+    // Check minimum length (11 digits)
+    if (mobile.length < 11) {
+      return "يرجى ادخال رقم الهاتف الصحيح";
+    }
+
+    // Check Egyptian phone format
+    // Egyptian mobile numbers start with: 010, 011, 012, 015
+    const egyptianMobilePattern = /^(010|011|012|015)[0-9]{8}$/;
+    if (!egyptianMobilePattern.test(mobile)) {
+      return "يرجى ادخال رقم الهاتف الصحيح";
+    }
+
+    return "";
+  };
+
+  const handleNameChange = (value: string) => {
+    // Limit to 30 characters
+    const limitedValue = value.slice(0, 30);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, name: processedValue }));
+
+    // Validate and set error
+    const error = validateName(processedValue);
+    setNameError(error);
+  };
+
+  const handleMobileChange = (value: string) => {
+    // Only allow numbers, limit to 11 digits
+    const numbersOnly = value.replace(/[^0-9]/g, "");
+    const limitedValue = numbersOnly.slice(0, 11);
+
+    setFormData((prev) => ({ ...prev, mobile: limitedValue }));
+
+    // Validate and set error
+    const error = validateMobile(limitedValue);
+    setMobileError(error);
+  };
+
   const handleChange = (
     field: string,
     value: string | string[] | File | boolean | undefined,
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "name" && typeof value === "string") {
+      handleNameChange(value);
+    } else if (field === "mobile" && typeof value === "string") {
+      handleMobileChange(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSave = async () => {
     setIsLoading(true);
 
     try {
+      // Check for name validation errors
+      if (formData.name.trim()) {
+        const nameValidationError = validateName(formData.name);
+        if (nameValidationError) {
+          setToast({
+            variant: "error",
+            title: "خطأ في الاسم",
+            message: nameValidationError,
+          });
+          setTimeout(() => setToast(null), 5000);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // Check for mobile validation errors if provided
+      if (formData.mobile.trim()) {
+        const mobileValidationError = validateMobile(formData.mobile);
+        if (mobileValidationError) {
+          setToast({
+            variant: "error",
+            title: "خطأ في رقم الهاتف",
+            message: mobileValidationError,
+          });
+          setTimeout(() => setToast(null), 5000);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const payloadRaw: Partial<CreateAgentPayload> = {
         name: formData.name,
         mobile: formData.mobile,
-        rating: formData.rating,
-        reviewCount: formData.reviewCount,
         isActive: formData.isActive,
         commissionRate: formData.commissionRate,
         role: "delivery-agent",
@@ -329,56 +599,41 @@ export function EditAgentModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                تعديل عامل التوصيل
+                معلومات عامل التوصيل
               </h5>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                {/* Name */}
                 <div>
                   <Label>الاسم</Label>
                   <Input
                     type="text"
-                    placeholder="اسم عامل التوصيل"
-                    defaultValue={formData.name}
+                    placeholder="ادخل اسم عامل التوصيل"
+                    value={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
+                    error={!!nameError}
+                    hint={nameError || `${formData.name.length}/30`}
                     required
                   />
                 </div>
+                {/* Mobile */}
                 <div>
                   <Label>الهاتف</Label>
                   <Input
                     type="text"
-                    placeholder="01234567890"
-                    defaultValue={formData.mobile}
+                    placeholder="ادخل رقم هاتف عامل التوصيل"
+                    value={formData.mobile}
                     onChange={(e) => handleChange("mobile", e.target.value)}
+                    error={!!mobileError}
+                    hint={mobileError || `${formData.mobile.length}/11`}
                     required
                   />
                 </div>
-                <div>
-                  <Label>التقييم</Label>
-                  <Input
-                    type="number"
-                    placeholder="4.5"
-                    defaultValue={formData.rating}
-                    onChange={(e) => handleChange("rating", e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label>عدد المراجعات</Label>
-                  <Input
-                    type="number"
-                    placeholder="5"
-                    defaultValue={formData.reviewCount}
-                    onChange={(e) =>
-                      handleChange("reviewCount", e.target.value)
-                    }
-                    required
-                  />
-                </div>
+                {/* Commission Rate */}
                 <div>
                   <Label>معدل العمولة</Label>
                   <Input
                     type="number"
-                    placeholder="5"
+                    placeholder="0"
                     defaultValue={formData.commissionRate}
                     onChange={(e) =>
                       handleChange("commissionRate", e.target.value)

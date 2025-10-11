@@ -118,7 +118,7 @@ export default function VendorsTable() {
           htmlFor="limit"
           className="text-sm text-gray-600 dark:text-white/70"
         >
-          عمود في الصفحة:
+          صف في الصفحة:
         </label>
         <select
           id="limit"
@@ -278,7 +278,7 @@ export default function VendorsTable() {
                             color={vendor.isActive ? "success" : "error"}
                             variant="light"
                           >
-                            {vendor.isActive ? "Active" : "Inactive"}
+                            {vendor.isActive ? "مفعلة" : "معطلة"}
                           </Badge>
                         </TableCell>
                         <TableCell>⭐ {vendor.rating}</TableCell>

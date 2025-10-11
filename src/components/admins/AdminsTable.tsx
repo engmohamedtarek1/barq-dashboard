@@ -75,7 +75,7 @@ export default function AdminsTable() {
           htmlFor="limit"
           className="text-sm text-gray-600 dark:text-white/70"
         >
-          عمود في الصفحة:
+          صف في الصفحة:
         </label>
         <select
           id="limit"
@@ -176,7 +176,7 @@ export default function AdminsTable() {
       </div>
 
       {/* Pagination */}
-      {totalPages !== 0 && (
+      {totalPages > 1 && (
         <div className="flex justify-end pt-2">
           <Pagination
             currentPage={page}

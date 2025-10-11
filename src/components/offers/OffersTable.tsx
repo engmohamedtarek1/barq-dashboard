@@ -117,7 +117,7 @@ export default function OffersTable() {
           htmlFor="limit"
           className="text-sm text-gray-600 dark:text-white/70"
         >
-          عمود في الصفحة:
+          صف في الصفحة:
         </label>
         <select
           id="limit"

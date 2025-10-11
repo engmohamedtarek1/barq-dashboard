@@ -115,7 +115,7 @@ export default function OrdersTable() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="البحث عن متاجر..."
+            placeholder="البحث عن طلبات..."
             className="h-11 w-full rounded-lg border border-gray-500 bg-transparent py-2.5 ps-12 pe-14 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-1 focus:outline-hidden dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30"
           />
         </div>
@@ -130,7 +130,7 @@ export default function OrdersTable() {
           htmlFor="limit"
           className="text-sm text-gray-600 dark:text-white/70"
         >
-          عمود في الصفحة:
+          صف في الصفحة:
         </label>
         <select
           id="limit"

@@ -114,7 +114,7 @@ export default function AgentsTable() {
           htmlFor="limit"
           className="text-sm text-gray-600 dark:text-white/70"
         >
-          عمود في الصفحة:
+          صف في الصفحة:
         </label>
         <select
           id="limit"
@@ -240,7 +240,7 @@ export default function AgentsTable() {
                             color={agent.isActive ? "success" : "error"}
                             variant="light"
                           >
-                            {agent.isActive ? "Active" : "Inactive"}
+                            {agent.isActive ? "مفعلة" : "معطلة"}
                           </Badge>
                         </TableCell>
                         <TableCell>⭐ {agent.rating}</TableCell>

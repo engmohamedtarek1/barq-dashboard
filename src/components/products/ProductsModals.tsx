@@ -41,6 +41,10 @@ export function AddProductModal({
   const [categories, setCategories] = useState<Category[]>([]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameArError, setNameArError] = useState<string>("");
+  const [nameEnError, setNameEnError] = useState<string>("");
+  const [priceError, setPriceError] = useState<string>("");
+  const [descriptionError, setDescriptionError] = useState<string>("");
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -104,11 +108,252 @@ export function AddProductModal({
     fetchCategoriesForCategory();
   }, [formData.shopId]);
 
+  // Arabic name validation function
+  const validateNameAr = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow Arabic letters, numbers, and spaces)
+    const validPattern = /^[\u0600-\u06FF0-9\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف العربية والأرقام والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  // English name validation function
+  const validateNameEn = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow English letters, numbers, and spaces)
+    const validPattern = /^[a-zA-Z0-9\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف الإنجليزية والأرقام والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  // Price validation function
+  const validatePrice = (price: string): string => {
+    // Remove commas and trim
+    const cleanPrice = price.replace(/,/g, "").trim();
+
+    // Check if empty
+    if (!cleanPrice) {
+      return "";
+    }
+
+    // Check if valid number
+    const numPrice = parseFloat(cleanPrice);
+    if (isNaN(numPrice)) {
+      return "يرجى ادخال سعر المنتج";
+    }
+
+    // Check if zero
+    if (numPrice === 0) {
+      return "يرجى ادخال سعر المنتج";
+    }
+
+    // Check if less than 1
+    if (numPrice < 1) {
+      return "يرجى ادخال سعر المنتج";
+    }
+
+    return "";
+  };
+
+  // Description validation function
+  const validateDescription = (description: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedDesc = description.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (description.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (10 characters excluding spaces)
+    const descWithoutSpaces = normalizedDesc.replace(/\s/g, "");
+    if (descWithoutSpaces.length < 10) {
+      return "يجب أن لا يقل الوصف عن 10 أحرف";
+    }
+
+    // Check for invalid characters (allow letters, numbers, spaces, and special characters but not emojis)
+    const validPattern =
+      /^[\u0600-\u06FFa-zA-Z0-9\s\u0020-\u007E\u00A0-\u00FF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]+$/;
+    if (!validPattern.test(normalizedDesc)) {
+      return "الوصف لا يقبل الرموز التعبيرية";
+    }
+
+    return "";
+  };
+
+  const formatPrice = (value: string): string => {
+    // Remove all non-numeric characters except decimal point
+    let cleaned = value.replace(/[^0-9.]/g, "");
+
+    // Handle decimal point - only allow one and not at the beginning
+    const parts = cleaned.split(".");
+    if (parts.length > 2) {
+      cleaned = parts[0] + "." + parts.slice(1).join("");
+    }
+
+    // Don't allow decimal point at the beginning
+    if (cleaned.startsWith(".")) {
+      cleaned = cleaned.substring(1);
+    }
+
+    // Limit to 7 digits before decimal point
+    if (parts[0] && parts[0].length > 7) {
+      parts[0] = parts[0].substring(0, 7);
+      cleaned = parts.join(".");
+    }
+
+    // Add commas every 3 digits
+    if (parts[0]) {
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      cleaned = parts.join(".");
+    }
+
+    return cleaned;
+  };
+
+  const handleNameArChange = (value: string) => {
+    // Limit to 50 characters
+    const limitedValue = value.slice(0, 50);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, nameAr: processedValue }));
+
+    // Validate and set error
+    const error = validateNameAr(processedValue);
+    setNameArError(error);
+  };
+
+  const handleNameEnChange = (value: string) => {
+    // Limit to 50 characters
+    const limitedValue = value.slice(0, 50);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, nameEn: processedValue }));
+
+    // Validate and set error
+    const error = validateNameEn(processedValue);
+    setNameEnError(error);
+  };
+
+  const handlePriceChange = (value: string) => {
+    const formattedValue = formatPrice(value);
+    setFormData((prev) => ({
+      ...prev,
+      price: parseFloat(formattedValue.replace(/,/g, "")) || 0,
+    }));
+
+    // Validate and set error
+    const error = validatePrice(formattedValue);
+    setPriceError(error);
+  };
+
+  const handleDescriptionChange = (value: string) => {
+    // Limit to 300 characters
+    const limitedValue = value.slice(0, 300);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, description: processedValue }));
+
+    // Validate and set error
+    const error = validateDescription(processedValue);
+    setDescriptionError(error);
+  };
+
   const handleChange = (
     field: string,
     value: string | string[] | File | undefined,
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "nameAr" && typeof value === "string") {
+      handleNameArChange(value);
+    } else if (field === "nameEn" && typeof value === "string") {
+      handleNameEnChange(value);
+    } else if (field === "price" && typeof value === "string") {
+      handlePriceChange(value);
+    } else if (field === "description" && typeof value === "string") {
+      handleDescriptionChange(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSave = async () => {
@@ -125,24 +370,79 @@ export function AddProductModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
-      if (formData.price < 0) {
+
+      // Check for Arabic name validation errors
+      const nameArValidationError = validateNameAr(formData.nameAr);
+      if (nameArValidationError) {
         setToast({
           variant: "error",
-          title: "حقل مطلوب",
-          message: "السعر مطلوب ويجب أن يكون رقمًا أكبر أو يساوي صفر.",
+          title: "خطأ في الاسم بالعربية",
+          message: nameArValidationError,
         });
         setTimeout(() => setToast(null), 5000);
         return;
       }
+
+      // Check for English name validation errors if provided
+      if (formData.nameEn.trim()) {
+        const nameEnValidationError = validateNameEn(formData.nameEn);
+        if (nameEnValidationError) {
+          setToast({
+            variant: "error",
+            title: "خطأ في الاسم بالإنجليزية",
+            message: nameEnValidationError,
+          });
+          setTimeout(() => setToast(null), 5000);
+          return;
+        }
+      }
+
+      if (formData.price < 1) {
+        setToast({
+          variant: "error",
+          title: "حقل مطلوب",
+          message: "يرجى ادخال سعر المنتج",
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
+      // Check for price validation errors
+      const priceValidationError = validatePrice(formData.price.toString());
+      if (priceValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في السعر",
+          message: priceValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
       if (!formData.description) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
-          message: "الوصف مطلوب.",
+          message: "الوصف بالعربي مطلوب.",
         });
         setTimeout(() => setToast(null), 5000);
         return;
       }
+
+      // Check for description validation errors
+      const descriptionValidationError = validateDescription(
+        formData.description,
+      );
+      if (descriptionValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في الوصف",
+          message: descriptionValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
       if (!formData.shopId) {
         setToast({
           variant: "error",
@@ -240,7 +540,7 @@ export function AddProductModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                إضافة منتج جديد
+                إضافة منتج
               </h5>
 
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
@@ -260,8 +560,11 @@ export function AddProductModal({
                   </Label>
                   <Input
                     type="text"
-                    placeholder="قهوة عربية"
+                    placeholder="ادخل اسم المنتج بالعربي"
+                    value={formData.nameAr}
                     onChange={(e) => handleChange("nameAr", e.target.value)}
+                    error={!!nameArError}
+                    hint={nameArError || `${formData.nameAr.length}/50`}
                     required
                   />
                 </div>
@@ -271,8 +574,11 @@ export function AddProductModal({
                   <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
-                    placeholder="Arabic Coffee"
+                    placeholder="Enter the product name in English"
+                    value={formData.nameEn}
                     onChange={(e) => handleChange("nameEn", e.target.value)}
+                    error={!!nameEnError}
+                    hint={nameEnError || `${formData.nameEn.length}/50`}
                   />
                 </div>
 
@@ -282,24 +588,34 @@ export function AddProductModal({
                     السعر <span className="text-error-500">*</span>
                   </Label>
                   <Input
-                    type="number"
-                    placeholder="100"
+                    type="text"
+                    placeholder="ادخل سعر المنتج"
+                    value={formatPrice(formData.price.toString())}
                     onChange={(e) => handleChange("price", e.target.value)}
+                    error={!!priceError}
+                    hint={
+                      priceError ||
+                      `${formData.price.toString().replace(/,/g, "").length}/7`
+                    }
                     required
-                    min="0"
                   />
                 </div>
 
                 {/* Description */}
                 <div>
                   <Label>
-                    الوصف <span className="text-error-500">*</span>
+                    الوصف بالعربي <span className="text-error-500">*</span>
                   </Label>
                   <Input
                     type="text"
-                    placeholder="قهوة عربية فاخرة محمصة طازجة"
+                    placeholder="ادخل وصف المنتج بالعربي"
+                    value={formData.description}
                     onChange={(e) =>
                       handleChange("description", e.target.value)
+                    }
+                    error={!!descriptionError}
+                    hint={
+                      descriptionError || `${formData.description.length}/300`
                     }
                     required
                   />
@@ -467,6 +783,10 @@ export function EditProductModal({
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameArError, setNameArError] = useState<string>("");
+  const [nameEnError, setNameEnError] = useState<string>("");
+  const [priceError, setPriceError] = useState<string>("");
+  const [descriptionError, setDescriptionError] = useState<string>("");
 
   const [formData, setFormData] = useState<{
     nameAr: string;
@@ -552,17 +872,320 @@ export function EditProductModal({
     fetchVendorCategories();
   }, [formData.shopId]);
 
+  // Arabic name validation function
+  const validateNameAr = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow Arabic letters, numbers, and spaces)
+    const validPattern = /^[\u0600-\u06FF0-9\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف العربية والأرقام والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  // English name validation function
+  const validateNameEn = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow English letters, numbers, and spaces)
+    const validPattern = /^[a-zA-Z0-9\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف الإنجليزية والأرقام والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  // Price validation function
+  const validatePrice = (price: string): string => {
+    // Remove commas and trim
+    const cleanPrice = price.replace(/,/g, "").trim();
+
+    // Check if empty
+    if (!cleanPrice) {
+      return "";
+    }
+
+    // Check if valid number
+    const numPrice = parseFloat(cleanPrice);
+    if (isNaN(numPrice)) {
+      return "يرجى ادخال سعر المنتج";
+    }
+
+    // Check if zero
+    if (numPrice === 0) {
+      return "يرجى ادخال سعر المنتج";
+    }
+
+    // Check if less than 1
+    if (numPrice < 1) {
+      return "يرجى ادخال سعر المنتج";
+    }
+
+    return "";
+  };
+
+  // Description validation function
+  const validateDescription = (description: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedDesc = description.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (description.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (10 characters excluding spaces)
+    const descWithoutSpaces = normalizedDesc.replace(/\s/g, "");
+    if (descWithoutSpaces.length < 10) {
+      return "يجب أن لا يقل الوصف عن 10 أحرف";
+    }
+
+    // Check for invalid characters (allow letters, numbers, spaces, and special characters but not emojis)
+    const validPattern =
+      /^[\u0600-\u06FFa-zA-Z0-9\s\u0020-\u007E\u00A0-\u00FF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]+$/;
+    if (!validPattern.test(normalizedDesc)) {
+      return "الوصف لا يقبل الرموز التعبيرية";
+    }
+
+    return "";
+  };
+
+  const formatPrice = (value: string): string => {
+    // Remove all non-numeric characters except decimal point
+    let cleaned = value.replace(/[^0-9.]/g, "");
+
+    // Handle decimal point - only allow one and not at the beginning
+    const parts = cleaned.split(".");
+    if (parts.length > 2) {
+      cleaned = parts[0] + "." + parts.slice(1).join("");
+    }
+
+    // Don't allow decimal point at the beginning
+    if (cleaned.startsWith(".")) {
+      cleaned = cleaned.substring(1);
+    }
+
+    // Limit to 7 digits before decimal point
+    if (parts[0] && parts[0].length > 7) {
+      parts[0] = parts[0].substring(0, 7);
+      cleaned = parts.join(".");
+    }
+
+    // Add commas every 3 digits
+    if (parts[0]) {
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      cleaned = parts.join(".");
+    }
+
+    return cleaned;
+  };
+
+  const handleNameArChange = (value: string) => {
+    // Limit to 50 characters
+    const limitedValue = value.slice(0, 50);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, nameAr: processedValue }));
+
+    // Validate and set error
+    const error = validateNameAr(processedValue);
+    setNameArError(error);
+  };
+
+  const handleNameEnChange = (value: string) => {
+    // Limit to 50 characters
+    const limitedValue = value.slice(0, 50);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, nameEn: processedValue }));
+
+    // Validate and set error
+    const error = validateNameEn(processedValue);
+    setNameEnError(error);
+  };
+
+  const handlePriceChange = (value: string) => {
+    const formattedValue = formatPrice(value);
+    setFormData((prev) => ({
+      ...prev,
+      price: parseFloat(formattedValue.replace(/,/g, "")) || 0,
+    }));
+
+    // Validate and set error
+    const error = validatePrice(formattedValue);
+    setPriceError(error);
+  };
+
+  const handleDescriptionChange = (value: string) => {
+    // Limit to 300 characters
+    const limitedValue = value.slice(0, 300);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, description: processedValue }));
+
+    // Validate and set error
+    const error = validateDescription(processedValue);
+    setDescriptionError(error);
+  };
+
   const handleChange = (
     field: string,
     value: string | string[] | File | undefined,
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "nameAr" && typeof value === "string") {
+      handleNameArChange(value);
+    } else if (field === "nameEn" && typeof value === "string") {
+      handleNameEnChange(value);
+    } else if (field === "price" && typeof value === "string") {
+      handlePriceChange(value);
+    } else if (field === "description" && typeof value === "string") {
+      handleDescriptionChange(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSave = async () => {
     setIsLoading(true);
 
     try {
+      // Check for Arabic name validation errors
+      if (formData.nameAr.trim()) {
+        const nameArValidationError = validateNameAr(formData.nameAr);
+        if (nameArValidationError) {
+          setToast({
+            variant: "error",
+            title: "خطأ في الاسم بالعربية",
+            message: nameArValidationError,
+          });
+          setTimeout(() => setToast(null), 5000);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // Check for English name validation errors if provided
+      if (formData.nameEn.trim()) {
+        const nameEnValidationError = validateNameEn(formData.nameEn);
+        if (nameEnValidationError) {
+          setToast({
+            variant: "error",
+            title: "خطأ في الاسم بالإنجليزية",
+            message: nameEnValidationError,
+          });
+          setTimeout(() => setToast(null), 5000);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // Check for price validation errors if provided
+      if (formData.price > 0) {
+        const priceValidationError = validatePrice(formData.price.toString());
+        if (priceValidationError) {
+          setToast({
+            variant: "error",
+            title: "خطأ في السعر",
+            message: priceValidationError,
+          });
+          setTimeout(() => setToast(null), 5000);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // Check for description validation errors if provided
+      if (formData.description.trim()) {
+        const descriptionValidationError = validateDescription(
+          formData.description,
+        );
+        if (descriptionValidationError) {
+          setToast({
+            variant: "error",
+            title: "خطأ في الوصف",
+            message: descriptionValidationError,
+          });
+          setTimeout(() => setToast(null), 5000);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       let imageUrl = "";
 
       if (formData.image instanceof File) {
@@ -633,7 +1256,7 @@ export function EditProductModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                تفاصيل المنتج
+                معلومات المنتج
               </h5>
 
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
@@ -660,9 +1283,11 @@ export function EditProductModal({
                   <Label>الاسم (بالعربية)</Label>
                   <Input
                     type="text"
-                    placeholder="قهوة عربية"
-                    defaultValue={formData.nameAr}
+                    placeholder="ادخل اسم المنتج بالعربي"
+                    value={formData.nameAr}
                     onChange={(e) => handleChange("nameAr", e.target.value)}
+                    error={!!nameArError}
+                    hint={nameArError || `${formData.nameAr.length}/50`}
                   />
                 </div>
 
@@ -671,9 +1296,11 @@ export function EditProductModal({
                   <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
-                    placeholder="Arabic Coffee"
-                    defaultValue={formData.nameEn}
+                    placeholder="Enter the product name in English"
+                    value={formData.nameEn}
                     onChange={(e) => handleChange("nameEn", e.target.value)}
+                    error={!!nameEnError}
+                    hint={nameEnError || `${formData.nameEn.length}/50`}
                   />
                 </div>
 
@@ -681,10 +1308,15 @@ export function EditProductModal({
                 <div>
                   <Label>السعر</Label>
                   <Input
-                    type="number"
-                    placeholder="100"
-                    defaultValue={formData.price}
+                    type="text"
+                    placeholder="ادخل سعر المنتج"
+                    value={formatPrice(formData.price.toString())}
                     onChange={(e) => handleChange("price", e.target.value)}
+                    error={!!priceError}
+                    hint={
+                      priceError ||
+                      `${formData.price.toString().replace(/,/g, "").length}/7`
+                    }
                   />
                 </div>
 
@@ -701,13 +1333,17 @@ export function EditProductModal({
 
                 {/* Description */}
                 <div>
-                  <Label>الوصف</Label>
+                  <Label>الوصف بالعربي</Label>
                   <Input
                     type="text"
-                    placeholder="قهوة عربية فاخرة محمصة طازجة"
-                    defaultValue={formData.description}
+                    placeholder="ادخل وصف المنتج بالعربي"
+                    value={formData.description}
                     onChange={(e) =>
                       handleChange("description", e.target.value)
+                    }
+                    error={!!descriptionError}
+                    hint={
+                      descriptionError || `${formData.description.length}/300`
                     }
                   />
                 </div>
