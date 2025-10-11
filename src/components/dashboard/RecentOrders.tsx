@@ -22,7 +22,6 @@ export default function RecentOrders() {
   useEffect(() => {
     getRecentOrders(5).then((data) => {
       setOrders(data);
-      console.log(data);
 
       setLoading(false);
     });

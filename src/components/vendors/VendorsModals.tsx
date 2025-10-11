@@ -33,6 +33,9 @@ export function AddVendorModal({
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameError, setNameError] = useState<string>("");
+  const [mobileError, setMobileError] = useState<string>("");
+  const [locationError, setLocationError] = useState<string>("");
   const [formData, setFormData] = useState<{
     name: string;
     mobile: string;
@@ -92,11 +95,165 @@ export function AddVendorModal({
     fetchSubcategoriesForCategory();
   }, [formData.category]);
 
+  // Name validation function
+  const validateName = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow Arabic, English letters, numbers, and spaces)
+    const validPattern = /^[\u0600-\u06FFa-zA-Z0-9\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف والأرقام والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  // Mobile validation function
+  const validateMobile = (mobile: string): string => {
+    // Check if empty
+    if (!mobile || mobile.trim() === "") {
+      return "";
+    }
+
+    // Check if only numbers
+    const numbersOnly = /^[0-9]+$/;
+    if (!numbersOnly.test(mobile)) {
+      return "رقم الهاتف يقبل الأرقام فقط";
+    }
+
+    // Check minimum length (11 digits)
+    if (mobile.length < 11) {
+      return "يرجى ادخال رقم الهاتف الصحيح";
+    }
+
+    // Check Egyptian phone format
+    // Egyptian mobile numbers start with: 010, 011, 012, 015
+    const egyptianMobilePattern = /^(010|011|012|015)[0-9]{8}$/;
+    if (!egyptianMobilePattern.test(mobile)) {
+      return "يرجى ادخال رقم الهاتف الصحيح";
+    }
+
+    return "";
+  };
+
+  const handleNameChange = (value: string) => {
+    // Limit to 30 characters
+    const limitedValue = value.slice(0, 30);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, name: processedValue }));
+
+    // Validate and set error
+    const error = validateName(processedValue);
+    setNameError(error);
+  };
+
   const handleChange = (
     field: string,
     value: string | string[] | File | undefined,
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "name" && typeof value === "string") {
+      handleNameChange(value);
+    } else if (field === "mobile" && typeof value === "string") {
+      handleMobileChange(value);
+    } else if (field === "location" && typeof value === "string") {
+      handleLocationChange(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
+  };
+
+  const handleMobileChange = (value: string) => {
+    // Only allow numbers, limit to 11 digits
+    const numbersOnly = value.replace(/[^0-9]/g, "");
+    const limitedValue = numbersOnly.slice(0, 11);
+
+    setFormData((prev) => ({ ...prev, mobile: limitedValue }));
+
+    // Validate and set error
+    const error = validateMobile(limitedValue);
+    setMobileError(error);
+  };
+
+  // Location validation function
+  const validateLocation = (location: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedLocation = location.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (location.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (10 characters excluding spaces)
+    const locationWithoutSpaces = normalizedLocation.replace(/\s/g, "");
+    if (locationWithoutSpaces.length < 10) {
+      return "يجب أن لا يقل العنوان عن 10 أحرف";
+    }
+
+    // Check for invalid characters (only allow Arabic, English letters, numbers, and spaces)
+    const validPattern = /^[\u0600-\u06FFa-zA-Z0-9\s]+$/;
+    if (!validPattern.test(normalizedLocation)) {
+      return "العنوان يقبل الحروف والأرقام والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  const handleLocationChange = (value: string) => {
+    // Limit to 100 characters
+    const limitedValue = value.slice(0, 100);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, location: processedValue }));
+
+    // Validate and set error
+    const error = validateLocation(processedValue);
+    setLocationError(error);
   };
 
   const handleSave = async () => {
@@ -113,6 +270,18 @@ export function AddVendorModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
+
+      // Check for name validation errors
+      const nameValidationError = validateName(formData.name);
+      if (nameValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في الاسم",
+          message: nameValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
       if (!formData.mobile) {
         setToast({
           variant: "error",
@@ -122,11 +291,36 @@ export function AddVendorModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
+
+      // Check for mobile validation errors
+      const mobileValidationError = validateMobile(formData.mobile);
+      if (mobileValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في رقم الهاتف",
+          message: mobileValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
+      // Check for location validation errors
+      const locationValidationError = validateLocation(formData.location);
+      if (locationValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في العنوان",
+          message: locationValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
       if (!formData.location) {
         setToast({
           variant: "error",
           title: "حقل مطلوب",
-          message: "الموقع مطلوب.",
+          message: "العنوان مطلوب.",
         });
         setTimeout(() => setToast(null), 5000);
         return;
@@ -255,8 +449,11 @@ export function AddVendorModal({
                   </Label>
                   <Input
                     type="text"
-                    placeholder="اسم المتجر"
+                    placeholder="ادخل اسم المتجر"
+                    value={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
+                    error={!!nameError}
+                    hint={nameError || `${formData.name.length}/30`}
                     required
                   />
                 </div>
@@ -268,8 +465,11 @@ export function AddVendorModal({
                   </Label>
                   <Input
                     type="text"
-                    placeholder="01234567890"
+                    placeholder="ادخل رقم هاتف المتجر"
+                    value={formData.mobile}
                     onChange={(e) => handleChange("mobile", e.target.value)}
+                    error={!!mobileError}
+                    hint={mobileError || `${formData.mobile.length}/11`}
                     required
                   />
                 </div>
@@ -277,12 +477,15 @@ export function AddVendorModal({
                 {/* Location */}
                 <div>
                   <Label>
-                    الموقع <span className="text-error-500">*</span>
+                    العنوان <span className="text-error-500">*</span>
                   </Label>
                   <Input
                     type="text"
-                    placeholder="مدينة نصر"
+                    placeholder="ادخل عنوان المتجر"
+                    value={formData.location}
                     onChange={(e) => handleChange("location", e.target.value)}
+                    error={!!locationError}
+                    hint={locationError || `${formData.location.length}/100`}
                     required
                   />
                 </div>
@@ -452,6 +655,9 @@ export function EditVendorModal({
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameError, setNameError] = useState<string>("");
+  const [mobileError, setMobileError] = useState<string>("");
+  const [locationError, setLocationError] = useState<string>("");
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -489,9 +695,11 @@ export function EditVendorModal({
   // Fill formData with vendor data when modal opens or vendor changes
   useEffect(() => {
     if (vendor && isOpen) {
+      const vendorName = vendor.name || "";
+      const vendorMobile = vendor.mobile || "";
       setFormData({
-        name: vendor.name || "",
-        mobile: vendor.mobile || "",
+        name: vendorName,
+        mobile: vendorMobile,
         location: vendor.location || "",
         workingHours:
           Array.isArray(vendor.workingHours) && vendor.workingHours.length === 2
@@ -501,6 +709,11 @@ export function EditVendorModal({
         category: vendor.category?._id || "",
         subcategories: vendor.subcategories?.map((sc) => sc._id) || [],
       });
+      // Validate the existing name and mobile
+      const nameError = validateName(vendorName);
+      setNameError(nameError);
+      const mobileError = validateMobile(vendorMobile);
+      setMobileError(mobileError);
     }
   }, [vendor, isOpen]);
 
@@ -526,17 +739,207 @@ export function EditVendorModal({
     fetchSubcategoriesForCategory();
   }, [formData.category]);
 
+  // Name validation function
+  const validateName = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow Arabic, English letters, numbers, and spaces)
+    const validPattern = /^[\u0600-\u06FFa-zA-Z0-9\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف والأرقام والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  // Mobile validation function
+  const validateMobile = (mobile: string): string => {
+    // Check if empty
+    if (!mobile || mobile.trim() === "") {
+      return "";
+    }
+
+    // Check if only numbers
+    const numbersOnly = /^[0-9]+$/;
+    if (!numbersOnly.test(mobile)) {
+      return "رقم الهاتف يقبل الأرقام فقط";
+    }
+
+    // Check minimum length (11 digits)
+    if (mobile.length < 11) {
+      return "يرجى ادخال رقم الهاتف الصحيح";
+    }
+
+    // Check Egyptian phone format
+    // Egyptian mobile numbers start with: 010, 011, 012, 015
+    const egyptianMobilePattern = /^(010|011|012|015)[0-9]{8}$/;
+    if (!egyptianMobilePattern.test(mobile)) {
+      return "يرجى ادخال رقم الهاتف الصحيح";
+    }
+
+    return "";
+  };
+
+  const handleNameChange = (value: string) => {
+    // Limit to 30 characters
+    const limitedValue = value.slice(0, 30);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, name: processedValue }));
+
+    // Validate and set error
+    const error = validateName(processedValue);
+    setNameError(error);
+  };
+
+  const handleMobileChange = (value: string) => {
+    // Only allow numbers, limit to 11 digits
+    const numbersOnly = value.replace(/[^0-9]/g, "");
+    const limitedValue = numbersOnly.slice(0, 11);
+
+    setFormData((prev) => ({ ...prev, mobile: limitedValue }));
+
+    // Validate and set error
+    const error = validateMobile(limitedValue);
+    setMobileError(error);
+  };
+
+  // Location validation function
+  const validateLocation = (location: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedLocation = location.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (location.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (10 characters excluding spaces)
+    const locationWithoutSpaces = normalizedLocation.replace(/\s/g, "");
+    if (locationWithoutSpaces.length < 10) {
+      return "يجب أن لا يقل العنوان عن 10 أحرف";
+    }
+
+    // Check for invalid characters (only allow Arabic, English letters, numbers, and spaces)
+    const validPattern = /^[\u0600-\u06FFa-zA-Z0-9\s]+$/;
+    if (!validPattern.test(normalizedLocation)) {
+      return "العنوان يقبل الحروف والأرقام والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  const handleLocationChange = (value: string) => {
+    // Limit to 100 characters
+    const limitedValue = value.slice(0, 100);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, location: processedValue }));
+
+    // Validate and set error
+    const error = validateLocation(processedValue);
+    setLocationError(error);
+  };
+
   const handleChange = (
     field: string,
     value: string | string[] | File | undefined,
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "name" && typeof value === "string") {
+      handleNameChange(value);
+    } else if (field === "mobile" && typeof value === "string") {
+      handleMobileChange(value);
+    } else if (field === "location" && typeof value === "string") {
+      handleLocationChange(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSave = async () => {
     setIsLoading(true);
 
     try {
+      // Check for name validation errors
+      const nameValidationError = validateName(formData.name);
+      if (nameValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في الاسم",
+          message: nameValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
+      // Check for mobile validation errors
+      const mobileValidationError = validateMobile(formData.mobile);
+      if (mobileValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في رقم الهاتف",
+          message: mobileValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
+      // Check for location validation errors
+      const locationValidationError = validateLocation(formData.location);
+      if (locationValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في العنوان",
+          message: locationValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
       let profileImageUrl = "";
 
       if (formData.profileImage instanceof File) {
@@ -633,9 +1036,11 @@ export function EditVendorModal({
                   <Label>الاسم</Label>
                   <Input
                     type="text"
-                    placeholder="اسم المتجر"
-                    defaultValue={formData.name}
+                    placeholder="ادخل اسم المتجر"
+                    value={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
+                    error={!!nameError}
+                    hint={nameError || `${formData.name.length}/30`}
                     required
                   />
                 </div>
@@ -643,19 +1048,23 @@ export function EditVendorModal({
                   <Label>الهاتف</Label>
                   <Input
                     type="text"
-                    placeholder="01234567890"
-                    defaultValue={formData.mobile}
+                    placeholder="ادخل رقم هاتف المتجر"
+                    value={formData.mobile}
                     onChange={(e) => handleChange("mobile", e.target.value)}
+                    error={!!mobileError}
+                    hint={mobileError || `${formData.mobile.length}/11`}
                     required
                   />
                 </div>
                 <div>
-                  <Label>الموقع</Label>
+                  <Label>العنوان</Label>
                   <Input
                     type="text"
                     placeholder="مدينة نصر"
-                    defaultValue={formData.location}
+                    value={formData.location}
                     onChange={(e) => handleChange("location", e.target.value)}
+                    error={!!locationError}
+                    hint={locationError || `${formData.location.length}/100`}
                   />
                 </div>
                 <div>

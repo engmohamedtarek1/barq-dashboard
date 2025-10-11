@@ -72,8 +72,6 @@ export default function AgentsTable() {
     return trimmed ? searchPages : totalPages;
   }, [searchTerm, searchPages, totalPages]);
 
-  console.log(effectiveTotalPages);
-
   return (
     <div className="space-y-4">
       {/* Card Header */}
