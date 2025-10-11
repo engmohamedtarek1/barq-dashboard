@@ -122,7 +122,7 @@ export function AddAgentModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                معلومات عامل التوصيل
+                إضافة عامل توصيل
               </h5>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 {/* Name */}
@@ -206,7 +206,7 @@ export function AddAgentButton({ onSuccess }: { onSuccess?: () => void }) {
   return (
     <>
       <Button size="md" variant="primary" onClick={openModal}>
-        + إضافة متجر
+        + إضافة عامل توصيل
       </Button>
       <AddAgentModal
         isOpen={isOpen}
@@ -329,7 +329,7 @@ export function EditAgentModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                معلومات عامل التوصيل
+                تعديل عامل التوصيل
               </h5>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 <div>

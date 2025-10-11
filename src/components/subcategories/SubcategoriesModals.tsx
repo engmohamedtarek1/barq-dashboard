@@ -28,6 +28,8 @@ export function AddSubcategoryModal({
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameArError, setNameArError] = useState<string>("");
+  const [nameEnError, setNameEnError] = useState<string>("");
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -53,11 +55,123 @@ export function AddSubcategoryModal({
     fetchData();
   }, [isOpen]);
 
+  // Arabic name validation function
+  const validateNameAr = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow Arabic letters and spaces)
+    const validPattern = /^[\u0600-\u06FF\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف العربية والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  // English name validation function
+  const validateNameEn = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow English letters and spaces)
+    const validPattern = /^[a-zA-Z\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف الإنجليزية والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  const handleNameArChange = (value: string) => {
+    // Limit to 30 characters
+    const limitedValue = value.slice(0, 30);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, nameAr: processedValue }));
+
+    // Validate and set error
+    const error = validateNameAr(processedValue);
+    setNameArError(error);
+  };
+
+  const handleNameEnChange = (value: string) => {
+    // Limit to 30 characters
+    const limitedValue = value.slice(0, 30);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, nameEn: processedValue }));
+
+    // Validate and set error
+    const error = validateNameEn(processedValue);
+    setNameEnError(error);
+  };
+
   const handleChange = (
     field: string,
     value: string | string[] | File | undefined,
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "nameAr" && typeof value === "string") {
+      handleNameArChange(value);
+    } else if (field === "nameEn" && typeof value === "string") {
+      handleNameEnChange(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSave = async () => {
@@ -74,6 +188,33 @@ export function AddSubcategoryModal({
         setTimeout(() => setToast(null), 5000);
         return;
       }
+
+      // Check for Arabic name validation errors
+      const nameArValidationError = validateNameAr(formData.nameAr);
+      if (nameArValidationError) {
+        setToast({
+          variant: "error",
+          title: "خطأ في الاسم بالعربية",
+          message: nameArValidationError,
+        });
+        setTimeout(() => setToast(null), 5000);
+        return;
+      }
+
+      // Check for English name validation errors if provided
+      if (formData.nameEn.trim()) {
+        const nameEnValidationError = validateNameEn(formData.nameEn);
+        if (nameEnValidationError) {
+          setToast({
+            variant: "error",
+            title: "خطأ في الاسم بالإنجليزية",
+            message: nameEnValidationError,
+          });
+          setTimeout(() => setToast(null), 5000);
+          return;
+        }
+      }
+
       if (!formData.category) {
         setToast({
           variant: "error",
@@ -147,7 +288,7 @@ export function AddSubcategoryModal({
           <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
             <div>
               <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6 dark:text-white/90">
-                تفاصيل الفئة
+                اضافة فئة فرعية
               </h5>
 
               {/* Category */}
@@ -179,8 +320,11 @@ export function AddSubcategoryModal({
                   </Label>
                   <Input
                     type="text"
-                    placeholder="مأكولات بحرية"
+                    placeholder="ادخل اسم الفئة الفرعية بالعربي"
+                    value={formData.nameAr}
                     onChange={(e) => handleChange("nameAr", e.target.value)}
+                    error={!!nameArError}
+                    hint={nameArError || `${formData.nameAr.length}/30`}
                     required
                   />
                 </div>
@@ -190,8 +334,11 @@ export function AddSubcategoryModal({
                   <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
-                    placeholder="Sea Food"
+                    placeholder="Enter the sub-category name in English"
+                    value={formData.nameEn}
                     onChange={(e) => handleChange("nameEn", e.target.value)}
+                    error={!!nameEnError}
+                    hint={nameEnError || `${formData.nameEn.length}/30`}
                   />
                 </div>
               </div>
@@ -274,6 +421,8 @@ export function EditSubcategoryModal({
   const [toast, setToast] = useState<AlertProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameArError, setNameArError] = useState<string>("");
+  const [nameEnError, setNameEnError] = useState<string>("");
   const [formData, setFormData] = useState<{
     nameAr: string;
     nameEn: string;
@@ -310,17 +459,159 @@ export function EditSubcategoryModal({
     }
   }, [subcategory, isOpen]);
 
+  // Arabic name validation function
+  const validateNameAr = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow Arabic letters and spaces)
+    const validPattern = /^[\u0600-\u06FF\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف العربية والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  // English name validation function
+  const validateNameEn = (name: string): string => {
+    // Remove extra spaces and normalize
+    const normalizedName = name.replace(/\s+/g, " ").trim();
+
+    // Check if only spaces
+    if (name.trim() === "") {
+      return "";
+    }
+
+    // Check minimum length (2 characters excluding spaces)
+    const nameWithoutSpaces = normalizedName.replace(/\s/g, "");
+    if (nameWithoutSpaces.length < 2) {
+      return "يجب أن لا يقل الاسم عن حرفين";
+    }
+
+    // Check for invalid characters (only allow English letters and spaces)
+    const validPattern = /^[a-zA-Z\s]+$/;
+    if (!validPattern.test(normalizedName)) {
+      return "الاسم يقبل الحروف الإنجليزية والمسافات فقط";
+    }
+
+    return "";
+  };
+
+  const handleNameArChange = (value: string) => {
+    // Limit to 30 characters
+    const limitedValue = value.slice(0, 30);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, nameAr: processedValue }));
+
+    // Validate and set error
+    const error = validateNameAr(processedValue);
+    setNameArError(error);
+  };
+
+  const handleNameEnChange = (value: string) => {
+    // Limit to 30 characters
+    const limitedValue = value.slice(0, 30);
+
+    // Prevent multiple consecutive spaces
+    let processedValue = limitedValue.replace(/\s{2,}/g, " ");
+
+    // Prevent leading space
+    if (processedValue.startsWith(" ")) {
+      processedValue = processedValue.slice(1);
+    }
+
+    // Prevent trailing space
+    if (processedValue.endsWith(" ") && processedValue.length > 1) {
+      // Allow one space if user is typing, but prevent multiple trailing spaces
+      const beforeLastChar = processedValue.slice(-2, -1);
+      if (beforeLastChar === " ") {
+        processedValue = processedValue.slice(0, -1);
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, nameEn: processedValue }));
+
+    // Validate and set error
+    const error = validateNameEn(processedValue);
+    setNameEnError(error);
+  };
+
   const handleChange = (
     field: string,
     value: string | string[] | File | undefined,
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "nameAr" && typeof value === "string") {
+      handleNameArChange(value);
+    } else if (field === "nameEn" && typeof value === "string") {
+      handleNameEnChange(value);
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSave = async () => {
     setIsLoading(true);
 
     try {
+      // Check for Arabic name validation errors
+      if (formData.nameAr.trim()) {
+        const nameArValidationError = validateNameAr(formData.nameAr);
+        if (nameArValidationError) {
+          setToast({
+            variant: "error",
+            title: "خطأ في الاسم بالعربية",
+            message: nameArValidationError,
+          });
+          setTimeout(() => setToast(null), 5000);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // Check for English name validation errors if provided
+      if (formData.nameEn.trim()) {
+        const nameEnValidationError = validateNameEn(formData.nameEn);
+        if (nameEnValidationError) {
+          setToast({
+            variant: "error",
+            title: "خطأ في الاسم بالإنجليزية",
+            message: nameEnValidationError,
+          });
+          setTimeout(() => setToast(null), 5000);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const payloadRaw: Partial<CreateSubcategoryPayload> = {
         nameAr: formData.nameAr,
         nameEn: formData.nameEn?.trim()
@@ -399,15 +690,17 @@ export function EditSubcategoryModal({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 mt-5 gap-x-6 gap-y-5 lg:grid-cols-2">
+              <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 {/* Name (in Arabic) */}
                 <div>
                   <Label>الاسم (بالعربية)</Label>
                   <Input
                     type="text"
-                    placeholder="مأكولات بحرية"
-                    defaultValue={formData.nameAr}
+                    placeholder="ادخل اسم الفئة الفرعية بالعربي"
+                    value={formData.nameAr}
                     onChange={(e) => handleChange("nameAr", e.target.value)}
+                    error={!!nameArError}
+                    hint={nameArError || `${formData.nameAr.length}/30`}
                   />
                 </div>
 
@@ -416,9 +709,11 @@ export function EditSubcategoryModal({
                   <Label>الاسم (بالإنجليزية)</Label>
                   <Input
                     type="text"
-                    placeholder="Sea Food"
-                    defaultValue={formData.nameEn}
+                    placeholder="Enter the sub-category name in English"
+                    value={formData.nameEn}
                     onChange={(e) => handleChange("nameEn", e.target.value)}
+                    error={!!nameEnError}
+                    hint={nameEnError || `${formData.nameEn.length}/30`}
                   />
                 </div>
               </div>
