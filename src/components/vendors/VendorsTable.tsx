@@ -431,10 +431,10 @@ export default function VendorsTable() {
                         <TableCell>
                           <Badge
                             size="sm"
-                            color={vendor.status === "active" ? "success" : "error"}
+                            color={vendor.isActive === false ? "error" : "success"}
                             variant="light"
                           >
-                            {vendor.status === "active" ? "مفعل" : "محظور"}
+                            {vendor.isActive === false ? "غير مفعل" : "مفعل"}
                           </Badge>
                         </TableCell>
                         <TableCell>⭐ {vendor.rating}</TableCell>

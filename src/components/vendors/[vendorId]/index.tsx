@@ -122,10 +122,10 @@ export default function VendorDetailsComponent() {
               />
               <Badge
                 size="sm"
-                color={vendor.status === "active" ? "success" : "error"}
+                color={vendor.isActive === false ? "error" : "success"}
                 variant="light"
               >
-                {vendor.status === "active" ? "مفعل" : "محظور"}
+                {vendor.isActive === false ? "غير مفعل" : "مفعل"}
               </Badge>
             </div>
 
@@ -256,9 +256,9 @@ export default function VendorDetailsComponent() {
             </h3>
             <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <span
-                className={`h-2 w-2 rounded-full ${vendor.status === "active" ? "bg-green-500" : "bg-red-500"}`}
+                className={`h-2 w-2 rounded-full ${vendor.isActive === false ? "bg-red-500" : "bg-green-500"}`}
               ></span>
-              {vendor.status === "active" ? "الحساب مفعل" : "الحساب محظور"}
+              {vendor.isActive === false ? "الحساب غير مفعل" : "الحساب مفعل"}
             </div>
           </div>
           <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-white/[0.05]">
