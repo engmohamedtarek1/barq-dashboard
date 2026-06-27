@@ -285,6 +285,14 @@
   background-color: #344054;
 }
 
+/* Native <select> dropdown options in dark mode.
+   The control is styled via Tailwind, but the option popup falls back to the
+   browser's default white background, hiding the inherited light text. */
+.dark select option {
+  background-color: #101828; /* gray-900 */
+  color: rgba(255, 255, 255, 0.9);
+}
+
 @layer utilities {
   /* For Remove Date Icon */
   input[type="date"]::-webkit-inner-spin-button,
