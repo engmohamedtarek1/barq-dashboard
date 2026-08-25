@@ -11,7 +11,12 @@ import { ChevronDownIcon } from "../../../public/icons";
 import Select from "../form/Select";
 import { Category } from "@/types/category";
 import { uploadImage } from "@/lib/api/uploadImage";
-import { CreateProductPayload, Product, Extension } from "@/types/product";
+import {
+  CreateProductPayload,
+  Product,
+  Extension,
+  ProductSize,
+} from "@/types/product";
 import {
   createProduct,
   deleteProduct,
@@ -32,6 +37,7 @@ import { getAllVendors } from "@/lib/api/vendors";
 import { Vendor } from "@/types/vendor";
 import { fetchCategoryshopsByVendor } from "@/lib/api/categoryshop";
 import { AxiosError } from "axios";
+import SizesEditor from "./SizesEditor";
 
 export function AddProductModal({
   isOpen = false,
@@ -64,6 +70,7 @@ export function AddProductModal({
     categories: string[];
     image: File | string;
     extensions: Extension[];
+    sizes: ProductSize[];
   }>({
     nameAr: "",
     nameEn: "",
@@ -75,6 +82,7 @@ export function AddProductModal({
     categories: [],
     image: new File([], ""),
     extensions: [],
+    sizes: [],
   });
   const [collapsedExtensions, setCollapsedExtensions] = useState<boolean[]>([]);
   const [imageMode, setImageMode] = useState<"file" | "link">("link");
@@ -538,6 +546,7 @@ export function AddProductModal({
         image: imageUrl,
         extensions:
           formData.extensions.length > 0 ? formData.extensions : undefined,
+        sizes: formData.sizes.length > 0 ? formData.sizes : undefined,
       };
       // Remove empty-string fields
       const payload = Object.fromEntries(
@@ -567,6 +576,7 @@ export function AddProductModal({
         categories: [],
         image: new File([], ""),
         extensions: [],
+        sizes: [],
       });
       setCollapsedExtensions([]);
       setImageMode("link");
@@ -605,6 +615,7 @@ export function AddProductModal({
       categories: [],
       image: new File([], ""),
       extensions: [],
+      sizes: [],
     });
     setCollapsedExtensions([]);
     setImageMode("link");
@@ -840,6 +851,11 @@ export function AddProductModal({
                 /> */}
               </div>
             </div>
+
+            <SizesEditor
+              sizes={formData.sizes}
+              onChange={(sizes) => setFormData((prev) => ({ ...prev, sizes }))}
+            />
 
             {/* Extensions Section */}
             <div className="mt-8">
@@ -1180,6 +1196,7 @@ export function EditProductModal({
     category: string;
     image: string | File;
     extensions: Extension[];
+    sizes: ProductSize[];
   }>({
     nameAr: product.nameAr || "",
     nameEn: product.nameEn || "",
@@ -1190,6 +1207,7 @@ export function EditProductModal({
     category: product.category?._id || "",
     image: product.image || new File([], ""),
     extensions: product.extensions || [],
+    sizes: product.sizes || [],
   });
 
   useEffect(() => {
@@ -1220,6 +1238,7 @@ export function EditProductModal({
       category: product.category?._id || "",
       image: product.image || "",
       extensions: product.extensions || [],
+      sizes: product.sizes || [],
     });
     setCollapsedExtensions(
       new Array(product.extensions?.length || 0).fill(false),
@@ -1605,6 +1624,10 @@ export function EditProductModal({
         image: imageUrl,
         extensions:
           formData.extensions.length > 0 ? formData.extensions : undefined,
+        // Always send `sizes` on update, including an empty array: omitting the
+        // key would make the backend keep the previously saved sizes (and pin
+        // the base price to the old default size), so sizes could never be removed.
+        sizes: formData.sizes,
       };
       // Remove empty-string fields
       const payload = Object.fromEntries(
@@ -1656,6 +1679,7 @@ export function EditProductModal({
       category: product.category?._id || "",
       image: product.image || new File([], ""),
       extensions: product.extensions || [],
+      sizes: product.sizes || [],
     });
     setCollapsedExtensions(
       new Array(product.extensions?.length || 0).fill(false),
@@ -1882,6 +1906,11 @@ export function EditProductModal({
                 </div>
               </div>
             </div>
+
+            <SizesEditor
+              sizes={formData.sizes}
+              onChange={(sizes) => setFormData((prev) => ({ ...prev, sizes }))}
+            />
 
             {/* Extensions Section */}
             <div className="mt-8">

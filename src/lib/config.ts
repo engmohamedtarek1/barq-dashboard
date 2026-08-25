@@ -6,10 +6,15 @@ const isVercelPreview =
 
 const isProduction = process.env.NODE_ENV === "production" && !isVercelPreview;
 
-export const BASE_URL = isProduction
+const defaultBase = isProduction
   ? "https://api.barqshipping.com/api/v1"
   : "https://api-staging.barqshipping.com/api/v1";
 
-export const SOCKET_URL = isProduction
+const defaultSocket = isProduction
   ? "https://api.barqshipping.com"
   : "https://api-staging.barqshipping.com";
+
+// Local override for development against a locally running backend.
+// Unset in every deployed environment, so behavior there is unchanged.
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL || defaultBase;
+export const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || defaultSocket;

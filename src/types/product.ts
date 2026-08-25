@@ -10,6 +10,14 @@ export interface Extension {
   options: ExtensionOption[];
 }
 
+export interface ProductSize {
+  _id?: string;          // present on products loaded from the API, absent for new rows
+  nameAr: string;
+  nameEn: string;
+  price: number;         // ABSOLUTE unit price for this size, NOT a surcharge
+  isDefault: boolean;
+}
+
 export interface CreateProductPayload {
   nameAr: string;
   nameEn: string;
@@ -22,6 +30,7 @@ export interface CreateProductPayload {
   image?: string;
   images?: string[];
   extensions?: Extension[];
+  sizes?: ProductSize[];
 }
 
 export interface Product {
@@ -48,6 +57,7 @@ export interface Product {
   image: string;
   images: string[];
   extensions?: Extension[];
+  sizes?: ProductSize[];
   soldTimes: number;
   reviewCount: number;
   cartQuantity?: number;
