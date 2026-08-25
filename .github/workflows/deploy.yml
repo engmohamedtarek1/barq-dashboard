@@ -1,0 +1,44 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-dashboard
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          command_timeout: 20m
+          script: |
+            set -euo pipefail
+            cd /root/barq-dashboard
+
+            echo "--- pulling ---"
+            git fetch --prune origin main
+            git reset --hard origin/main
+
+            echo "--- installing ---"
+            npm ci
+
+            echo "--- building ---"
+            npm run build
+
+            # pm2 app name is "barq-dashbaord" (existing typo on the server) - do not "fix" it
+            echo "--- restarting ---"
+            pm2 reload barq-dashbaord --update-env \
+              || pm2 start npm --name barq-dashbaord -- start
+            pm2 save
+
+            pm2 describe barq-dashbaord | grep -Ei "status|uptime|restarts"
