@@ -202,12 +202,13 @@ export default function OrderDetailsComponent() {
               ? "تم التوصيل"
               : order.orderStatus === "shipped"
                 ? "تم الشحن"
-                : order.orderStatus === "pending" ||
-                    order.orderStatus === "processing"
-                  ? "جارِ التنفيذ"
-                  : order.orderStatus === "cancelled"
-                    ? "ملغاة"
-                    : order.orderStatus}
+                : order.orderStatus === "pending"
+                  ? "قيد الانتظار"
+                  : order.orderStatus === "processing"
+                    ? "جارِ التنفيذ"
+                    : order.orderStatus === "cancelled"
+                      ? "ملغاة"
+                      : order.orderStatus}
           </Badge>
         </div>
 
